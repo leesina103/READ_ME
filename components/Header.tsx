@@ -1,20 +1,33 @@
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Menu } from "lucide-react";
+
+const publicLinks = [
+  { href: "/about", label: "READ ME 소개" },
+  { href: "/meeting", label: "모임 둘러보기" }
+];
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--background)]/90 backdrop-blur">
-      <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2 font-semibold tracking-[-0.02em]">
-          <BookOpen size={21} className="text-[var(--accent-dark)]" />
-          READ ME
+    <header className="site-header">
+      <div className="site-header__inner">
+        <Link href="/" className="brand-mark" aria-label="READ ME 홈">
+          <span className="brand-mark__icon"><BookOpen size={19} strokeWidth={1.8} /></span>
+          <span>READ ME</span>
         </Link>
-        <nav className="flex items-center gap-5 text-sm text-[var(--muted)]">
-          <Link href="/about" className="hover:text-[var(--foreground)]">소개</Link>
-          <Link href="/meeting" className="hover:text-[var(--foreground)]">모임</Link>
-          <Link href="/my" className="hover:text-[var(--foreground)]">MY</Link>
-          <Link href="/login" className="rounded-full border border-[var(--line)] bg-white px-4 py-2 text-[var(--foreground)]">로그인</Link>
+        <nav className="desktop-nav" aria-label="주요 메뉴">
+          {publicLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
+          <span className="nav-divider" aria-hidden="true" />
+          <Link href="/my" className="nav-library">나의 서재</Link>
+          <Link href="/login" className="nav-login">로그인</Link>
         </nav>
+        <details className="mobile-menu">
+          <summary aria-label="메뉴 열기"><Menu size={21} /></summary>
+          <nav aria-label="모바일 메뉴">
+            {publicLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
+            <Link href="/my">나의 서재 <small>회원 전용</small></Link>
+            <Link href="/login">로그인 <small>기록 이어보기</small></Link>
+          </nav>
+        </details>
       </div>
     </header>
   );
