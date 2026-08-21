@@ -2,18 +2,12 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BookOpen, Check, Compass, Library, MessageCircle, NotebookPen, Quote, UsersRound } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
 import { RemiGuide } from "@/components/RemiGuide";
+import { currentMeeting } from "@/data/currentMeeting";
 
 const steps = [
   { number: "01", title: "함께 읽기", text: "한 기수의 주제와 네 권의 책을 천천히 읽어요." },
   { number: "02", title: "질문 만들기", text: "정답 대신 내 삶에 오래 남을 질문을 가져와요." },
   { number: "03", title: "서로 사유하기", text: "다른 관점을 안전하게 듣고 나의 언어로 기록해요." }
-];
-
-const sessions = [
-  { number: "1주", title: "관계를 읽다", description: "나는 사람을 어떻게 이해하고 있나요?" },
-  { number: "2주", title: "나를 읽다", description: "내가 원하는 삶은 어떤 모습인가요?" },
-  { number: "3주", title: "변화를 읽다", description: "변하고 싶은 마음은 어디에서 오나요?" },
-  { number: "4주", title: "마음을 읽다", description: "지금의 감정을 어떻게 돌볼 수 있을까요?" }
 ];
 
 const journey = [
@@ -65,7 +59,7 @@ export default function Home() {
 
       <section className="section"><div className="section-shell">
         <div className="section-heading-row"><SectionTitle eyebrow="CURRENT SEASON" title="한 기수, 네 번의 질문" description="하나의 기수 안에서 네 개의 질문을 이어갑니다. 개별 회차가 아니라 전체 여정에 신청해요." /><Link href="/meeting" className="text-link">전체 일정 보기 <ArrowRight size={15} /></Link></div>
-        <div className="session-list">{sessions.map((session, index) => <article key={session.number}><span>{session.number}</span><div><h3>{session.title}</h3><p>{session.description}</p></div><span className="session-list__dot">0{index + 1}</span></article>)}</div>
+        <div className="session-list">{currentMeeting.sessions.map((session) => <article key={session.order}><span>{session.order}회차</span><div><h3>{session.title}</h3><p>{session.question}</p></div><span className="session-list__dot">{String(session.order).padStart(2, "0")}</span></article>)}</div>
       </div></section>
 
       <section className="section section--sage"><div className="section-shell remi-story">
