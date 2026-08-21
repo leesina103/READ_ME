@@ -57,6 +57,8 @@ npm run dev -- -p 3001
 
 `npm run dev`는 관대해서 그냥 넘어가는 문제를 `npm run build`가 잡아냅니다. 타입 오류나 프로덕션 전용 문제가 대표적입니다.
 
+> `npm run dev`와 `npm run build`는 같은 `.next` 디렉터리를 사용하므로 동시에 실행하지 마세요. 빌드 전에는 개발 서버 터미널에서 `Ctrl + C`를 눌러 서버를 종료합니다.
+
 **push 하기 전에 반드시 아래 두 명령을 통과시키세요.** 이 단계를 건너뛰면 로컬은 멀쩡한데 Vercel 배포만 실패하는 상황이 생깁니다.
 
 ```bash
@@ -77,8 +79,13 @@ npm start
 ```bash
 npm run dev          # 터미널 1: 켜두고 개발
                      # 코드 수정 → 저장 → 브라우저 자동 갱신
+```
 
-npm run build        # 터미널 2: push 전 확인
+push 전에는 개발 서버를 `Ctrl + C`로 종료한 뒤 별도 터미널에서 검증합니다.
+
+```bash
+npm run lint
+npm run build        # push 전 확인
 git add .
 git commit -m "커밋 메시지"
 git push
@@ -225,8 +232,7 @@ Supabase를 연결한 뒤에는 Vercel Project Settings > Environment Variables�
 
 ### 알려진 개선 필요 항목
 
-- 한글 폰트 미적용 (`next/font`로 Pretendard 또는 Noto Sans KR 연결 필요)
-- 로그인/회원가입 폼에 `<form>`, `<label>`, `autoComplete` 없음 (Supabase 연결 전 정리 권장)
-- 기수 데이터가 `app/page.tsx`와 `app/meeting/page.tsx`에 중복 하드코딩됨
-- 메인은 "한 기수 4회차", 모임 페이지는 "01기~04기"로 기수 개념이 서로 다름 (내용 확정 필요)
-- `metadata`에 `metadataBase` / `openGraph` 없음 (카카오톡 링크 미리보기 빈칸)
+- 로그인/회원가입 폼은 접근 가능한 HTML 구조를 갖췄지만 실제 인증 처리와 유효성 검사, 오류 메시지는 아직 없음
+- 기수와 회차 데이터는 공통 모듈을 사용하며, 실제 서비스에서는 Supabase 데이터로 전환 필요
+- Noto Sans KR·Noto Serif KR 웹폰트와 Open Graph 메타데이터를 적용함
+- 커스텀 도메인을 연결하면 `NEXT_PUBLIC_SITE_URL` 환경변수 갱신 필요
