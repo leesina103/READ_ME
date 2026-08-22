@@ -3,6 +3,8 @@ import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 const notoSansKr = Noto_Sans_KR({
   variable: "--font-sans",
@@ -48,6 +50,14 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header />{children}<Footer /></body></html>;
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  let isAuthenticated = false;
+
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    isAuthenticated = Boolean(user);
+  }
+
+  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header isAuthenticated={isAuthenticated} />{children}<Footer /></body></html>;
 }

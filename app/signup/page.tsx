@@ -1,5 +1,17 @@
 import Link from "next/link";
+import { AuthForm } from "@/components/AuthForm";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export default function SignupPage() {
-  return <main className="flex min-h-[calc(100vh-72px)] items-center justify-center px-6 py-16"><div className="w-full max-w-md rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-8"><p className="eyebrow">JOIN READ ME</p><h1 className="mt-4 text-3xl font-semibold">함께 읽을 준비</h1><p className="mt-3 text-sm leading-6 text-[var(--muted)]">계정을 만들고 다음 기수 소식을 받아보세요.</p><form className="mt-8 space-y-4"><label className="block text-sm font-medium">이름<input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none focus:border-[var(--forest)]" name="name" autoComplete="name" placeholder="이름" /></label><label className="block text-sm font-medium">이메일<input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none focus:border-[var(--forest)]" type="email" name="email" autoComplete="email" placeholder="hello@example.com" /></label><label className="block text-sm font-medium">비밀번호<input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none focus:border-[var(--forest)]" type="password" name="password" autoComplete="new-password" placeholder="8자 이상" /></label><button type="submit" className="w-full rounded-2xl bg-[var(--ink)] px-4 py-3 font-medium text-[var(--cream)]">회원가입</button></form><p className="mt-6 text-center text-sm text-[var(--muted)]">이미 회원이신가요? <Link href="/login" className="font-medium text-[var(--forest)]">로그인</Link></p></div></main>;
+  return (
+    <main className="flex min-h-[calc(100vh-72px)] items-center justify-center px-6 py-16">
+      <div className="w-full max-w-md rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-8">
+        <p className="eyebrow">JOIN READ ME</p>
+        <h1 className="mt-4 text-3xl font-semibold">함께 읽을 준비</h1>
+        <p className="mt-3 text-sm leading-6 text-[var(--muted)]">계정을 만들고 다음 기수 소식을 받아보세요.</p>
+        <AuthForm mode="signup" configured={isSupabaseConfigured()} />
+        <p className="mt-6 text-center text-sm text-[var(--muted)]">이미 회원이신가요? <Link href="/login" className="font-medium text-[var(--forest)]">로그인</Link></p>
+      </div>
+    </main>
+  );
 }

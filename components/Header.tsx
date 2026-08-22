@@ -15,7 +15,7 @@ const mainMenuItems = [
 
 const publicLinks = mainMenuItems.filter((item) => item.enabled);
 
-export function Header() {
+export function Header({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
   const pathname = usePathname();
   const mainMenuRef = useRef<HTMLDetailsElement>(null);
 
@@ -34,7 +34,7 @@ export function Header() {
           {publicLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
           <span className="nav-divider" aria-hidden="true" />
           <Link href="/my" className="nav-library">나의 서재</Link>
-          <Link href="/login" className="nav-login">로그인</Link>
+          <Link href={isAuthenticated ? "/my" : "/login"} className="nav-login">{isAuthenticated ? "MY" : "로그인"}</Link>
         </nav>
         <details ref={mainMenuRef} name="mobile-header-menu" className="mobile-menu mobile-menu--main">
           <summary aria-label="주요 메뉴 열기"><Menu size={21} /></summary>
@@ -60,7 +60,7 @@ export function Header() {
             <p className="main-menu__note">인터뷰와 커뮤니티, 멤버십은 다음 단계에서 차례로 열립니다.</p>
           </div>
         </details>
-        <Link href="/login" className="mobile-account-link" aria-label="로그인">
+        <Link href={isAuthenticated ? "/my" : "/login"} className="mobile-account-link" aria-label={isAuthenticated ? "나의 서재" : "로그인"}>
           <UserRound size={21} />
         </Link>
       </div>

@@ -9,7 +9,7 @@ Read books. Read yourself.
 - Next.js 15 (App Router)
 - TypeScript
 - Tailwind CSS v4
-- Supabase 준비 구조
+- Supabase Auth 및 회원 프로필
 - Vercel 배포 가능 구조
 
 ## 개발 환경
@@ -147,7 +147,7 @@ OS별 바이너리가 포함되므로 커밋하지 않습니다. `.gitignore`에
 
 ## Supabase
 
-현재 v1.0에서는 Supabase 연결을 위한 환경변수 파일만 준비되어 있습니다.
+Supabase Auth의 쿠키 기반 세션과 회원 프로필 테이블을 사용합니다.
 
 `.env.example`을 복사해서 `.env.local`을 만들고 다음 값을 입력하면 됩니다.
 
@@ -157,10 +157,19 @@ cp .env.example .env.local
 
 ```text
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 ```
 
-`.env.local`은 `.gitignore`에 포함되어 있어 커밋되지 않습니다. 실제 회원가입/로그인 기능은 다음 단계에서 연결합니다.
+기존 Supabase 프로젝트의 anon key를 사용한다면 `NEXT_PUBLIC_SUPABASE_ANON_KEY`에 입력해도 됩니다. `.env.local`은 `.gitignore`에 포함되어 있어 커밋되지 않습니다.
+
+Supabase Dashboard의 SQL Editor에서 `supabase/migrations/20260822000000_create_profiles.sql`을 실행해 `profiles` 테이블, 가입 트리거, RLS 정책을 생성합니다. 이메일 인증을 사용할 때는 Authentication의 Redirect URLs에 다음 주소도 등록합니다.
+
+```text
+http://localhost:3000/auth/callback
+https://실제도메인/auth/callback
+```
+
+관리자 계정은 Supabase의 `app_metadata.role` 값이 `admin`인 사용자만 `/admin`에 접근할 수 있습니다. 이 값은 서비스 역할이 있는 안전한 서버나 Dashboard에서만 설정해야 합니다.
 
 ## Git 설정
 
@@ -215,24 +224,22 @@ Supabase를 연결한 뒤에는 Vercel Project Settings > Environment Variables�
 | `/` | `app/page.tsx` | 메인 |
 | `/about` | `app/about/page.tsx` | 소개 |
 | `/meeting` | `app/meeting/page.tsx` | 모임 목록 |
-| `/my` | `app/my/page.tsx` | MY (로그인 안내만) |
-| `/login` | `app/login/page.tsx` | 로그인 (UI만) |
-| `/signup` | `app/signup/page.tsx` | 회원가입 (UI만) |
+| `/my` | `app/my/page.tsx` | 회원 프로필과 나의 서재 |
+| `/login` | `app/login/page.tsx` | 이메일 로그인 |
+| `/signup` | `app/signup/page.tsx` | 이메일 회원가입 |
+| `/auth/callback` | `app/auth/callback/route.ts` | 이메일 인증 콜백 |
 
 ## 다음 개발 단계
 
-1. Supabase Auth 실제 연결
-2. Google 로그인 추가
-3. 일반 사용자 / 멤버 / 관리자 권한
-4. 기수 및 모임 데이터베이스
-5. 모임 신청
-6. MY 페이지
-7. 관리자 페이지
-8. 카카오톡 채널 연동
+1. Google 로그인 추가
+2. 기수 및 모임 데이터베이스
+3. 모임 신청
+4. 관리자용 회원·기수 관리 기능
+5. 카카오톡 채널 연동
 
 ### 알려진 개선 필요 항목
 
-- 로그인/회원가입 폼은 접근 가능한 HTML 구조를 갖췄지만 실제 인증 처리와 유효성 검사, 오류 메시지는 아직 없음
+- 실제 Supabase 프로젝트 키와 프로필 마이그레이션을 적용해야 인증 기능을 사용할 수 있음
 - 기수와 회차 데이터는 공통 모듈을 사용하며, 실제 서비스에서는 Supabase 데이터로 전환 필요
 - Noto Sans KR·Noto Serif KR 웹폰트와 Open Graph 메타데이터를 적용함
 - 커스텀 도메인을 연결하면 `NEXT_PUBLIC_SITE_URL` 환경변수 갱신 필요

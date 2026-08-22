@@ -1,5 +1,23 @@
 import Link from "next/link";
+import { AuthForm } from "@/components/AuthForm";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-export default function LoginPage() {
-  return <main className="flex min-h-[calc(100vh-72px)] items-center justify-center px-6 py-16"><div className="w-full max-w-md rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-8"><p className="eyebrow">MEMBER LOGIN</p><h1 className="mt-4 text-3xl font-semibold">나의 서재 열기</h1><p className="mt-3 text-sm leading-6 text-[var(--muted)]">참여 중인 모임과 내가 남긴 질문을 확인하세요.</p><form className="mt-8 space-y-4"><label className="block text-sm font-medium">이메일<input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none focus:border-[var(--forest)]" type="email" name="email" autoComplete="email" placeholder="hello@example.com" /></label><label className="block text-sm font-medium">비밀번호<input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 outline-none focus:border-[var(--forest)]" type="password" name="password" autoComplete="current-password" placeholder="비밀번호" /></label><button type="submit" className="w-full rounded-2xl bg-[var(--ink)] px-4 py-3 font-medium text-[var(--cream)]">로그인</button></form><p className="mt-6 text-center text-sm text-[var(--muted)]">아직 회원이 아니신가요? <Link href="/signup" className="font-medium text-[var(--forest)]">회원가입</Link></p></div></main>;
+type LoginPageProps = {
+  searchParams: Promise<{ next?: string; message?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+
+  return (
+    <main className="flex min-h-[calc(100vh-72px)] items-center justify-center px-6 py-16">
+      <div className="w-full max-w-md rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-8">
+        <p className="eyebrow">MEMBER LOGIN</p>
+        <h1 className="mt-4 text-3xl font-semibold">나의 서재 열기</h1>
+        <p className="mt-3 text-sm leading-6 text-[var(--muted)]">참여 중인 모임과 내가 남긴 질문을 확인하세요.</p>
+        <AuthForm mode="login" configured={isSupabaseConfigured()} next={params.next} notice={params.message} />
+        <p className="mt-6 text-center text-sm text-[var(--muted)]">아직 회원이 아니신가요? <Link href="/signup" className="font-medium text-[var(--forest)]">회원가입</Link></p>
+      </div>
+    </main>
+  );
 }
