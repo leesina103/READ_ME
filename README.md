@@ -162,7 +162,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 
 기존 Supabase 프로젝트의 anon key를 사용한다면 `NEXT_PUBLIC_SUPABASE_ANON_KEY`에 입력해도 됩니다. `.env.local`은 `.gitignore`에 포함되어 있어 커밋되지 않습니다.
 
-Supabase Dashboard의 SQL Editor에서 `supabase/migrations/20260822000000_create_profiles.sql`을 실행해 `profiles` 테이블, 가입 트리거, RLS 정책을 생성합니다. 이메일 인증을 사용할 때는 Authentication의 Redirect URLs에 다음 주소도 등록합니다.
+Supabase GitHub Integration을 연결하면 `supabase/migrations/`의 SQL이 파일명 순서대로 배포되어 테이블, 트리거와 RLS 정책을 생성·갱신합니다. 수동으로 적용할 때도 해당 폴더의 마이그레이션을 순서대로 실행해야 합니다. 이메일 인증을 사용할 때는 Authentication의 Redirect URLs에 다음 주소도 등록합니다.
 
 ```text
 http://localhost:3000/auth/callback
@@ -170,6 +170,19 @@ https://실제도메인/auth/callback
 ```
 
 관리자 계정은 Supabase의 `app_metadata.role` 값이 `admin`인 사용자만 `/admin`에 접근할 수 있습니다. 이 값은 서비스 역할이 있는 안전한 서버나 Dashboard에서만 설정해야 합니다.
+
+### 가입 허용 명단
+
+회원가입 전에 Supabase Table Editor에서 다음 순서로 등록합니다.
+
+1. `cohorts` 테이블에 `name`(기수명), `starts_at`(기수 시작 시각)을 등록합니다.
+2. `member_invitations` 테이블에 `name`, `email`, `cohort`를 등록합니다. `cohort`에는 앞에서 만든 기수명을 선택합니다.
+
+`claimed_at`, `claimed_by`는 가입 성공 시 자동 기록되므로 직접 입력하지 않습니다. 같은 이메일을 다시 등록하려면 기존 가입 상태를 먼저 확인해야 합니다.
+
+회원가입 폼의 이름과 이메일이 사용되지 않은 명단 행과 일치해야 계정이 생성됩니다. 이메일은 대소문자를 구분하지 않고, 이름은 앞뒤 공백을 제거한 뒤 정확히 비교합니다. 일치하지 않으면 `인터뷰 합격 승인 후에 회원가입 가능합니다.`라는 안내를 표시합니다. 허용 명단은 RLS와 권한 회수로 일반 사용자에게 공개되지 않으며, 공개 RPC는 일치 여부만 반환합니다.
+
+이메일 인증을 마친 회원은 `/onboarding`에서 닉네임, 자기소개와 같은 기수 동료들에게 전할 말을 작성한 뒤 `/my`로 이동합니다. `cohorts.starts_at`이 지난 뒤에는 화면과 데이터베이스 양쪽에서 닉네임 변경을 차단합니다. 기수 시작 전에는 마이페이지의 `변경` 버튼으로 닉네임을 수정할 수 있습니다.
 
 ## Git 설정
 
@@ -228,6 +241,7 @@ Supabase를 연결한 뒤에는 Vercel Project Settings > Environment Variables�
 | `/my` | `app/my/page.tsx` | 회원 프로필과 나의 서재 |
 | `/login` | `app/login/page.tsx` | 이메일 로그인 |
 | `/signup` | `app/signup/page.tsx` | 이메일 회원가입 |
+| `/onboarding` | `app/onboarding/page.tsx` | 가입 승인 후 첫 회원 정보 작성 |
 | `/auth/callback` | `app/auth/callback/route.ts` | 이메일 인증 콜백 |
 
 ## 다음 개발 단계

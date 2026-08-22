@@ -26,13 +26,24 @@ export default async function MyPage() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("display_name, bio")
+    .select("full_name, display_name, bio, cohort, cohort_message, onboarding_completed_at")
     .eq("id", user.id)
     .maybeSingle();
+
+  if (profile && !profile.onboarding_completed_at) redirect("/onboarding");
+
+  const { data: cohortSchedule } = profile?.cohort
+    ? await supabase.from("cohorts").select("starts_at").eq("name", profile.cohort).maybeSingle()
+    : { data: null };
 
   const displayName = profile?.display_name
     ?? (typeof user.user_metadata?.display_name === "string" ? user.user_metadata.display_name : "READ ME 회원");
   const bio = profile?.bio ?? "";
+  const cohortMessage = profile?.cohort_message ?? "";
+  const cohort = profile?.cohort ?? "기수 미지정";
+  const nicknameLocked = Boolean(
+    cohortSchedule?.starts_at && new Date(cohortSchedule.starts_at).getTime() <= Date.now()
+  );
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-20 md:py-28">
@@ -40,7 +51,7 @@ export default async function MyPage() {
         <div>
           <p className="eyebrow">MEMBER AREA</p>
           <h1 className="mt-5 text-5xl font-semibold tracking-[-0.04em]">{displayName}님의 서재</h1>
-          <p className="mt-4 text-sm text-[var(--muted)]">{user.email}</p>
+          <p className="mt-4 text-sm text-[var(--muted)]">{cohort} · {user.email}</p>
         </div>
         <form action={logoutAction}><button className="rounded-full border border-[var(--line)] bg-[var(--paper)] px-5 py-3 text-sm font-semibold" type="submit">로그아웃</button></form>
       </div>
@@ -51,9 +62,9 @@ export default async function MyPage() {
       </div>
 
       <section className="mt-5 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
-        <div className="flex items-start gap-4"><UserRound className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">회원 정보</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">모임에서 사용할 이름과 간단한 소개를 관리합니다.</p></div></div>
+        <div className="flex items-start gap-4"><UserRound className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">회원 정보</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">현재 기수는 <strong className="text-[var(--ink)]">{cohort}</strong>입니다. 닉네임과 소개를 관리할 수 있어요.</p></div></div>
         {profileError && <p className="mt-5 text-sm text-[var(--muted)]">프로필 테이블을 불러오지 못했습니다. Supabase 마이그레이션 적용 여부를 확인해 주세요.</p>}
-        <ProfileForm displayName={displayName} bio={bio} />
+        <ProfileForm displayName={displayName} bio={bio} cohortMessage={cohortMessage} nicknameLocked={nicknameLocked} />
       </section>
     </main>
   );

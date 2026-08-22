@@ -25,7 +25,7 @@ export function AuthForm({ mode, configured, next = "/my", notice }: AuthFormPro
       {mode === "signup" && (
         <label className="block text-sm font-medium">
           이름
-          <input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]" name="displayName" autoComplete="name" minLength={2} maxLength={30} required placeholder="모임에서 사용할 이름" />
+          <input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]" name="displayName" autoComplete="name" minLength={2} maxLength={30} required placeholder="승인 명단에 등록된 실명" />
         </label>
       )}
       <label className="block text-sm font-medium">

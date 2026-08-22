@@ -31,7 +31,7 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   const pathname = request.nextUrl.pathname;
 
-  if (!user && (pathname.startsWith("/my") || pathname.startsWith("/admin"))) {
+  if (!user && (pathname.startsWith("/my") || pathname.startsWith("/onboarding") || pathname.startsWith("/admin"))) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("next", pathname);
@@ -47,7 +47,7 @@ export async function updateSession(request: NextRequest) {
 
   if (user && (pathname === "/login" || pathname === "/signup")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/my";
+    url.pathname = "/onboarding";
     url.search = "";
     return copyCookies(response, NextResponse.redirect(url));
   }
