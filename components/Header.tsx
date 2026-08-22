@@ -7,7 +7,7 @@ import { useRef } from "react";
 
 const mainMenuItems = [
   { href: "/about", label: "READ ME 소개", description: "우리가 책을 읽고 대화하는 방식", status: "PUBLIC", enabled: true },
-  { href: "/interview", label: "인터뷰 안내", description: "모임 전 서로를 알아가는 첫 대화", status: "준비 중", enabled: false },
+  { href: "/interview", label: "인터뷰 안내", description: "모임 전 서로의 기대를 맞추는 첫 대화", status: "PUBLIC", enabled: true },
   { href: "/meeting", label: "주제별 소개", description: "현재 01기 · 관계, 네 번의 질문", status: "PUBLIC", enabled: true },
   { href: "/community", label: "기수별 커뮤니티", description: "인생책과 대화, 기수별 후기", status: "준비 중", enabled: false },
   { href: "/membership", label: "READ ME 멤버십", description: "멤버를 위한 기록과 연결", status: "회원 전용", enabled: false }

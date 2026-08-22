@@ -223,6 +223,7 @@ Supabase를 연결한 뒤에는 Vercel Project Settings > Environment Variables�
 | --- | --- | --- |
 | `/` | `app/page.tsx` | 메인 |
 | `/about` | `app/about/page.tsx` | 소개 |
+| `/interview` | `app/interview/page.tsx` | 인터뷰 목적과 진행 안내 |
 | `/meeting` | `app/meeting/page.tsx` | 모임 목록 |
 | `/my` | `app/my/page.tsx` | 회원 프로필과 나의 서재 |
 | `/login` | `app/login/page.tsx` | 이메일 로그인 |
