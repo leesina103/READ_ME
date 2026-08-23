@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { updateProfileAction, type FormActionState } from "@/app/auth/actions";
 
 const initialState: FormActionState = { status: "idle", message: "" };
@@ -16,27 +16,49 @@ export function ProfileForm({ displayName, bio, cohortMessage, nicknameLocked }:
   const [state, formAction, pending] = useActionState(updateProfileAction, initialState);
   const [editingNickname, setEditingNickname] = useState(false);
 
+  useEffect(() => {
+    if (state.status === "success") setEditingNickname(false);
+  }, [state]);
+
   return (
     <form action={formAction} className="mt-8 grid gap-5">
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--line)] px-4 py-3">
-          <div>
-            <p className="text-xs text-[var(--muted)]">닉네임</p>
-            <p className="mt-1 font-semibold">{displayName}</p>
-          </div>
-          <button type="button" onClick={() => setEditingNickname((value) => !value)} disabled={nicknameLocked} className="rounded-full border border-[var(--line)] bg-[var(--paper)] px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-45">
-            변경
+          <label className="min-w-0 flex-1">
+            <span className="text-xs text-[var(--muted)]">닉네임</span>
+            {editingNickname && !nicknameLocked ? (
+              <input
+                className="mt-1 w-full bg-transparent font-semibold outline-none placeholder:font-normal placeholder:text-[var(--muted)]"
+                name="displayName"
+                minLength={2}
+                maxLength={30}
+                placeholder="새 닉네임 입력"
+                autoFocus
+                required
+              />
+            ) : (
+              <span className="mt-1 block font-semibold">{displayName}</span>
+            )}
+          </label>
+          <button
+            type={editingNickname ? "submit" : "button"}
+            onClick={() => {
+              if (!editingNickname) setEditingNickname(true);
+            }}
+            disabled={nicknameLocked || pending}
+            className="rounded-full border border-[var(--line)] bg-[var(--paper)] px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-45"
+          >
+            {pending && editingNickname ? "저장 중..." : editingNickname ? "완료" : "변경"}
           </button>
         </div>
-        {nicknameLocked && <p className="mt-2 text-sm text-[var(--muted)]">기수가 시작되어 닉네임을 변경할 수 없습니다.</p>}
+        <p className="mt-2 text-sm text-[var(--muted)]">
+          {nicknameLocked
+            ? "기수가 시작되어 닉네임을 변경할 수 없습니다."
+            : "기수 시작 후에는 닉네임 변경이 불가합니다."}
+        </p>
       </div>
 
-      {editingNickname && !nicknameLocked ? (
-        <label className="text-sm font-medium">
-          새 닉네임
-          <input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]" name="displayName" defaultValue={displayName} minLength={2} maxLength={30} required />
-        </label>
-      ) : (
+      {!editingNickname && (
         <input type="hidden" name="displayName" value={displayName} />
       )}
       <label className="text-sm font-medium">

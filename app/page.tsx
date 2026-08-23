@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BookOpen, Check, Compass, Library, MessageCircle, NotebookPen, Quote, UsersRound } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -40,7 +41,17 @@ export default function Home() {
             <span><Check size={14} /> 한 기수 4회</span><span><Check size={14} /> 소규모 대화</span><span><Check size={14} /> 질문 기록</span>
           </div>
         </div>
-        <div className="hero__art"><RemiGuide /><span className="hero__note">“오늘의 문장은<br />당신을 어디로 데려갔나요?”</span></div>
+      </section>
+
+      <section className="brand-sheet-section" aria-label="READ ME 캐릭터 리미 소개">
+        <Image
+          src="/remi-brand-sheet-no-palette.png"
+          alt="책을 읽는 리미와 READ ME 캐릭터 소개, 핵심 키워드와 리미의 다양한 모습"
+          width={1536}
+          height={1536}
+          sizes="100vw"
+          priority
+        />
       </section>
 
       <section className="proof-strip" aria-label="READ ME 운영 기준"><div className="section-shell proof-strip__inner"><article><strong>4</strong><span>한 기수의 대화</span><small>네 번의 연결된 질문</small></article><article><strong>8</strong><span>한 테이블의 사람</span><small>서로의 목소리가 닿는 규모</small></article><article><strong>1</strong><span>나만의 질문 기록</span><small>모임 뒤에도 이어지는 생각</small></article></div></section>

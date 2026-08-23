@@ -52,12 +52,25 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   let isAuthenticated = false;
+  let accountLabel = "로그인";
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     isAuthenticated = Boolean(user);
+
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("display_name, onboarding_completed_at")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      accountLabel = profile?.onboarding_completed_at && profile.display_name
+        ? profile.display_name
+        : "설정하기";
+    }
   }
 
-  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header isAuthenticated={isAuthenticated} />{children}<Footer /></body></html>;
+  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header isAuthenticated={isAuthenticated} accountLabel={accountLabel} />{children}<Footer /></body></html>;
 }
