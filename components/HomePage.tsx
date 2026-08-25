@@ -41,15 +41,14 @@ const people = [
   "다른 사람의 생각과 삶이 궁금한 사람",
   "나와 다른 생각도 존중하며 들을 수 있는 사람",
   "반복되는 일상에 새로운 질문과 만남이 필요한 사람",
-  "혼자보다 함께 읽을 때 더 잘 읽는 사람",
   "자신의 삶을 조금 더 잘 살아보고 싶은 사람"
 ];
 
 const principles = [
-  "비싼 가격이 곧 좋은 경험이라고 생각하지 않습니다.",
   "운영자가 일방적으로 이야기하는 모임을 만들지 않습니다.",
   "한 번 만나고 끝나는 관계만을 만들고 싶지 않습니다.",
   "사람 수만 늘리는 것을 목표로 하지 않습니다.",
+  "비싼 가격이 곧 좋은 경험이라고 생각하지 않습니다.",
   "가격보다 실제 경험과 남는 가치를 중요하게 생각합니다."
 ];
 
@@ -90,13 +89,10 @@ export function HomePage() {
         <div className="hero__copy">
           <p className="eyebrow">READ ME · BOOK COMMUNITY</p>
           <h1>Read Books.<br /><em>Read Yourself.</em></h1>
-          <p className="hero__lead">책을 통해 나를 읽고,<br />사람을 만나고,<br />삶의 방향을 찾아가는 독서 커뮤니티.</p>
+          <p className="hero__lead">책을 통해 나를 읽고,<br />결이 맞는 사람을 만나고,<br />삶의 방향을 찾아가는 독서 커뮤니티.</p>
           <div className="button-row">
             <Link href="/meeting" className="button button--primary">현재 모임 보기 <ArrowRight size={16} /></Link>
             <Link href="/interview" className="button button--ghost">인터뷰 신청하기</Link>
-          </div>
-          <div className="hero__meta" aria-label="모임 특징">
-            <span><Check size={14} /> 사유와 연결</span><span><Check size={14} /> 질문 중심</span><span><Check size={14} /> 소규모 대화</span>
           </div>
         </div>
         <blockquote className="hero__quote">“나를 읽다.<br />서로를 읽다.<br />삶을 읽다.”</blockquote>
@@ -128,7 +124,7 @@ export function HomePage() {
       <section className="section meeting-format-section"><div className="section-shell">
         <SectionTitle eyebrow="HOW IT WORKS" title="작고 깊게, 네 번의 만남" description="참여하기 전에 필요한 정보를 빠르게 확인해보세요." />
         <div className="meeting-facts">{meetingFacts.map(({ icon: Icon, ...fact }) => <article key={fact.label}><Icon size={20} strokeWidth={1.5} /><strong>{fact.value}</strong><span>{fact.label}</span></article>)}</div>
-        <div className="participation-flow"><strong>참여 흐름</strong><p>책 읽기 <ArrowRight size={15} /> 사전 질문 <ArrowRight size={15} /> 오프라인 대화 <ArrowRight size={15} /> 기록</p></div>
+        <div className="participation-flow"><strong>참여 흐름</strong><p>책 읽기 <ArrowRight size={15} /> 사전 질문 <ArrowRight size={15} /> 오프라인 대화 <ArrowRight size={15} /> 기록 <ArrowRight size={15} /> 온라인 세션</p></div>
       </div></section>
 
       <section className="section people-section"><div className="section-shell people-layout">
@@ -144,7 +140,6 @@ export function HomePage() {
       <section className="section why-section"><div className="section-shell">
         <SectionTitle eyebrow="WHY READ ME" title="질문에서 시작해, 삶에 남도록" description="좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다." />
         <div className="difference-grid">{differences.map((item) => <article key={item.number}><span>{item.number}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
-        <p className="service-note">READ ME의 웹 서비스 역시 운영자가 직접 만들고 있습니다.</p>
       </div></section>
 
       <section className="section story-section"><div className="section-shell">
