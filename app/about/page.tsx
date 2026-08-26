@@ -10,7 +10,6 @@ import {
   Quote,
   Sparkles
 } from "lucide-react";
-import { PageContext } from "@/components/PageContext";
 import { RemiGuide } from "@/components/RemiGuide";
 import { MeetRemi } from "@/components/MeetRemi";
 import { ReadingJourneyFlow } from "@/components/ReadingJourneyFlow";
@@ -24,8 +23,8 @@ const nameMeanings = [
   {
     number: "01",
     title: "READ ME",
-    subtitle: "나를 읽다",
-    text: "보통 우리는 책을 읽지만, READ ME에서는 책을 통해 나 자신을 읽습니다. 마음에 오래 남는 문장과 질문을 따라 내가 중요하게 여기는 것과 앞으로 살아가고 싶은 방향을 발견합니다."
+    subtitle: "나를 읽어주세요",
+    text: "책이 먼저 ‘나를 읽어주세요’라고 말을 건넵니다. READ ME의 안내자 리미도 책 곁에서 질문을 건네며, 한 권의 책과 독자가 만나는 여정을 함께 시작합니다."
   },
   {
     number: "02",
@@ -107,7 +106,6 @@ const promises = [
 export default function AboutPage() {
   return (
     <main className="about-page">
-      <PageContext title="READ ME 소개" description="READ ME의 시작과 철학" />
       <section className="about-hero section-shell">
         <div className="about-hero__copy">
           <p className="eyebrow">ABOUT READ ME</p>

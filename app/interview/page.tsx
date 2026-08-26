@@ -9,7 +9,6 @@ import {
   Video,
   Wifi
 } from "lucide-react";
-import { PageContext } from "@/components/PageContext";
 
 export const metadata: Metadata = {
   title: "인터뷰 안내",
@@ -52,7 +51,6 @@ const faqs = [
 export default function InterviewPage() {
   return (
     <main>
-      <PageContext title="인터뷰 안내" description="함께 읽기 전 나누는 사전 대화" />
       <section className="interview-hero">
         <div className="section-shell interview-hero__grid">
           <div>

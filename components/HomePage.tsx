@@ -17,9 +17,9 @@ import { MeetRemi } from "@/components/MeetRemi";
 import { ReadingJourneyFlow } from "@/components/ReadingJourneyFlow";
 
 const values = [
-  { icon: BookOpen, title: "사유", subtitle: "좋은 질문을 통해 나를 이해하는 시간", text: "책이 건넨 질문에 머물며 내 생각과 감정을 천천히 들여다봅니다." },
-  { icon: MessageCircle, title: "대화", subtitle: "존중과 경청으로 생각의 경계를 넓히는 시간", text: "서로 다른 경험과 관점을 판단하지 않고 깊이 들으며, 나의 언어를 넓혀갑니다." },
-  { icon: HeartHandshake, title: "관계", subtitle: "혼자가 아니라 함께 나아가는 것", text: "깊은 대화가 한 번의 만남에 그치지 않도록, 서로의 변화와 다음 질문을 응원합니다." }
+  { icon: BookOpen, title: "사유", subtitle: "좋은 질문으로 나를 이해하는 시간", text: "책이 건넨 질문에 머물며 내 생각과 감정을 천천히 들여다봅니다." },
+  { icon: MessageCircle, title: "대화", subtitle: "존중과 경청으로 생각을 넓히는 시간", text: "서로 다른 경험과 관점을 판단하지 않고 깊이 들으며, 나의 언어를 넓혀갑니다." },
+  { icon: HeartHandshake, title: "관계", subtitle: "혼자가 아니라 함께 나아가는 힘", text: "깊은 대화가 한 번의 만남에 그치지 않도록, 서로의 변화와 다음 질문을 응원합니다." }
 ];
 
 const meetingFacts = [
@@ -50,7 +50,7 @@ const differences = [
   { number: "01", keyword: "DEEP TALK", title: "질문에서 시작하는 깊은 대화", text: "책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다. 운영진은 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다." },
   { number: "02", keyword: "PEOPLE", title: "누구와 이야기하는가", text: "좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다. READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다." },
   { number: "03", keyword: "CONNECTED FLOW", title: "연결된 커리큘럼", text: "관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다. 한 기수의 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다." },
-  { number: "04", keyword: "ONE SPACE", title: "하나로 이어지는 경험", text: "신청부터 일정, 질문, 기록, 기수 커뮤니티까지 여러 곳에 흩어지지 않고 하나의 웹 공간에서 자연스럽게 이어집니다." }
+  { number: "04", keyword: "ONE SPACE", title: "하나의 공간에서 이어지는 경험", text: "신청부터 일정, 질문, 기록, 기수 커뮤니티까지 여러 곳에 흩어지지 않고 하나의 웹 공간에서 자연스럽게 이어집니다." }
 ];
 
 const storyPlaceholders = [
