@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -14,18 +13,13 @@ import {
   UsersRound
 } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
-
-const readingFlow = [
-  { label: "책", text: "질문을 발견하고" },
-  { label: "나", text: "생각과 가치관을 들여다보고" },
-  { label: "사람", text: "다른 삶과 관점을 만나고" },
-  { label: "삶", text: "나의 일상으로 가져갑니다" }
-];
+import { MeetRemi } from "@/components/MeetRemi";
+import { ReadingJourneyFlow } from "@/components/ReadingJourneyFlow";
 
 const values = [
-  { icon: BookOpen, title: "사유", subtitle: "나를 이해하는 시간", text: "책이 건넨 질문에 머물며 내 생각과 감정을 천천히 들여다봅니다." },
-  { icon: MessageCircle, title: "대화", subtitle: "생각의 경계를 넓히는 시간", text: "서로 다른 경험과 관점을 판단하지 않고 듣고, 나의 언어를 넓혀갑니다." },
-  { icon: HeartHandshake, title: "관계", subtitle: "혼자가 아니라 함께 나아가는 것", text: "한 번의 만남에 그치지 않고 서로의 변화와 다음 질문을 응원합니다." }
+  { icon: BookOpen, title: "사유", subtitle: "좋은 질문을 통해 나를 이해하는 시간", text: "책이 건넨 질문에 머물며 내 생각과 감정을 천천히 들여다봅니다." },
+  { icon: MessageCircle, title: "대화", subtitle: "존중과 경청으로 생각의 경계를 넓히는 시간", text: "서로 다른 경험과 관점을 판단하지 않고 깊이 들으며, 나의 언어를 넓혀갑니다." },
+  { icon: HeartHandshake, title: "관계", subtitle: "혼자가 아니라 함께 나아가는 것", text: "깊은 대화가 한 번의 만남에 그치지 않도록, 서로의 변화와 다음 질문을 응원합니다." }
 ];
 
 const meetingFacts = [
@@ -53,10 +47,10 @@ const principles = [
 ];
 
 const differences = [
-  { number: "01", title: "책보다 질문 중심", text: "책을 얼마나 많이 읽었는지보다, 한 문장이 내 삶에 어떤 질문을 남겼는지에서 대화를 시작합니다." },
-  { number: "02", title: "누구와 이야기하는가", text: "독서모임은 어떤 책을 읽느냐만큼 누구와 이야기하느냐가 중요합니다. 서로의 태도와 안전한 대화를 세심하게 살핍니다." },
-  { number: "03", title: "연결된 커리큘럼", text: "관계, 나, 변화, 감정, 삶, 일, 건강처럼 서로 이어진 삶의 주제를 기수별 질문으로 함께 탐색합니다." },
-  { number: "04", title: "하나로 이어지는 경험", text: "신청부터 일정, 질문, 기록, 커뮤니티까지 파편화되지 않고 하나의 공간에서 이어지도록 직접 설계합니다." }
+  { number: "01", keyword: "DEEP TALK", title: "질문에서 시작하는 깊은 대화", text: "책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다. 운영진은 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다." },
+  { number: "02", keyword: "PEOPLE", title: "누구와 이야기하는가", text: "좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다. READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다." },
+  { number: "03", keyword: "CONNECTED FLOW", title: "연결된 커리큘럼", text: "관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다. 한 기수의 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다." },
+  { number: "04", keyword: "ONE SPACE", title: "하나로 이어지는 경험", text: "신청부터 일정, 질문, 기록, 기수 커뮤니티까지 여러 곳에 흩어지지 않고 하나의 웹 공간에서 자연스럽게 이어집니다." }
 ];
 
 const storyPlaceholders = [
@@ -98,21 +92,19 @@ export function HomePage() {
         <blockquote className="hero__quote">“나를 읽다.<br />서로를 읽다.<br />삶을 읽다.”</blockquote>
       </section>
 
-      <section className="section section--paper intro-section">
+      <section className="section intro-section">
         <div className="section-shell">
-          <SectionTitle eyebrow="ABOUT READ ME" title="책을 읽는 것을 넘어, 나를 읽습니다." description="READ ME라는 이름에는 책을 통해 나를 읽는다는 의미가 담겨 있습니다." />
-          <div className="reading-flow" aria-label="READ ME의 독서 흐름">
-            {readingFlow.map((step, index) => (
-              <article key={step.label}>
-                <span>{step.label}</span><p>{step.text}</p>
-                {index < readingFlow.length - 1 && <ArrowRight aria-hidden="true" size={18} />}
-              </article>
-            ))}
+          <SectionTitle eyebrow="ABOUT READ ME" title={<>책에서 시작해,<br />삶으로 돌아갑니다.</>} />
+          <ReadingJourneyFlow className="reading-flow" />
+          <div className="intro-note">
+            <Link href="/about" className="text-link">READ ME의 전체 이야기 보기 <ArrowRight size={15} /></Link>
           </div>
-          <div className="intro-remi">
-            <div><p className="eyebrow">MEET REMI</p><h3>질문 곁에서 함께 걷는 리미</h3><p>책에서 시작한 질문이 나와 사람을 지나 삶으로 이어질 수 있도록, READ ME의 캐릭터 리미가 여정을 안내합니다.</p></div>
-            <Image src="/remi-brand-sheet-no-palette.png" alt="책을 읽고 질문하며 대화하는 READ ME 캐릭터 리미" width={1536} height={1536} sizes="(max-width: 820px) 100vw, 50vw" priority />
-          </div>
+        </div>
+      </section>
+
+      <section className="section section--paper intro-remi-section">
+        <div className="section-shell">
+          <MeetRemi priority />
         </div>
       </section>
 
@@ -127,6 +119,21 @@ export function HomePage() {
         <div className="participation-flow"><strong>참여 흐름</strong><p>책 읽기 <ArrowRight size={15} /> 사전 질문 <ArrowRight size={15} /> 오프라인 대화 <ArrowRight size={15} /> 기록 <ArrowRight size={15} /> 온라인 세션</p></div>
       </div></section>
 
+      <section className="section why-section"><div className="section-shell">
+        <SectionTitle eyebrow="WHY READ ME" title="질문에서 시작해, 삶에 남도록" description="좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다." />
+        <div className="difference-grid">{differences.map((item) => <article key={item.number}><span>{item.number} — {item.keyword}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
+      </div></section>
+
+      <section className="section season-section"><div className="section-shell">
+        <div className="section-heading-row"><SectionTitle eyebrow="CURRENT SEASON" title="01기 — 관계, 함께 살아가는 법" description="존중·인정·대화·사랑이라는 네 가지 질문을 통해, 다른 사람과 함께 살아가는 방식을 탐구합니다." /><Link href="/meeting" className="text-link">커리큘럼 자세히 보기 <ArrowRight size={15} /></Link></div>
+        <div className="session-list">{seasonSessions.map((session) => <article key={session.order}><span>{session.order}회</span><div><h3>{session.title}</h3><p>{session.question}</p></div><span className="session-list__dot">{String(session.order).padStart(2, "0")}</span></article>)}</div>
+      </div></section>
+
+      <section className="section connection-section"><div className="section-shell connection-layout">
+        <div><p className="eyebrow">AFTER THE SEASON</p><h2>한 기수가 끝나도,<br />관계까지 끝나지는 않도록.</h2><p>읽기 → 생각하기 → 이야기하기 → 기록하기 → 다시 연결되기</p></div>
+        <div className="connection-grid"><article><strong>기수별 커뮤니티</strong><p>함께 읽은 사람들과 다음 질문과 일상을 나눕니다.</p></article><article><strong>기록 보관</strong><p>마음에 남은 문장과 질문을 다시 꺼내볼 수 있게 남깁니다.</p></article><article><strong>작은 소모임</strong><p>전시, 영화, 산책, 독서 등 관심사를 따라 다시 만납니다.</p></article></div>
+      </div></section>
+
       <section className="section people-section"><div className="section-shell people-layout">
         <div><p className="eyebrow">PEOPLE WE WELCOME</p><h2>이런 사람들과<br />함께하고 싶어요.</h2><blockquote>정답을 가진 사람보다,<br />질문을 가진 사람을 환영합니다.</blockquote></div>
         <ul>{people.map((person) => <li key={person}><Check size={17} /> {person}</li>)}</ul>
@@ -137,24 +144,9 @@ export function HomePage() {
         <ol>{principles.map((principle, index) => <li key={principle}><span>{String(index + 1).padStart(2, "0")}</span><p>{principle}</p></li>)}</ol>
       </div></section>
 
-      <section className="section why-section"><div className="section-shell">
-        <SectionTitle eyebrow="WHY READ ME" title="질문에서 시작해, 삶에 남도록" description="좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다." />
-        <div className="difference-grid">{differences.map((item) => <article key={item.number}><span>{item.number}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
-      </div></section>
-
       <section className="section story-section"><div className="section-shell">
         <SectionTitle eyebrow="STORY" title="대화가 남긴 이야기를 기록합니다." description="아직 실제 참여 후기가 쌓이기 전이라, 아래에는 앞으로 담길 이야기의 자리를 먼저 보여드립니다." />
         <div className="story-grid">{storyPlaceholders.map((story) => <article key={story.theme}><Quote size={23} strokeWidth={1.4} /><small>후기 자리 · 실제 참여 후기가 아닙니다</small><h3>{story.theme}</h3><p>{story.text}</p></article>)}</div>
-      </div></section>
-
-      <section className="section season-section"><div className="section-shell">
-        <div className="section-heading-row"><SectionTitle eyebrow="CURRENT SEASON" title="1기 — 관계" description="관계를 이루는 네 가지 질문을 한 기수의 흐름 안에서 함께 읽습니다." /><Link href="/meeting" className="text-link">커리큘럼 자세히 보기 <ArrowRight size={15} /></Link></div>
-        <div className="session-list">{seasonSessions.map((session) => <article key={session.order}><span>{session.order}회</span><div><h3>{session.title}</h3><p>{session.question}</p></div><span className="session-list__dot">{String(session.order).padStart(2, "0")}</span></article>)}</div>
-      </div></section>
-
-      <section className="section connection-section"><div className="section-shell connection-layout">
-        <div><p className="eyebrow">AFTER THE SEASON</p><h2>한 기수가 끝나도,<br />관계까지 끝나지는 않도록.</h2><p>읽기 → 생각하기 → 이야기하기 → 기록하기 → 다시 연결되기</p></div>
-        <div className="connection-grid"><article><strong>기수별 커뮤니티</strong><p>함께 읽은 사람들과 다음 질문과 일상을 나눕니다.</p></article><article><strong>기록 보관</strong><p>마음에 남은 문장과 질문을 다시 꺼내볼 수 있게 남깁니다.</p></article><article><strong>작은 소모임</strong><p>전시, 영화, 산책, 독서 등 관심사를 따라 다시 만납니다.</p></article></div>
       </div></section>
 
       <section className="section faq-section"><div className="section-shell faq-layout">

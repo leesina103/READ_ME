@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { PageContext } from "@/components/PageContext";
 import { RemiGuide } from "@/components/RemiGuide";
+import { MeetRemi } from "@/components/MeetRemi";
+import { ReadingJourneyFlow } from "@/components/ReadingJourneyFlow";
 
 export const metadata: Metadata = {
   title: "READ ME 소개",
@@ -60,14 +62,13 @@ const values = [
   }
 ] as const;
 
-const readingJourney = [
-  { label: "책", text: "한 문장에서 질문을 발견합니다." },
-  { label: "나", text: "생각과 가치관을 천천히 들여다봅니다." },
-  { label: "사람", text: "다른 삶과 관점을 판단 없이 만납니다." },
-  { label: "삶", text: "새롭게 얻은 언어를 일상으로 가져갑니다." }
+const outcomes = [
+  { title: "생각하는 힘", text: "질문 앞에 머물며 생각을 자신의 언어로 표현합니다." },
+  { title: "새로운 관점", text: "혼자서는 발견하지 못했던 다른 생각과 삶을 만납니다." },
+  { title: "함께하는 힘", text: "좋은 사람과의 약속 속에서 읽고 생각하는 시간을 이어갑니다." }
 ] as const;
 
-const cultureWords = ["존중", "경청", "수용", "솔직함", "성장하려는 마음"] as const;
+const cultureWords = ["존중", "경청", "수용", "솔직함", "따뜻함", "성장하려는 마음"] as const;
 
 const differences = [
   {
@@ -89,6 +90,10 @@ const differences = [
   {
     title: "납득할 수 있는 가격",
     text: "비싼 모임이 반드시 좋은 경험을 만든다고 생각하지 않습니다. 가격보다 참여하고 난 뒤 실제로 남는 가치에 집중합니다."
+  },
+  {
+    title: "하나의 공간에서 이어지는 경험",
+    text: "인터뷰 신청부터 일정, 커리큘럼, 질문과 기록, 모임 이후의 연결까지 여러 공간을 오가지 않고 READ ME 안에서 이어질 수 있도록 만들고 있습니다."
   }
 ] as const;
 
@@ -169,13 +174,40 @@ export default function AboutPage() {
               </article>
             ))}
           </div>
+          <MeetRemi />
+        </div>
+      </section>
+
+      <section className="about-section about-process">
+        <div className="section-shell">
+          <div className="about-process__heading">
+            <div className="about-section-heading about-section-heading--light">
+              <span>04</span>
+              <p className="eyebrow">HOW IT FLOWS</p>
+              <h2>책에서 시작해,<br />삶으로 돌아갑니다.</h2>
+            </div>
+            <p>READ ME의 목적은 책을 많이 읽게 만드는 데 있지 않습니다. 한 권의 책을 매개로 나를 이해하고, 다른 사람을 이해하며, 삶을 조금 더 잘 살아가는 데 있습니다.</p>
+          </div>
+          <ReadingJourneyFlow className="about-process-flow" />
+          <div className="about-outcomes">
+            <p className="eyebrow">WHAT REMAINS</p>
+            <h3>함께 읽은 뒤에 남는 변화</h3>
+            <div className="about-outcome-grid">
+              {outcomes.map((outcome) => (
+                <article key={outcome.title}>
+                  <strong>{outcome.title}</strong>
+                  <p>{outcome.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="about-section about-values">
         <div className="section-shell">
           <div className="about-section-heading">
-            <span>04</span>
+            <span>05</span>
             <p className="eyebrow">WHAT WE VALUE</p>
             <h2>우리가 중요하게<br />생각하는 세 가지</h2>
           </div>
@@ -192,54 +224,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="about-section about-process">
-        <div className="section-shell">
-          <div className="about-process__heading">
-            <div className="about-section-heading about-section-heading--light">
-              <span>05</span>
-              <p className="eyebrow">HOW IT FLOWS</p>
-              <h2>책에서 시작해,<br />삶으로 돌아갑니다.</h2>
-            </div>
-            <p>READ ME의 목적은 책을 많이 읽게 만드는 데 있지 않습니다. 한 권의 책을 매개로 나를 이해하고, 다른 사람을 이해하며, 삶을 조금 더 잘 살아가는 데 있습니다.</p>
-          </div>
-          <div className="about-process-flow">
-            {readingJourney.map((step, index) => (
-              <article key={step.label}>
-                <span>0{index + 1}</span>
-                <strong>{step.label}</strong>
-                <p>{step.text}</p>
-                {index < readingJourney.length - 1 && <ArrowRight size={18} aria-hidden="true" />}
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="about-section about-culture">
-        <div className="section-shell about-culture__grid">
-          <div>
-            <div className="about-section-heading">
-              <span>06</span>
-              <p className="eyebrow">PEOPLE & CULTURE</p>
-              <h2>잘난 사람이 아니라,<br />잘 대화할 수 있는 사람.</h2>
-            </div>
-            <p className="about-culture__copy">READ ME가 말하는 좋은 사람은 답을 많이 아는 사람이 아닙니다. 자신의 생각을 솔직하게 말하면서도, 다른 사람의 이야기를 끝까지 듣고, 다름을 틀림으로 단정하지 않는 사람입니다.</p>
-            <div className="about-culture__words">{cultureWords.map((word) => <span key={word}>{word}</span>)}</div>
-          </div>
-          <aside className="about-interview-card">
-            <Sparkles size={25} strokeWidth={1.5} />
-            <p className="eyebrow">WHY INTERVIEW</p>
-            <h3>인터뷰는 사람을 걸러내기 위한 면접이 아닙니다.</h3>
-            <p>서로가 기대하는 모임의 방식과 대화 태도를 나누고, READ ME가 중요하게 생각하는 문화를 함께 만들 수 있을지 알아가는 짧은 대화입니다.</p>
-            <Link href="/interview">인터뷰 안내 보기 <ArrowRight size={16} /></Link>
-          </aside>
-        </div>
-      </section>
-
       <section className="about-section about-difference">
         <div className="section-shell about-difference__grid">
           <div className="about-section-heading">
-            <span>07</span>
+            <span>06</span>
             <p className="eyebrow">WHY DIFFERENT</p>
             <h2>READ ME가<br />다르게 생각하는 것</h2>
           </div>
@@ -251,6 +239,27 @@ export default function AboutPage() {
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+
+      <section className="about-section about-culture">
+        <div className="section-shell about-culture__grid">
+          <div>
+            <div className="about-section-heading">
+              <span>07</span>
+              <p className="eyebrow">PEOPLE & CULTURE</p>
+              <h2>잘난 사람이 아니라,<br />잘 대화할 수 있는 사람.</h2>
+            </div>
+            <p className="about-culture__copy">READ ME가 말하는 좋은 사람은 답을 많이 아는 사람이 아닙니다. 자신의 생각을 솔직하게 말하면서도, 다른 사람의 이야기를 끝까지 듣고, 다름을 틀림으로 단정하지 않는 사람입니다. 지적인 이야기를 잘하는 것만큼 서로의 삶과 고민을 편하게 꺼낼 수 있는 따뜻한 분위기를 중요하게 생각합니다.</p>
+            <div className="about-culture__words">{cultureWords.map((word) => <span key={word}>{word}</span>)}</div>
+          </div>
+          <aside className="about-interview-card">
+            <Sparkles size={25} strokeWidth={1.5} />
+            <p className="eyebrow">WHY INTERVIEW</p>
+            <h3>인터뷰는 사람을 걸러내기 위한 면접이 아닙니다.</h3>
+            <p>서로가 기대하는 모임의 방식과 대화 태도를 나누고, READ ME가 중요하게 생각하는 문화를 함께 만들 수 있을지 알아가는 짧은 대화입니다.</p>
+            <Link href="/interview">인터뷰 안내 보기 <ArrowRight size={16} /></Link>
+          </aside>
         </div>
       </section>
 
