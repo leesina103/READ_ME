@@ -15,10 +15,10 @@ export const metadata: Metadata = {
   description: "READ ME에 참여하기 전 서로의 기대와 대화 방식을 맞춰보는 온라인 인터뷰를 안내합니다."
 };
 
-const purposes = [
-  [MessageCircleQuestion, "기대를 나눠요", "어떤 책과 질문을 만나고 싶은지, 이번 모임에서 바라는 시간을 편하게 이야기합니다."],
-  [HeartHandshake, "대화의 태도를 확인해요", "잘 말하는 능력보다 서로 다른 생각을 듣고 존중할 준비가 되어 있는지 살펴봅니다."],
-  [CalendarCheck, "운영 방식을 맞춰요", "일정과 참여 방식, 기록에 관한 안내를 듣고 나에게 맞는 모임인지 함께 판단합니다."]
+const benefits = [
+  [MessageCircleQuestion, "말하다 보면 내가 보여요", "답을 잘 만들기보다 생각을 천천히 꺼내는 동안, 내가 중요하게 여기는 기준이 자연스럽게 드러납니다."],
+  [CalendarCheck, "지금 필요한 질문을 발견해요", "요즘 마음에 머무는 고민을 함께 짚어보며, 지금의 나에게 필요한 질문을 발견합니다."],
+  [HeartHandshake, "모임의 대화를 먼저 느껴봐요", "서로의 말을 서두르지 않고 듣는 시간을 통해, READ ME의 대화가 나와 잘 맞는지 미리 느껴봅니다."]
 ] as const;
 
 const process = [
@@ -29,9 +29,9 @@ const process = [
 ] as const;
 
 const questions = [
-  "최근 읽은 문장 중 오래 마음에 남은 것은 무엇인가요?",
-  "생각이 다른 사람을 만났을 때 어떤 방식으로 대화하나요?",
-  "이번 모임에서 얻고 싶은 것과 보태고 싶은 것은 무엇인가요?"
+  "최근 읽은 문장 중 오래 마음에 남은 것은 무엇이며, 왜 그런가요?",
+  "나와 다른 생각을 만났을 때, 어떤 태도로 대화하려 하나요?",
+  "요즘 조금 어렵더라도 계속 시도해보고 있는 일이 있나요?"
 ];
 
 const preparations = [
@@ -75,14 +75,14 @@ export default function InterviewPage() {
         <div className="section-shell proof-strip__inner">
           <article><strong>1:1</strong><span>운영진과 대화</span><small>여럿 앞에서 소개하지 않아요</small></article>
           <article><strong>20–30</strong><span>예상 소요 시간</span><small>충분히 생각하며 이야기해요</small></article>
-          <article><strong>ONLINE</strong><span>화상 미팅</span><small>확정 링크는 개별 안내해요</small></article>
+          <article><strong className="proof-strip__online">ONLINE</strong><span>화상 미팅</span><small>확정 링크는 개별 안내해요</small></article>
         </div>
       </section>
 
       <section className="section section--paper interview-purpose">
         <div className="section-shell">
-          <div className="section-heading-row"><div><p className="eyebrow">WHY WE MEET</p><h2 className="interview-section-title">인터뷰에서 확인하는 세 가지</h2></div><p className="interview-section-copy">평가표보다 서로에게 맞는 시간을 만들기 위한 질문을 준비합니다.</p></div>
-          <div className="step-grid">{purposes.map(([Icon, title, text], index) => <article key={title} className="step-card"><span>{String(index + 1).padStart(2, "0")}</span><Icon className="interview-card-icon" size={24} aria-hidden="true"/><h3>{title}</h3><p>{text}</p></article>)}</div>
+          <div className="section-heading-row"><div><p className="eyebrow">WHY WE MEET</p><h2 className="interview-section-title">짧은 대화가 남기는 것</h2></div><p className="interview-section-copy">천천히 말하고 듣는 동안, 지금의 나와 앞으로 나누고 싶은 대화가 조금 더 또렷해집니다.</p></div>
+          <div className="step-grid">{benefits.map(([Icon, title, text], index) => <article key={title} className="step-card"><span>{String(index + 1).padStart(2, "0")}</span><Icon className="interview-card-icon" size={24} aria-hidden="true"/><h3>{title}</h3><p>{text}</p></article>)}</div>
         </div>
       </section>
 
