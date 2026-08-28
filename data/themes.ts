@@ -21,7 +21,7 @@ export const themes = [
   {
     slug: "relationship",
     name: "관계",
-    subtitle: "함께 살아가는 법",
+    subtitle: "우리는 어떻게 함께 살아갈까?",
     coreQuestion: "우리는 어떻게 관계 맺는가?",
     summary: "존중과 인정, 대화와 사랑을 따라 타인과 함께 살아가는 방식을 탐구합니다.",
     introduction: "타인과 나 사이의 거리와 경계, 서로를 듣는 방법, 가까워진다는 것의 의미를 차례로 이야기합니다.",
@@ -36,7 +36,7 @@ export const themes = [
   {
     slug: "self",
     name: "나",
-    subtitle: "나를 알아가는 법",
+    subtitle: "나는 어떤 사람일까?",
     coreQuestion: "나는 누구인가?",
     summary: "욕망과 정체성, 타인의 시선과 가치관을 지나 지금의 나를 이해합니다.",
     introduction: "남의 기준과 비교에서 잠시 벗어나, 나를 움직이는 욕망과 내가 선택하고 싶은 삶의 방향을 살펴봅니다.",
@@ -51,7 +51,7 @@ export const themes = [
   {
     slug: "change",
     name: "변화",
-    subtitle: "더 나은 삶을 만드는 법",
+    subtitle: "나는 어떻게 달라질까?",
     coreQuestion: "나는 어떻게 변화할 수 있는가?",
     summary: "성장과 환경, 습관과 도전을 살피며 변화가 실제 행동으로 이어지는 길을 찾습니다.",
     introduction: "나를 둘러싼 환경과 반복되는 습관을 살피고, 두려움 속에서도 실행할 수 있는 작은 다음 행동을 찾아갑니다.",
@@ -66,7 +66,7 @@ export const themes = [
   {
     slug: "emotion",
     name: "마음·감정",
-    subtitle: "마음을 다루는 법",
+    subtitle: "내 마음은 무엇을 말하고 있을까?",
     coreQuestion: "내 마음과 어떻게 살아갈 것인가?",
     summary: "불안과 감정, 결핍과 행복을 읽으며 마음과 함께 살아가는 방법을 배웁니다.",
     introduction: "불안이 생기는 이유부터 채워지지 않는 욕망과 행복의 의미까지, 감정이 보내는 신호를 이해합니다.",
@@ -81,7 +81,7 @@ export const themes = [
   {
     slug: "life",
     name: "삶",
-    subtitle: "좋은 삶을 사는 법",
+    subtitle: "잘 산다는 건 무엇일까?",
     coreQuestion: "나는 어떤 삶을 살아야 하는가?",
     summary: "휴식과 놀이, 삶의 균형과 죽음을 통해 내가 원하는 삶의 형태를 그려봅니다.",
     introduction: "잘 쉬는 법과 즐거움, 바쁘게 살아가는 이유와 유한한 시간까지 바라보며 내가 만들고 싶은 삶의 모양을 생각합니다.",
@@ -96,7 +96,7 @@ export const themes = [
   {
     slug: "work",
     name: "일·몰입",
-    subtitle: "나의 일을 만드는 법",
+    subtitle: "나에게 일이란 무엇일까?",
     coreQuestion: "나는 무엇에 몰입하며 살아가는가?",
     summary: "일의 의미와 선택, 시대의 변화와 몰입을 지나 나에게 좋은 일이 무엇인지 묻습니다.",
     introduction: "좋아하는 일과 잘하는 일 사이의 선택부터 몰입과 매몰의 차이까지, 일과 나의 관계를 차례로 살펴봅니다.",

@@ -32,7 +32,8 @@ export default async function ThemePage({ params }: ThemePageProps) {
           <div className="theme-detail-hero__grid">
             <div className="theme-detail-hero__title">
               <p className="eyebrow">THEME {String(themeIndex + 1).padStart(2, "0")}</p>
-              <h1>{theme.name}<br /><span>{theme.subtitle}</span></h1>
+              <h1>{theme.name}</h1>
+              <p className="theme-detail-hero__question">{theme.subtitle}</p>
             </div>
             <div className="theme-detail-cover">
               <Image
@@ -44,7 +45,6 @@ export default async function ThemePage({ params }: ThemePageProps) {
               />
             </div>
             <div className="theme-detail-hero__copy">
-              <blockquote>{theme.coreQuestion}</blockquote>
               <p>{theme.introduction}</p>
               <div className="theme-keywords">{theme.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}</div>
             </div>
@@ -68,6 +68,7 @@ export default async function ThemePage({ params }: ThemePageProps) {
                 <article>
                   <p className="theme-session-topic">{session.title}</p>
                   <h3>{session.question}</h3>
+                  <p className="theme-session-description">{session.description}</p>
                   <div className="theme-session-book">
                     <BookOpen size={20} aria-hidden="true" />
                     <div><span>함께 읽는 책</span><strong>《{session.book}》</strong><small>{session.author}</small></div>

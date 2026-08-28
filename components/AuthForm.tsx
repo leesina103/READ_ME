@@ -19,6 +19,7 @@ type AuthFormProps = {
 export function AuthForm({ mode, configured, next = "/my", notice }: AuthFormProps) {
   const action = mode === "login" ? loginAction : signupAction;
   const [state, formAction, pending] = useActionState(action, initialState);
+  const isLogin = mode === "login";
 
   return (
     <form action={formAction} className="mt-8 space-y-4">
@@ -30,7 +31,14 @@ export function AuthForm({ mode, configured, next = "/my", notice }: AuthFormPro
       )}
       <label className="block text-sm font-medium">
         이메일
-        <input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]" type="email" name="email" autoComplete="email" required placeholder="hello@example.com" />
+        <input
+          className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]"
+          type={isLogin ? "text" : "email"}
+          name="email"
+          autoComplete={isLogin ? "username" : "email"}
+          required
+          placeholder="hello@example.com"
+        />
       </label>
       <label className="block text-sm font-medium">
         비밀번호

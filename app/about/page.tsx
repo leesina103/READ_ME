@@ -10,6 +10,7 @@ import {
   Quote,
   Sparkles
 } from "lucide-react";
+import { currentMeeting } from "@/data/currentMeeting";
 import { RemiGuide } from "@/components/RemiGuide";
 import { MeetRemi } from "@/components/MeetRemi";
 import { ReadingJourneyFlow } from "@/components/ReadingJourneyFlow";
@@ -287,7 +288,7 @@ export default function AboutPage() {
           <p>정답을 가진 사람보다 질문을 가진 사람과 함께하고 싶습니다.<br />당신의 다음 질문을 READ ME에서 만나보세요.</p>
           <div className="cta-actions">
             <Link href="/meeting" className="button button--light">현재 모임 보기 <ArrowRight size={16} /></Link>
-            <Link href="/interview" className="button button--outline-light">인터뷰 신청하기</Link>
+            <Link href={currentMeeting.applyHref} className="button button--outline-light">{currentMeeting.applyLabel}</Link>
           </div>
         </div>
       </section>

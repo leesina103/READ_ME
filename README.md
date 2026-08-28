@@ -158,9 +158,12 @@ cp .env.example .env.local
 ```text
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+ADMIN_LOGIN_EMAIL=
 ```
 
 기존 Supabase 프로젝트의 anon key를 사용한다면 `NEXT_PUBLIC_SUPABASE_ANON_KEY`에 입력해도 됩니다. `.env.local`은 `.gitignore`에 포함되어 있어 커밋되지 않습니다.
+
+`ADMIN_LOGIN_EMAIL`에는 관리자 계정의 실제 이메일을 입력합니다. 로그인 화면에서 `admin`을 입력하면 서버가 이 이메일로 변환하며, 비밀번호 검증은 기존과 동일하게 Supabase Auth가 담당합니다. 이 값은 브라우저에 노출되지 않도록 `NEXT_PUBLIC_` 접두사를 사용하지 않습니다.
 
 Supabase GitHub Integration을 연결하면 `supabase/migrations/`의 SQL이 파일명 순서대로 배포되어 테이블, 트리거와 RLS 정책을 생성·갱신합니다. 수동으로 적용할 때도 해당 폴더의 마이그레이션을 순서대로 실행해야 합니다. 이메일 인증을 사용할 때는 Authentication의 Redirect URLs에 다음 주소도 등록합니다.
 
