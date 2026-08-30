@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BookMarked, CalendarDays, MessageSquareText, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, UserRound } from "lucide-react";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/app/auth/actions";
 import { ProfileForm } from "@/components/ProfileForm";
@@ -60,12 +60,7 @@ export default async function MyPage() {
         <form action={logoutAction}><button className="rounded-full border border-[var(--line)] bg-[var(--paper)] px-5 py-3 text-sm font-semibold" type="submit">로그아웃</button></form>
       </div>
 
-      <div className="mt-12 grid gap-4 md:grid-cols-2">
-        <article className="rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7"><BookMarked className="text-[var(--forest)]"/><h2 className="mt-8 text-xl font-semibold">나의 모임</h2><p className="mt-3 text-sm leading-6 text-[var(--muted)]">참여 기수의 일정, 선정 도서와 공지사항을 확인해요.</p></article>
-        <article className="rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7"><MessageSquareText className="text-[var(--forest)]"/><h2 className="mt-8 text-xl font-semibold">질문과 문장</h2><p className="mt-3 text-sm leading-6 text-[var(--muted)]">모임 전 질문을 적고, 대화 뒤 남은 생각을 기록해요.</p></article>
-      </div>
-
-      <section className="mt-5 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
+      <section className="mt-12 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
         <div className="flex items-start gap-4"><UserRound className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">회원 정보</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">현재 기수는 <strong className="text-[var(--ink)]">{cohort}</strong>입니다. 닉네임과 소개를 관리할 수 있어요.</p></div></div>
         {profileError && <p className="mt-5 text-sm text-[var(--muted)]">프로필 테이블을 불러오지 못했습니다. Supabase 마이그레이션 적용 여부를 확인해 주세요.</p>}
         <ProfileForm displayName={displayName} bio={bio} cohortMessage={cohortMessage} nicknameLocked={nicknameLocked} />

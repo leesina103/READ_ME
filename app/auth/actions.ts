@@ -285,26 +285,17 @@ export async function saveSessionAnswerAction(
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name, cohort")
+    .select("cohort")
     .eq("id", user.id)
     .maybeSingle();
 
   if (!profile?.cohort || cohortNumberFromName(profile.cohort) !== cohortNumber) {
     return { status: "error", message: "참여 중인 기수의 토크방에만 답변을 남길 수 있어요." };
   }
-  const cohortName = profile.cohort;
-
-  const { error } = await supabase.from("session_answers").upsert(
-    {
-      cohort: cohortName,
-      week_number: week,
-      user_id: user.id,
-      display_name: profile.display_name,
-      content,
-      updated_at: new Date().toISOString()
-    },
-    { onConflict: "cohort,week_number,user_id" }
-  );
+  const { error } = await supabase.rpc("save_session_answer", {
+    target_week: week,
+    target_content: content
+  });
 
   if (error) {
     return { status: "error", message: "답변을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요." };
