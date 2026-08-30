@@ -67,9 +67,7 @@ const faqs = [
   ["혼자 참여해도 괜찮나요?", "네. 대부분 혼자 신청합니다. 처음 만난 사람도 편안히 이야기할 수 있도록 소규모로 진행합니다."],
   ["독서모임이 처음인데 괜찮나요?", "물론입니다. 잘 말하는 능력보다 다른 사람의 이야기를 존중하며 듣는 마음이면 충분합니다."],
   ["인터뷰는 왜 하나요?", "평가가 아니라 서로 기대하는 모임의 방식과 대화 태도가 잘 맞는지 확인하는 짧은 사전 대화입니다."],
-  ["한 기수는 어떻게 진행되나요?", "격주로 네 번 만나며, 매 회차 책 읽기와 사전 질문, 오프라인 대화, 기록의 순서로 이어집니다."],
-  ["모임에 참석하지 못하면 어떻게 되나요?", "참석이 어려운 경우 가능한 한 미리 알려주세요. 세부 보강 및 환불 기준은 모집 안내에서 확인할 수 있습니다."],
-  ["회비에는 무엇이 포함되나요?", "공간과 운영, 회차별 질문 설계, 모임 진행, 기수 기록 및 커뮤니티 경험이 포함됩니다. 도서는 별도입니다."]
+  ["한 기수는 어떻게 진행되나요?", "격주로 네 번 만나며, 매 회차 책 읽기와 사전 질문, 오프라인 대화, 기록의 순서로 이어집니다."]
 ];
 
 export function HomePage() {
@@ -113,7 +111,7 @@ export function HomePage() {
 
       <section className="section why-section"><div className="section-shell">
         <SectionTitle eyebrow="WHY READ ME" title="질문에서 시작해, 삶에 남도록" description="좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다." />
-        <p className="why-section__origin">독서모임을 3년간 직접 해보고, 아쉬운 점은 바꾸고 좋은 점만 골라 만든 READ ME.</p>
+        <p className="why-section__origin">독서모임을 3년간 직접 해보고, 아쉬운 점은 바꾸고 좋은 점만 골라 만들었습니다</p>
         <div className="difference-grid">{differences.map((item) => <article key={item.number}><span>{item.number} — {item.keyword}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
       </div></section>
 
@@ -121,7 +119,7 @@ export function HomePage() {
         <div className="season-guide">
           <p className="eyebrow">PROGRAM GUIDE</p>
           <h2>READ ME는<br />어떻게 진행되나요?</h2>
-          <p>한 기수는 하나의 주제로 8주 동안 이어집니다. 격주 오프라인 토의에서 책과 질문으로 대화하고, 사이의 휴식 세션에서는 배운 것을 삶에 적용해봅니다.</p>
+          <p>한 기수는 하나의 주제로 8주 동안 이어집니다.<br />격주 오프라인 토의에서 책과 질문으로 대화하고, 사이의 휴식 세션에서는 배운 것을 삶에 적용해봅니다.</p>
           <small>* 기수마다 주제가 바뀝니다.</small>
         </div>
         <ol className="season-cycle">

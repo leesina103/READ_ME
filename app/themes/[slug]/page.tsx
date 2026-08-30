@@ -68,7 +68,9 @@ export default async function ThemePage({ params }: ThemePageProps) {
                 <article>
                   <p className="theme-session-topic">{session.title}</p>
                   <h3>{session.question}</h3>
-                  <p className="theme-session-description">{session.description}</p>
+                  <p className="theme-session-description">
+                    {session.description.split(/(?<=\.)\s+/).map((sentence) => <span key={sentence}>{sentence}</span>)}
+                  </p>
                   <div className="theme-session-book">
                     <BookOpen size={20} aria-hidden="true" />
                     <div><span>함께 읽는 책</span><strong>《{session.book}》</strong><small>{session.author}</small></div>
