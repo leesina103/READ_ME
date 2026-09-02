@@ -30,8 +30,20 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   const pathname = request.nextUrl.pathname;
+  const legacyTalkMatch = /^\/my\/talk\/(\d+)\/(\d+)$/.exec(pathname);
 
-  if (!user && (pathname.startsWith("/my") || pathname.startsWith("/onboarding") || pathname.startsWith("/admin"))) {
+  if (legacyTalkMatch) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/membership/talk/${legacyTalkMatch[1]}/${legacyTalkMatch[2]}`;
+    return copyCookies(response, NextResponse.redirect(url));
+  }
+
+  const isPublicMembershipApply = pathname === "/membership/apply"
+    || pathname.startsWith("/membership/apply/")
+    || /^\/membership\/apply\d+$/.test(pathname);
+  const isProtectedMembership = pathname.startsWith("/membership") && !isPublicMembershipApply;
+
+  if (!user && (pathname.startsWith("/my") || pathname.startsWith("/onboarding") || pathname.startsWith("/admin") || isProtectedMembership)) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("next", pathname);

@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { canUseLegacyMembershipFallback } from "@/lib/membership/access";
 
 const notoSansKr = Noto_Sans_KR({
   variable: "--font-sans",
@@ -52,6 +53,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   let isAuthenticated = false;
+  let isMember = false;
   let accountLabel = "로그인";
 
   if (isSupabaseConfigured()) {
@@ -62,15 +64,22 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     if (user) {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("display_name, onboarding_completed_at")
+        .select("display_name, cohort, onboarding_completed_at")
         .eq("id", user.id)
         .maybeSingle();
 
       accountLabel = profile?.onboarding_completed_at && profile.display_name
         ? profile.display_name
         : "설정하기";
+
+      if (profile?.onboarding_completed_at && profile.cohort) {
+        const { data: hasActiveMembership, error } = await supabase.rpc("has_active_membership");
+        isMember = error
+          ? canUseLegacyMembershipFallback(error.code)
+          : hasActiveMembership === true;
+      }
     }
   }
 
-  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header isAuthenticated={isAuthenticated} accountLabel={accountLabel} />{children}<Footer /></body></html>;
+  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header isAuthenticated={isAuthenticated} isMember={isMember} accountLabel={accountLabel} />{children}<Footer /></body></html>;
 }

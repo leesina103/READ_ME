@@ -301,7 +301,7 @@ export async function saveSessionAnswerAction(
     return { status: "error", message: "답변을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요." };
   }
 
-  revalidatePath(`/my/talk/${cohortNumber}/${week}`);
+  revalidatePath(`/membership/talk/${cohortNumber}/${week}`);
   return { status: "success", message: "답변을 남겼습니다." };
 }
 

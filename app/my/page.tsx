@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, Settings, UserRound } from "lucide-react";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/app/auth/actions";
 import { ProfileForm } from "@/components/ProfileForm";
@@ -8,7 +8,10 @@ import { currentTheme } from "@/data/themes";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function MyPage() {
+type MyPageProps = { searchParams: Promise<{ membership?: string }> };
+
+export default async function MyPage({ searchParams }: MyPageProps) {
+  const membershipRequired = (await searchParams).membership === "required";
   if (!isSupabaseConfigured()) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-20 md:py-28">
@@ -57,8 +60,20 @@ export default async function MyPage() {
           <h1 className="mt-5 text-5xl font-semibold tracking-[-0.04em]">{displayName}님의 서재</h1>
           <p className="mt-4 text-sm text-[var(--muted)]">{cohort} · {user.email}</p>
         </div>
-        <form action={logoutAction}><button className="rounded-full border border-[var(--line)] bg-[var(--paper)] px-5 py-3 text-sm font-semibold" type="submit">로그아웃</button></form>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/my/settings"
+            aria-label="계정 설정"
+            title="계정 설정"
+            className="grid size-11 place-items-center rounded-full border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] transition-colors hover:text-[var(--forest)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--forest)]"
+          >
+            <Settings size={18} aria-hidden="true" />
+          </Link>
+          <form action={logoutAction}><button className="rounded-full border border-[var(--line)] bg-[var(--paper)] px-5 py-3 text-sm font-semibold" type="submit">로그아웃</button></form>
+        </div>
       </div>
+
+      {membershipRequired && <p className="mt-8 rounded-2xl border border-[var(--line)] bg-[var(--sand)] px-5 py-4 text-sm leading-6">활성 멤버십이 필요한 공간입니다. 멤버십 상태를 확인해 주세요.</p>}
 
       <section className="mt-12 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
         <div className="flex items-start gap-4"><UserRound className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">회원 정보</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">현재 기수는 <strong className="text-[var(--ink)]">{cohort}</strong>입니다. 닉네임과 소개를 관리할 수 있어요.</p></div></div>
@@ -72,7 +87,7 @@ export default async function MyPage() {
           <ol className="mt-6 border-t border-[var(--line)]">
             {seasonWeeks.map((weekItem) => (
               <li key={weekItem.week} className="border-b border-[var(--line)]">
-                <Link href={`/my/talk/${cohortNumber}/${weekItem.week}`} className="flex min-h-14 items-center justify-between gap-4 py-4">
+                <Link href={`/membership/talk/${cohortNumber}/${weekItem.week}`} className="flex min-h-14 items-center justify-between gap-4 py-4">
                   <div className="flex min-w-0 items-center gap-4">
                     <span className="w-12 shrink-0 text-sm font-semibold text-[var(--forest)]">{weekItem.week}주차</span>
                     <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide ${weekItem.type === "input" ? "bg-[var(--sage)]/50 text-[var(--forest)]" : "bg-[var(--sand)]/40 text-[#8a6a2f]"}`}>
