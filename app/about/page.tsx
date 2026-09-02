@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArrowDown,
   ArrowRight,
   BookOpen,
   CircleDot,
@@ -112,7 +111,6 @@ export default function AboutPage() {
           <p className="eyebrow">ABOUT READ ME</p>
           <h1>왜 우리는<br /><em>함께 읽을까요?</em></h1>
           <p className="about-hero__lead">책을 읽는 것을 넘어 나를 읽고,<br />서로의 이야기를 통해 다시 삶으로 나아가는 곳.</p>
-          <a className="about-scroll-link" href="#about-identity">READ ME의 이야기 <ArrowDown size={16} /></a>
         </div>
         <div className="about-hero__visual">
           <RemiGuide compact />
