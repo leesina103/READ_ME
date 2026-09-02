@@ -10,7 +10,6 @@ import {
   MapPin,
   MessageCircle,
   NotebookPen,
-  Quote,
   UsersRound
 } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -18,6 +17,7 @@ import { MeetRemi } from "@/components/MeetRemi";
 import { ReadingJourneyFlow } from "@/components/ReadingJourneyFlow";
 import { currentMeeting } from "@/data/currentMeeting";
 import { currentTheme } from "@/data/themes";
+import { readingGroupStories, storyClosing, storySourceNote } from "@/data/stories";
 
 const values = [
   { icon: BookOpen, title: "사유", subtitle: "좋은 질문으로 나를 이해하는 시간", text: "책이 건넨 질문에 머물며 내 생각과 감정을 천천히 들여다봅니다." },
@@ -30,7 +30,8 @@ const meetingFacts = [
   { icon: UsersRound, value: "6명 안팎", label: "소규모" },
   { icon: CalendarDays, value: "격주", label: "진행 주기" },
   { icon: Clock3, value: "3시간", label: "회차별" },
-  { icon: MapPin, value: "오프라인", label: "진행 방식" }
+  { icon: MapPin, value: "오프라인", label: "진행 방식" },
+  { icon: NotebookPen, value: "온라인 OUTPUT", label: "격주 오프라인 모임 사이, 대화에서 얻은 생각을 일상에서 실천하고 기록합니다." }
 ];
 
 const people = [
@@ -54,12 +55,6 @@ const differences = [
   { number: "02", keyword: "PEOPLE", title: "누구와 이야기하는가", text: "좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다. READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다." },
   { number: "03", keyword: "CONNECTED FLOW", title: "연결된 커리큘럼", text: "관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다. 한 기수의 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다." },
   { number: "04", keyword: "ONE SPACE", title: "하나의 공간에서 이어지는 경험", text: "신청부터 일정, 질문, 기록, 기수 커뮤니티까지 여러 곳에 흩어지지 않고 하나의 웹 공간에서 자연스럽게 이어집니다." }
-];
-
-const storyPlaceholders = [
-  { theme: "나를 발견한 문장", text: "모임에서 발견한 나의 생각과 변화를 담을 자리입니다." },
-  { theme: "다른 관점과의 만남", text: "누군가의 이야기가 내 생각을 넓힌 순간을 담을 자리입니다." },
-  { theme: "모임 이후의 변화", text: "대화가 일상에 남긴 작은 움직임을 담을 자리입니다." }
 ];
 
 const faqs = [
@@ -99,7 +94,7 @@ export function HomePage() {
       </section>
 
       <section className="section values-section"><div className="section-shell">
-        <SectionTitle eyebrow="OUR VALUES" title="사유 · 대화 · 관계" description="읽는 시간은 결국 나와 서로를 더 잘 이해하는 방향으로 이어집니다." />
+        <SectionTitle eyebrow="OUR VALUES" context="READ ME가 중요하게 생각하는 3가지 가치" title="사유 · 대화 · 관계" />
         <div className="value-grid">{values.map(({ icon: Icon, ...value }) => <article key={value.title}><Icon size={24} strokeWidth={1.5} /><p>{value.title}</p><h3>{value.subtitle}</h3><span>{value.text}</span></article>)}</div>
       </div></section>
 
@@ -261,25 +256,8 @@ export function HomePage() {
         <div className="season-guide">
           <p className="eyebrow">AFTER THE SEASON</p>
           <h2>한 기수가 끝나도,<br />관계까지 끝나지는 않도록.</h2>
-          <p>읽기 → 생각하기 → 이야기하기 → 기록하기 → 다시 연결되기</p>
         </div>
         <ul className="season-cycle connection-cycle">
-          <li>
-            <div className="season-cycle__text">
-              <div className="season-cycle__head">
-                <span>기수가 끝난 뒤 · 온라인</span>
-                <h3>기수별 커뮤니티</h3>
-              </div>
-              <div className="season-cycle__body">
-                <p>함께 읽은 사람들과 다음 질문과 일상을 나눕니다.</p>
-              </div>
-            </div>
-            <figure className="season-cycle__figure season-cycle__figure--art">
-              <div className="season-cycle__frame">
-                <Image src="/theme-remi-change.png" alt="징검다리를 건너며 새싹에 물을 주는 리미" width={960} height={600} sizes="(max-width: 820px) 92vw, 470px" />
-              </div>
-            </figure>
-          </li>
           <li>
             <div className="season-cycle__text">
               <div className="season-cycle__head">
@@ -287,7 +265,7 @@ export function HomePage() {
                 <h3>기록 보관</h3>
               </div>
               <div className="season-cycle__body">
-                <p>마음에 남은 문장과 질문을 다시 꺼내볼 수 있게 남깁니다.</p>
+                <p>온라인에서 나눈 질문과 서로의 답변을 언제든 다시 꺼내볼 수 있도록 남깁니다.</p>
               </div>
             </div>
             <figure className="season-cycle__figure season-cycle__figure--art">
@@ -315,11 +293,60 @@ export function HomePage() {
           <li>
             <div className="season-cycle__text">
               <div className="season-cycle__head">
-                <span>관심사를 따라 · 오프라인</span>
-                <h3>작은 소모임</h3>
+                <span>한 기수 이후 · 멤버십</span>
+                <h3>READ ME 멤버십</h3>
               </div>
               <div className="season-cycle__body">
-                <p>전시, 영화, 산책, 독서 등 관심사를 따라 다시 만납니다.</p>
+                <p>한 기수를 마친 뒤에도 전 기수의 멤버들과 다양한 활동으로 계속 만날 수 있도록 멤버십으로 연결합니다.</p>
+              </div>
+            </div>
+            <figure className="season-cycle__figure season-cycle__figure--art">
+              <div className="season-cycle__frame">
+                <Image src="/theme-remi-emotion.png" alt="다양한 감정을 마주하며 자신을 살피는 리미" width={960} height={600} sizes="(max-width: 820px) 92vw, 470px" />
+              </div>
+            </figure>
+          </li>
+          <li>
+            <div className="season-cycle__text">
+              <div className="season-cycle__head">
+                <span>전 기수와 함께 · 온라인</span>
+                <h3>멤버십 커뮤니티</h3>
+              </div>
+              <div className="season-cycle__body">
+                <p>함께한 기수가 달라도, 다음 질문과 일상을 나누며 서로의 생각과 변화를 이어갑니다.</p>
+                <p>인생책을 소개하거나 직접 쓴 글을 공유하는 등, 각자의 읽기와 쓰기를 편하게 나눌 수 있는 커뮤니티를 운영합니다.</p>
+              </div>
+            </div>
+            <figure className="season-cycle__figure season-cycle__figure--art">
+              <div className="season-cycle__frame">
+                <Image src="/theme-remi-change.png" alt="징검다리를 건너며 새싹에 물을 주는 리미" width={960} height={600} sizes="(max-width: 820px) 92vw, 470px" />
+              </div>
+            </figure>
+          </li>
+          <li>
+            <div className="season-cycle__text">
+              <div className="season-cycle__head">
+                <span>원하는 책으로 · 멤버십 오프라인</span>
+                <h3>멤버십 북토의</h3>
+              </div>
+              <div className="season-cycle__body">
+                <p>정해진 커리큘럼을 벗어나, 멤버들이 직접 고른 책으로 자유롭게 토의합니다.</p>
+              </div>
+            </div>
+            <figure className="season-cycle__figure season-cycle__figure--art">
+              <div className="season-cycle__frame">
+                <Image src="/theme-remi-self.png" alt="책상에 앉아 원하는 책을 읽고 기록하는 리미" width={960} height={600} sizes="(max-width: 820px) 92vw, 470px" />
+              </div>
+            </figure>
+          </li>
+          <li>
+            <div className="season-cycle__text">
+              <div className="season-cycle__head">
+                <span>멤버가 만드는 · 온·오프라인</span>
+                <h3>자유로운 소모임</h3>
+              </div>
+              <div className="season-cycle__body">
+                <p>전시, 영화, 산책부터 취향과 관심사를 나누는 모임까지, 멤버들이 자유롭게 제안하고 함께합니다.</p>
               </div>
             </div>
             <figure className="season-cycle__figure season-cycle__figure--art">
@@ -342,8 +369,27 @@ export function HomePage() {
       </div></section>
 
       <section className="section story-section"><div className="section-shell">
-        <SectionTitle eyebrow="STORY" title="대화가 남긴 이야기를 기록합니다." description="아직 실제 참여 후기가 쌓이기 전이라, 아래에는 앞으로 담길 이야기의 자리를 먼저 보여드립니다." />
-        <div className="story-grid">{storyPlaceholders.map((story) => <article key={story.theme}><Quote size={23} strokeWidth={1.4} /><small>후기 자리 · 실제 참여 후기가 아닙니다</small><h3>{story.theme}</h3><p>{story.text}</p></article>)}</div>
+        <SectionTitle eyebrow="STORY" title="실제 사람들이 느낀 것" description={storySourceNote} />
+        <div className="story-grid">
+          {readingGroupStories.map((story, index) => (
+            <article key={story.name} className={story.longform ? "story-grid__item--featured" : undefined}>
+              <div className="story-grid__meta">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{story.name}</strong>
+              </div>
+              {story.longform && (
+                <div className="story-grid__feature-heading">
+                  <h3>{story.longform.title}</h3>
+                  <div>{story.longform.topics.map((topic) => <span key={topic}>{topic}</span>)}</div>
+                </div>
+              )}
+              <blockquote>“{story.quote}”</blockquote>
+              {story.text && <p className="story-grid__detail">{story.text}</p>}
+            </article>
+          ))}
+        </div>
+        <p className="story-closing">{storyClosing}</p>
+        <Link href="/story" className="button button--ghost story-link">전체 후기 보기 <ArrowRight size={16} /></Link>
       </div></section>
 
       <section className="section faq-section"><div className="section-shell faq-layout">
@@ -351,7 +397,7 @@ export function HomePage() {
         <div className="faq-list">{faqs.map(([question, answer], index) => <details key={question}><summary><span>{String(index + 1).padStart(2, "0")}</span>{question}<i>+</i></summary><p>{answer}</p></details>)}</div>
       </div></section>
 
-      <section className="section cta-section"><div className="section-shell cta-card"><NotebookPen size={30} strokeWidth={1.4}/><p className="eyebrow">AN INVITATION</p><h2>삶의 답은 내가 찾지만,<br />그 과정을 혼자 걸을 필요는 없으니까.</h2><p>우리는 정답을 알려드리지 않습니다. 대신 더 좋은 질문을 함께 찾고 싶습니다.</p><div className="cta-actions"><Link href={currentMeeting.applyHref} className="button button--light">{currentMeeting.applyLabel} <ArrowRight size={16} /></Link></div></div></section>
+      <section className="section cta-section"><div className="section-shell cta-card"><NotebookPen size={30} strokeWidth={1.4}/><p className="eyebrow">AN INVITATION</p><h2>삶의 답은 내가 찾지만,<br />그 과정을 혼자 걸을 필요는 없으니까.</h2><p>우리는 정답을 알려드리지 않습니다. 대신 더 좋은 질문을 함께 찾고 싶습니다.</p><div className="cta-actions"><Link href="/meeting" className="button button--light">현재 모임 보기 <ArrowRight size={16} /></Link><Link href={currentMeeting.applyHref} className="button button--outline-light">{currentMeeting.applyLabel}</Link></div></div></section>
     </main>
   );
 }

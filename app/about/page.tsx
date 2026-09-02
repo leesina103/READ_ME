@@ -45,20 +45,20 @@ const values = [
   {
     icon: BookOpen,
     title: "사유",
-    subtitle: "나를 이해하는 시간",
+    subtitle: "좋은 질문으로 나를 이해하는 시간",
     text: "책의 내용을 잘 기억하는 것보다, 책이 남긴 질문 앞에 머물며 타인의 답이 아닌 나의 답을 찾아가는 힘을 중요하게 생각합니다."
   },
   {
     icon: MessageCircle,
     title: "대화",
-    subtitle: "생각의 경계를 넓히는 시간",
+    subtitle: "존중과 경청으로 생각을 넓히는 시간",
     text: "대화는 정답을 맞히는 토론이 아닙니다. 같은 책에서도 서로 다른 곳에 멈춘 사람을 통해 내가 미처 보지 못한 세계를 만나는 과정입니다."
   },
   {
     icon: HeartHandshake,
     title: "관계",
-    subtitle: "함께 나아가는 힘",
-    text: "삶의 방향은 결국 내가 찾아야 하지만, 그 과정을 혼자 걸을 필요는 없습니다. 정답 대신 질문을 나누며 서로의 다음 걸음을 응원합니다."
+    subtitle: "혼자가 아니라 함께 나아가는 힘",
+    text: "무엇을 읽는지만큼 누구와 이야기하는지가 중요합니다. READ ME는 존중과 경청이 가능한 문화를 바탕으로, 깊은 대화가 한 번의 만남에 그치지 않고 서로의 변화와 다음 걸음을 응원하는 관계로 이어지길 바랍니다."
   }
 ] as const;
 
@@ -207,8 +207,9 @@ export default function AboutPage() {
         <div className="section-shell">
           <div className="about-section-heading">
             <span>05</span>
-            <p className="eyebrow">WHAT WE VALUE</p>
-            <h2>우리가 중요하게<br />생각하는 세 가지</h2>
+            <p className="eyebrow">OUR VALUES</p>
+            <p className="about-section-heading__context">READ ME가 중요하게 생각하는 세 가지 가치</p>
+            <h2>사유 · 대화 · 관계</h2>
           </div>
           <div className="about-value-grid">
             {values.map(({ icon: Icon, ...value }) => (

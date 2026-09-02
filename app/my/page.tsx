@@ -12,7 +12,7 @@ export default async function MyPage() {
   if (!isSupabaseConfigured()) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-20 md:py-28">
-        <p className="eyebrow">MEMBER AREA</p>
+        <p className="eyebrow">MY READ ME</p>
         <h1 className="mt-5 text-5xl font-semibold tracking-[-0.04em]">나의 서재</h1>
         <div className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-8">
           <h2 className="text-xl font-semibold">Supabase 연결이 필요합니다</h2>
@@ -53,7 +53,7 @@ export default async function MyPage() {
     <main className="mx-auto max-w-5xl px-6 py-20 md:py-28">
       <div className="flex flex-wrap items-start justify-between gap-6">
         <div>
-          <p className="eyebrow">MEMBER AREA</p>
+          <p className="eyebrow">MY READ ME</p>
           <h1 className="mt-5 text-5xl font-semibold tracking-[-0.04em]">{displayName}님의 서재</h1>
           <p className="mt-4 text-sm text-[var(--muted)]">{cohort} · {user.email}</p>
         </div>
@@ -79,7 +79,7 @@ export default async function MyPage() {
                       {weekItem.type === "input" ? "토의" : "휴식 & OUTPUT"}
                     </span>
                     <span className="truncate text-[15px]">
-                      {weekItem.type === "input" ? <>{weekItem.sessionTitle} — 《{weekItem.book}》</> : <>{weekItem.sessionTitle} 실천 기록</>}
+                      {weekItem.type === "input" ? <>{weekItem.sessionTitle} — 《{weekItem.book}》</> : <><strong className="font-semibold">{weekItem.sessionTitle}</strong> 실천 기록</>}
                     </span>
                   </div>
                   <ArrowRight size={16} className="shrink-0 text-[var(--muted)]" />
