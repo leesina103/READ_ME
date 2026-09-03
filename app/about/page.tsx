@@ -248,7 +248,10 @@ export default function AboutPage() {
               <p className="eyebrow">PEOPLE & CULTURE</p>
               <h2>잘난 사람이 아니라,<br />잘 대화할 수 있는 사람.</h2>
             </div>
-            <p className="about-culture__copy">READ ME가 말하는 좋은 사람은 답을 많이 아는 사람이 아닙니다. 자신의 생각을 솔직하게 말하면서도, 다른 사람의 이야기를 끝까지 듣고, 다름을 틀림으로 단정하지 않는 사람입니다. 지적인 이야기를 잘하는 것만큼 서로의 삶과 고민을 편하게 꺼낼 수 있는 따뜻한 분위기를 중요하게 생각합니다.</p>
+            <div className="about-culture__copy">
+              <p>같은 책을 읽어도 누구와 함께 읽느냐에 따라 모임은 전혀 달랐습니다. 결국 오래 남은 것은 책의 내용만이 아니라, 서로의 생각을 편하게 꺼내고 받아준 사람들이었습니다.</p>
+              <p>READ ME가 말하는 좋은 사람은 답을 많이 아는 사람이 아닙니다. 자신의 생각을 솔직하게 말하면서도 다른 사람의 이야기를 끝까지 듣고, 다름을 틀림으로 단정하지 않는 사람입니다. 지적인 이야기를 잘하는 것만큼 서로의 삶과 고민을 편하게 꺼낼 수 있는 따뜻한 분위기를 중요하게 생각합니다.</p>
+            </div>
             <div className="about-culture__words">{cultureWords.map((word) => <span key={word}>{word}</span>)}</div>
           </div>
           <aside className="about-interview-card">

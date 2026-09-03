@@ -628,6 +628,8 @@ a { color: inherit; text-decoration: none; } button, a { -webkit-tap-highlight-c
 .about-culture .about-section-heading > span { color: var(--forest); }
 .about-culture__grid { display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: 90px; }
 .about-culture__copy { max-width: 620px; margin: 34px 0 0; color: rgba(59,58,52,.78); line-height: 1.9; }
+.about-culture__copy p { margin: 0; }
+.about-culture__copy p + p { margin-top: 16px; }
 .about-culture__words { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 9px; }
 .about-culture__words span { padding: 10px 14px; border: 1px solid rgba(59,58,52,.2); border-radius: 999px; font-size: 12px; font-weight: 700; }
 .about-interview-card { min-height: 430px; padding: 36px; display: flex; flex-direction: column; border-radius: 32px; color: var(--cream); background: var(--ink); box-shadow: 0 28px 60px rgba(59,58,52,.12); }
@@ -881,3 +883,5 @@ a { color: inherit; text-decoration: none; } button, a { -webkit-tap-highlight-c
   .meeting-cta .button { width: 100%; }
   .meeting-curriculum__question { font-size: 19px; }
 }
+
+.nav-badge { margin-left: 8px; vertical-align: middle; }

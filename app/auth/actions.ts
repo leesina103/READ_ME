@@ -255,6 +255,10 @@ export async function updateProfileFieldAction(
   }
 
   revalidatePath("/my");
+  if (fieldName === "displayName") {
+    revalidatePath("/membership/community");
+    revalidatePath("/membership/talk", "layout");
+  }
   return { status: "success", message: `${withJosa(field.label, "을", "를")} 저장했습니다.` };
 }
 

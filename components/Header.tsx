@@ -4,11 +4,13 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, ChevronDown, LockKeyhole, Menu, UserRound, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
+import { currentMeeting } from "@/data/currentMeeting";
 
 const publicMenuItems = [
-  { href: "/about", label: "READ ME 소개", description: "우리가 책을 읽고 대화하는 방식" },
-  { href: "/interview", label: "인터뷰 안내", description: "참여 전 가볍게 나누는 첫 대화" },
-  { href: "/themes", label: "주제별 소개", description: "현재 1기 · 관계, 여섯 기수의 질문" }
+  { href: "/about", label: "READ ME 소개", description: "우리가 책을 읽고 대화하는 방식", live: false },
+  { href: "/themes", label: "주제별 소개", description: "현재 1기 · 관계, 여섯 기수의 질문", live: false },
+  { href: "/meeting", label: `${currentMeeting.cohort} 모집`, description: "이번 기수 일정과 신청 안내", live: currentMeeting.recruiting },
+  { href: "/story", label: "후기", description: "함께 읽고 나눈 멤버들의 경험", live: false }
 ] as const;
 
 const membershipGroups = [
@@ -81,7 +83,12 @@ export function Header({ isAuthenticated = false, isMember = false, accountLabel
         <Link href="/" className="brand-mark" aria-label="READ ME 홈"><span className="brand-mark__icon"><BookOpen size={19} strokeWidth={1.8} /></span><span>READ ME</span></Link>
 
         <nav className="desktop-nav" aria-label="주요 메뉴">
-          {publicMenuItems.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
+          {publicMenuItems.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.label}
+              {link.live && <span className="season-current__badge nav-badge">{currentMeeting.recruitingLabel}</span>}
+            </Link>
+          ))}
           <details className="desktop-membership-menu">
             <summary aria-label="멤버십 하위 메뉴 열기"><span>READ ME 멤버십</span><ChevronDown size={15} aria-hidden="true" /></summary>
             <div className="desktop-membership-menu__panel"><MembershipMenuContent enabled={isMember} /></div>
@@ -98,7 +105,7 @@ export function Header({ isAuthenticated = false, isMember = false, accountLabel
             <nav aria-label="모바일 주요 메뉴">
               {publicMenuItems.map((item) => (
                 <Link key={item.href} href={item.href} data-current={pathname === item.href || pathname.startsWith(`${item.href}/`)} onClick={closeMobileMenu}>
-                  <span className="main-menu__copy"><strong>{item.label}</strong><span>{item.description}</span></span><ArrowRight size={18} aria-hidden="true" />
+                  <span className="main-menu__copy"><strong>{item.label}{item.live && <span className="season-current__badge nav-badge">{currentMeeting.recruitingLabel}</span>}</strong><span>{item.description}</span></span><ArrowRight size={18} aria-hidden="true" />
                 </Link>
               ))}
               <details className="main-menu__membership">

@@ -50,8 +50,8 @@ export default function MeetingPage() {
             <div><p className="eyebrow">HOW IT WORKS</p><h2>2주에 한 권,<br />읽고 대화한 뒤 삶에 적용합니다.</h2></div>
             <div>
               <strong>왜 2주에 한 번인가요?</strong>
-              <p>하나, 읽기에서 멈추지 않도록. 한 주는 읽고, 다음 주는 삶에 적용한 경험을 나눕니다.</p>
-              <p>둘, 매주 한 권은 벅차니까. 2주에 한 권, 깊게 읽습니다.</p>
+              <p>READ ME가 격주로 만나는 이유는 단순히 쉬어가기 위해서가 아닙니다.<br />input. 첫 주에는 책과 질문을 받아들이는 INPUT을 만들고,<br />output. 다음 주에는 대화에서 얻은 생각을 일상에 적용하고 기록하는 OUTPUT을 만듭니다.<br />읽고 이야기한 것이 삶으로 이어질 시간을 남겨두기 위해 2주의 리듬으로 운영합니다.</p>
+              <p>매주 한 권은 벅차니까. 2주에 한 권, 깊게 읽습니다.</p>
             </div>
           </div>
           <div className="meeting-flow__io">
