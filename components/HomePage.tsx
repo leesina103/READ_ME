@@ -10,6 +10,7 @@ import {
   MapPin,
   MessageCircle,
   NotebookPen,
+  Repeat,
   UsersRound
 } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -26,12 +27,12 @@ const values = [
 ];
 
 const meetingFacts = [
-  { icon: CalendarDays, value: "4회", label: "한 기수" },
-  { icon: UsersRound, value: "6명 안팎", label: "소규모" },
-  { icon: CalendarDays, value: "격주", label: "진행 주기" },
-  { icon: Clock3, value: "3시간", label: "회차별" },
-  { icon: MapPin, value: "오프라인", label: "진행 방식" },
-  { icon: NotebookPen, value: "온라인 OUTPUT", label: "격주 오프라인 모임 사이, 대화에서 얻은 생각을 일상에서 실천하고 기록합니다." }
+  { icon: CalendarDays, value: "8주", label: "한 기수" },
+  { icon: Repeat, value: "격주", label: "진행 주기" },
+  { icon: MapPin, value: "오프라인 4회", label: "책 읽고 대화 · INPUT" },
+  { icon: NotebookPen, value: "온라인 4회", label: "삶에 적용하고 기록 · OUTPUT" },
+  { icon: Clock3, value: "3시간", label: "오프라인 회차별" },
+  { icon: UsersRound, value: "6명 안팎", label: "소규모" }
 ];
 
 const people = [
@@ -43,7 +44,7 @@ const people = [
 ];
 
 const principles = [
-  "운영자가 일방적으로 이야기하는 모임을 만들지 않습니다.",
+  "가이드가 일방적으로 이야기하는 모임을 만들지 않습니다.",
   "한 번 만나고 끝나는 관계만을 만들고 싶지 않습니다.",
   "사람 수만 늘리는 것을 목표로 하지 않습니다.",
   "비싼 가격이 곧 좋은 경험이라고 생각하지 않습니다.",
@@ -51,14 +52,14 @@ const principles = [
 ];
 
 const differences = [
-  { number: "01", keyword: "DEEP TALK", title: "질문에서 시작하는 깊은 대화", text: "책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다. 운영진은 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다." },
-  { number: "02", keyword: "PEOPLE", title: "누구와 이야기하는가", text: "좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다. READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다." },
-  { number: "03", keyword: "CONNECTED FLOW", title: "연결된 커리큘럼", text: "관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다. 한 기수의 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다." },
-  { number: "04", keyword: "ONE SPACE", title: "하나의 공간에서 이어지는 경험", text: "신청부터 일정, 질문, 기록, 기수 커뮤니티까지 여러 곳에 흩어지지 않고 하나의 웹 공간에서 자연스럽게 이어집니다." }
+  { number: "01", keyword: "DEEP TALK", title: "질문에서 시작하는 깊은 대화", text: <>책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다.<br />가이드는 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다.</> },
+  { number: "02", keyword: "PEOPLE", title: "누구와 이야기하는가", text: <>좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다.<br />READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다.</> },
+  { number: "03", keyword: "CONNECTED FLOW", title: "삶을 연결한 커리큘럼", text: <>관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다.<br />한 기수에서 하나의 주제만 탐구하는게 아닌 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다.</> },
+  { number: "04", keyword: "ONE SPACE", title: "하나의 공간에서 이어지는 경험", text: <>신청부터 일정, 질문, 기록, 기수 커뮤니티까지 여러 곳에 흩어지지 않고 하나의 웹 공간에서 자연스럽게 이어집니다.</> }
 ];
 
 const faqs = [
-  ["책을 꼭 완독해야 하나요?", "아니요. 완독보다 읽은 만큼 솔직하게 질문을 가져오는 태도를 중요하게 생각합니다."],
+  ["책을 꼭 완독해야 하나요?", "깊은 대화를 위해 완독하는 걸 권장합니다. 하지만 시간이 안 된다면, 사전 질문에 대해 깊게 생각해오는 것만으로 충분합니다."],
   ["혼자 참여해도 괜찮나요?", "네. 대부분 혼자 신청합니다. 처음 만난 사람도 편안히 이야기할 수 있도록 소규모로 진행합니다."],
   ["독서모임이 처음인데 괜찮나요?", "물론입니다. 잘 말하는 능력보다 다른 사람의 이야기를 존중하며 듣는 마음이면 충분합니다."],
   ["인터뷰는 왜 하나요?", "평가가 아니라 서로 기대하는 모임의 방식과 대화 태도가 잘 맞는지 확인하는 짧은 사전 대화입니다."],
@@ -73,6 +74,9 @@ export function HomePage() {
           <p className="eyebrow">READ ME · BOOK COMMUNITY</p>
           <h1>Read Books.<br /><em>Read Yourself.</em></h1>
           <p className="hero__lead">책을 통해 나를 읽고,<br />결이 맞는 사람을 만나고,<br />삶의 방향을 찾아가는 독서 커뮤니티.</p>
+          <div className="button-row">
+            <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={16} /></Link>
+          </div>
         </div>
         <blockquote className="hero__quote">“나를 읽다.<br />서로를 읽다.<br />삶을 읽다.”</blockquote>
       </section>
@@ -105,8 +109,8 @@ export function HomePage() {
       </div></section>
 
       <section className="section why-section"><div className="section-shell">
-        <SectionTitle eyebrow="WHY READ ME" title="질문에서 시작해, 삶에 남도록" description="좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다." />
-        <p className="why-section__origin">독서모임을 3년간 직접 해보고, 아쉬운 점은 바꾸고 좋은 점만 골라 만들었습니다</p>
+        <SectionTitle eyebrow="WHY READ ME" title={<>READ ME가<br />다르게 생각하는 것</>} />
+        <p className="why-section__origin">독서모임을 3년간 직접 해보고, 아쉬운 점은 바꾸고 좋은 점만 골라 만들었습니다.</p>
         <div className="difference-grid">{differences.map((item) => <article key={item.number}><span>{item.number} — {item.keyword}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
       </div></section>
 
@@ -281,7 +285,7 @@ export function HomePage() {
                 <h3>READ ME 파티</h3>
               </div>
               <div className="season-cycle__body">
-                <p>함께 읽은 사람들이 한자리에 모여, 못다 한 이야기를 얼굴 보며 나눕니다.</p>
+                <p>함께 읽은 사람들이 한자리에 모여, 못다 한 이야기를 얼굴 보며 나눕니다.<br />같은 기수여도 그룹이 달라 만나지 못했던 사람들과, 읽었던 책부터 책 너머의 다양한 이야기까지 대화를 이어갑니다.</p>
               </div>
             </div>
             <figure className="season-cycle__figure season-cycle__figure--art">

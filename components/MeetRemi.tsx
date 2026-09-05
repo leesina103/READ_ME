@@ -15,8 +15,8 @@ export function MeetRemi({ priority = false }: Props) {
       <Image
         src="/remi-brand-sheet-no-palette.png"
         alt="책을 읽고 질문하며 대화하는 READ ME 캐릭터 리미"
-        width={1536}
-        height={1536}
+        width={1254}
+        height={1254}
         sizes="(max-width: 820px) 100vw, 50vw"
         priority={priority}
       />

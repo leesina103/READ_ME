@@ -25,7 +25,7 @@ export default function MeetingPage() {
           {currentMeeting.recruiting && <span className="season-current__badge">{currentMeeting.recruitingLabel}</span>}
         </div>
         <h1>READ ME {currentMeeting.cohort}</h1>
-        <p className="meeting-hero__theme">이번 기수의 주제 · {currentTheme.name}</p>
+        <p className="meeting-hero__theme">이번 기수의 주제: {currentTheme.name}</p>
         <p className="meeting-hero__question">{currentTheme.subtitle}</p>
         <p className="meeting-hero__summary">{currentTheme.summary}</p>
         <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={15} /></Link>
@@ -50,7 +50,7 @@ export default function MeetingPage() {
             <div><p className="eyebrow">HOW IT WORKS</p><h2>2주에 한 권,<br />읽고 대화한 뒤 삶에 적용합니다.</h2></div>
             <div>
               <strong>왜 2주에 한 번인가요?</strong>
-              <p>READ ME가 격주로 만나는 이유는 단순히 쉬어가기 위해서가 아닙니다.<br />input. 첫 주에는 책과 질문을 받아들이는 INPUT을 만들고,<br />output. 다음 주에는 대화에서 얻은 생각을 일상에 적용하고 기록하는 OUTPUT을 만듭니다.<br />읽고 이야기한 것이 삶으로 이어질 시간을 남겨두기 위해 2주의 리듬으로 운영합니다.</p>
+              <p>READ ME가 격주로 만나는 이유는 단순히 쉬어가기 위해서가 아닙니다.<br />INPUT: 첫 주에는 책과 질문을 받아들입니다.<br />OUTPUT: 다음 주에는 대화에서 얻은 생각을 일상에 적용하고 기록합니다.<br />읽고 이야기한 것이 삶으로 이어질 시간을 남겨두기 위해 2주의 리듬으로 운영합니다.</p>
               <p>매주 한 권은 벅차니까. 2주에 한 권, 깊게 읽습니다.</p>
             </div>
           </div>
@@ -75,7 +75,11 @@ export default function MeetingPage() {
       <section className="section section--paper">
         <div className="section-shell">
           <div className="section-heading-row">
-            <div><p className="eyebrow">CURRICULUM</p><h2 className="themes-section-title">이번 기수에서 나눌 이야기</h2></div>
+            <div>
+              <p className="eyebrow">CURRICULUM</p>
+              <h2 className="themes-section-title">이번 기수에서 나눌 이야기</h2>
+              <p className="section-heading-row__lead">한 가지 질문만 반복하면 대화도 비슷해집니다.<br />삶은 여러 주제가 맞물려 있기에, 서로 맞닿은 네 개의 질문을 따라가며 회차마다 다른 이야기를 나눕니다.</p>
+            </div>
             <Link href={`/themes/${currentTheme.slug}`} className="text-link">{currentTheme.name} 주제 자세히 보기 <ArrowRight size={15} /></Link>
           </div>
           <ol className="meeting-curriculum">
@@ -92,7 +96,6 @@ export default function MeetingPage() {
                 </div>
                 <div className="meeting-curriculum__meta">
                   <p className="meeting-curriculum__book">『{session.book}』 · {session.author}</p>
-                  <p className="meeting-curriculum__io">오프라인 INPUT <ArrowRight size={13} aria-hidden="true" /> 온라인 OUTPUT</p>
                 </div>
               </li>
             ))}
@@ -106,7 +109,7 @@ export default function MeetingPage() {
             <div>
               <span>JOIN READ ME {currentMeeting.cohort}</span>
               <strong>함께 읽고 이야기하고 싶다면<br />인터뷰에서 먼저 만나요.</strong>
-              <p>서로를 존중하며 깊이 대화할 수 있는지 가볍게 이야기를 나눕니다. 회비와 세부 일정도 이때 안내드립니다.</p>
+              <p>서로를 존중하며 깊이 대화할 수 있는지 가볍게 이야기를 나눕니다.</p>
             </div>
             <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={15} /></Link>
           </div>

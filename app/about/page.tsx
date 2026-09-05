@@ -71,28 +71,28 @@ const cultureWords = ["존중", "경청", "수용", "솔직함", "따뜻함", "�
 
 const differences = [
   {
-    title: "질문 중심",
-    text: "‘이 책은 어땠나요?’에서 멈추지 않고, 나는 어떻게 생각하고 살아왔으며 앞으로 어떻게 살고 싶은지까지 질문합니다."
+    title: "질문에서 시작하는 깊은 대화",
+    text: <>책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다.<br />가이드는 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다.</>
+  },
+  {
+    title: "누구와 이야기하는가",
+    text: <>좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다.<br />READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다.</>
   },
   {
     title: "삶을 연결한 커리큘럼",
-    text: "관계, 나, 변화, 감정, 일과 건강처럼 서로 맞닿은 삶의 주제를 기수별 흐름 안에서 함께 바라봅니다."
-  },
-  {
-    title: "사람을 중요하게 생각함",
-    text: "좋은 책만큼 누구와 이야기하는지가 중요합니다. 사람 수보다 존중과 경청이 가능한 대화의 밀도를 먼저 생각합니다."
-  },
-  {
-    title: "한 번으로 끝나지 않는 연결",
-    text: "읽고, 생각하고, 이야기하고, 기록한 경험이 한 기수 뒤에도 사람과 커뮤니티로 이어질 수 있도록 만듭니다."
-  },
-  {
-    title: "납득할 수 있는 가격",
-    text: "비싼 모임이 반드시 좋은 경험을 만든다고 생각하지 않습니다. 가격보다 참여하고 난 뒤 실제로 남는 가치에 집중합니다."
+    text: <>관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다.<br />한 기수에서 하나의 주제만 탐구하는게 아닌 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다.</>
   },
   {
     title: "하나의 공간에서 이어지는 경험",
-    text: "인터뷰 신청부터 일정, 커리큘럼, 질문과 기록, 모임 이후의 연결까지 여러 공간을 오가지 않고 READ ME 안에서 이어질 수 있도록 만들고 있습니다."
+    text: <>신청부터 일정, 질문, 기록, 기수 커뮤니티까지 여러 곳에 흩어지지 않고 하나의 웹 공간에서 자연스럽게 이어집니다.</>
+  },
+  {
+    title: "한 번으로 끝나지 않는 연결",
+    text: <>읽고, 생각하고, 이야기하고, 기록한 경험이 한 기수 뒤에도 사람과 커뮤니티로 이어질 수 있도록 만듭니다.</>
+  },
+  {
+    title: "납득할 수 있는 가격",
+    text: <>비싼 모임이 반드시 좋은 경험을 만든다고 생각하지 않습니다.<br />가격보다 참여하고 난 뒤 실제로 남는 가치에 집중합니다.</>
   }
 ] as const;
 
@@ -138,7 +138,7 @@ export default function AboutPage() {
         <div className="section-shell about-why__grid">
           <div className="about-section-heading about-section-heading--light">
             <span>02</span>
-            <p className="eyebrow">WHY READ ME</p>
+            <p className="eyebrow">WHY WE STARTED</p>
             <h2>왜 READ ME를<br />만들었나요?</h2>
           </div>
           <div className="about-why__story">
@@ -228,6 +228,7 @@ export default function AboutPage() {
             <span>06</span>
             <p className="eyebrow">WHY DIFFERENT</p>
             <h2>READ ME가<br />다르게 생각하는 것</h2>
+            <p className="about-section-heading__lead">좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다.<br />독서모임을 3년간 직접 해보고, 아쉬운 점은 바꾸고 좋은 점만 골라 만들었습니다.</p>
           </div>
           <ol>
             {differences.map((difference, index) => (

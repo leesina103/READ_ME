@@ -9,8 +9,8 @@ import { currentMeeting } from "@/data/currentMeeting";
 const publicMenuItems = [
   { href: "/about", label: "READ ME 소개", description: "우리가 책을 읽고 대화하는 방식", live: false },
   { href: "/themes", label: "주제별 소개", description: "현재 1기 · 관계, 여섯 기수의 질문", live: false },
-  { href: "/meeting", label: `${currentMeeting.cohort} 모집`, description: "이번 기수 일정과 신청 안내", live: currentMeeting.recruiting },
-  { href: "/story", label: "후기", description: "함께 읽고 나눈 멤버들의 경험", live: false }
+  { href: "/meeting", label: `${currentMeeting.cohort} 모집 안내`, description: "이번 기수 일정과 신청 안내", live: currentMeeting.recruiting },
+  { href: "/story", label: "READ ME 후기", description: "함께 읽고 나눈 멤버들의 경험", live: false }
 ] as const;
 
 const membershipGroups = [

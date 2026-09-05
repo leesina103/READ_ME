@@ -16,7 +16,7 @@ export default function ThemesPage() {
       <section className="themes-hero section-shell">
         <p className="eyebrow">READING LIFE, TOGETHER</p>
         <h1>READ ME<br /><span>6가지 주제</span></h1>
-        <p>한 기수는 하나의 주제를 따라갑니다.<br />책에서 시작한 질문을 서로의 경험과 연결하며, 익숙했던 삶을 새로운 방향에서 바라봅니다.</p>
+        <p>한 기수는 하나의 주제를 따라갑니다.<br />한 가지 질문만 반복하면 대화도 비슷해집니다.<br />삶은 여러 주제가 맞물려 있기에, 서로 맞닿은 네 개의 질문을 따라가며 회차마다 다른 이야기를 나눕니다.</p>
       </section>
 
       <section className="section section--paper">
