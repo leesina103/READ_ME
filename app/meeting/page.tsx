@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BookOpen, NotebookPen } from "lucide-react";
+import { ProgramGuide } from "@/components/ProgramGuide";
 import { currentMeeting } from "@/data/currentMeeting";
 import { currentTheme } from "@/data/themes";
 
@@ -28,7 +29,8 @@ export default function MeetingPage() {
         <p className="meeting-hero__theme">이번 기수의 주제: {currentTheme.name}</p>
         <p className="meeting-hero__question">{currentTheme.subtitle}</p>
         <p className="meeting-hero__summary">{currentTheme.summary}</p>
-        <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={15} /></Link>
+        <Link href="/interview/apply" className="button button--primary">인터뷰 신청하기 <ArrowRight size={15} /></Link>
+        <div><Link href="/interview" className="text-link">인터뷰 안내 보기 <ArrowRight size={15} /></Link></div>
       </section>
 
       <section className="section section--paper">
@@ -47,9 +49,9 @@ export default function MeetingPage() {
       <section className="section">
         <div className="section-shell">
           <div className="meeting-flow__heading">
-            <div><p className="eyebrow">HOW IT WORKS</p><h2>2주에 한 권,<br />읽고 대화한 뒤 삶에 적용합니다.</h2></div>
+            <div><p className="eyebrow">HOW IT WORKS</p><h2>왜 2주에 한 번<br />만날까요?</h2></div>
             <div>
-              <strong>왜 2주에 한 번인가요?</strong>
+              <strong>읽고 이야기한 것을 삶으로 가져가는 시간</strong>
               <p>READ ME가 격주로 만나는 이유는 단순히 쉬어가기 위해서가 아닙니다.<br />INPUT: 첫 주에는 책과 질문을 받아들입니다.<br />OUTPUT: 다음 주에는 대화에서 얻은 생각을 일상에 적용하고 기록합니다.<br />읽고 이야기한 것이 삶으로 이어질 시간을 남겨두기 위해 2주의 리듬으로 운영합니다.</p>
               <p>매주 한 권은 벅차니까. 2주에 한 권, 깊게 읽습니다.</p>
             </div>
@@ -71,6 +73,8 @@ export default function MeetingPage() {
           <p className="meeting-flow__repeat">이 두 단계가 <strong>4회 반복</strong>되며 8주의 여정이 완성됩니다.</p>
         </div>
       </section>
+
+      <ProgramGuide />
 
       <section className="section section--paper">
         <div className="section-shell">
@@ -103,6 +107,23 @@ export default function MeetingPage() {
         </div>
       </section>
 
+      <section className="section meeting-after-section">
+        <div className="section-shell">
+          <div className="section-heading-row">
+            <div>
+              <p className="eyebrow">AFTER THE SEASON</p>
+              <h2 className="themes-section-title">한 기수가 끝난 뒤에도<br />이어지는 것들</h2>
+              <p className="section-heading-row__lead">8주 동안 나눈 질문과 관계가 한 번의 경험으로 끝나지 않도록 연결합니다.</p>
+            </div>
+          </div>
+          <div className="meeting-after-grid">
+            <article><span>01</span><h3>기록이 남습니다</h3><p>온라인에서 나눈 질문과 답변을 나의 서재에서 다시 꺼내볼 수 있습니다.</p></article>
+            <article><span>02</span><h3>사람과 다시 만납니다</h3><p>기수가 끝난 뒤 READ ME 파티에서 못다 한 이야기와 새로운 만남을 이어갑니다.</p></article>
+            <article><span>03</span><h3>멤버십으로 이어집니다</h3><p>커뮤니티, 자유 북토의와 소모임을 통해 다음 질문과 일상을 계속 나눕니다.</p></article>
+          </div>
+        </div>
+      </section>
+
       <section className="section">
         <div className="section-shell">
           <div className="meeting-cta">
@@ -111,7 +132,7 @@ export default function MeetingPage() {
               <strong>함께 읽고 이야기하고 싶다면<br />인터뷰에서 먼저 만나요.</strong>
               <p>서로를 존중하며 깊이 대화할 수 있는지 가볍게 이야기를 나눕니다.</p>
             </div>
-            <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={15} /></Link>
+            <Link href="/interview/apply" className="button button--primary">인터뷰 신청하기 <ArrowRight size={15} /></Link>
           </div>
         </div>
       </section>
