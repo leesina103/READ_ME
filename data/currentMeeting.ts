@@ -2,19 +2,34 @@ import { currentTheme } from "@/data/themes";
 
 const cohort = "1기";
 
+const schedule = {
+  duration: "8주",
+  start: "2026년 10월부터",
+  cadence: "격주",
+  offlineSessions: "4회",
+  onlineSessions: "4회",
+  sessionDuration: "3시간",
+  location: "서울 오프라인",
+  groupSize: "6명 안팎",
+  fee: "인터뷰 후 안내"
+} as const;
+
 export const currentMeeting = {
   cohort,
+  schedule,
   recruiting: true,
   recruitingLabel: "모집중",
   applyHref: "/interview",
   applyLabel: `${cohort} 참여 신청하기`,
   facts: [
-    { label: "진행 기간", value: "2026년 10월 ~" },
-    { label: "진행 주기", value: "격주 · 총 4회차" },
-    { label: "회차별 소요", value: "3시간" },
-    { label: "장소", value: "서울 오프라인" },
-    { label: "정원", value: "6명 안팎" },
-    { label: "회비", value: "인터뷰 후 안내" }
+    { label: "진행 기간", value: `${schedule.duration} · ${schedule.start}` },
+    { label: "진행 주기", value: schedule.cadence },
+    { label: "오프라인 토의", value: schedule.offlineSessions },
+    { label: "온라인 실천·기록", value: schedule.onlineSessions },
+    { label: "회차별 소요", value: schedule.sessionDuration },
+    { label: "장소", value: schedule.location },
+    { label: "정원", value: schedule.groupSize },
+    { label: "회비", value: schedule.fee }
   ],
   sessions: currentTheme.sessions.map((session, index) => ({ order: index + 1, ...session }))
 } as const;

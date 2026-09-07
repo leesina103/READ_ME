@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpen, CalendarDays, Check, Clock3, HeartHandshake, MapPin, MessageCircle, NotebookPen, Repeat, UsersRound } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays, Check, Clock3, HeartHandshake, MessageCircle, NotebookPen, Repeat, UsersRound } from "lucide-react";
 import { MeetRemi } from "@/components/MeetRemi";
 import { ReadingJourneyFlow } from "@/components/ReadingJourneyFlow";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -9,19 +9,11 @@ import { currentMeeting } from "@/data/currentMeeting";
 import { currentTheme } from "@/data/themes";
 import { readingGroupStories, storyClosing, storySourceNote } from "@/data/stories";
 
-const values = [
-  { icon: BookOpen, title: "사유", subtitle: "좋은 질문으로 나를 이해하는 시간", text: "책이 건넨 질문에 머물며 내 생각과 감정을 천천히 들여다봅니다." },
-  { icon: MessageCircle, title: "대화", subtitle: "존중과 경청으로 생각을 넓히는 시간", text: "서로 다른 경험과 관점을 판단하지 않고 깊이 들으며, 나의 언어를 넓혀갑니다." },
-  { icon: HeartHandshake, title: "관계", subtitle: "혼자가 아니라 함께 나아가는 힘", text: "깊은 대화가 한 번의 만남에 그치지 않도록, 서로의 변화와 다음 질문을 응원합니다." }
-];
-
 const meetingFacts = [
-  { icon: CalendarDays, value: "8주", label: "한 기수" },
-  { icon: Repeat, value: "격주", label: "진행 주기" },
-  { icon: MapPin, value: "오프라인 4회", label: "책 읽고 대화 · INPUT" },
-  { icon: NotebookPen, value: "온라인 4회", label: "삶에 적용하고 기록 · OUTPUT" },
-  { icon: Clock3, value: "3시간", label: "오프라인 회차별" },
-  { icon: UsersRound, value: "6명 안팎", label: "소규모" }
+  { icon: CalendarDays, value: currentMeeting.schedule.duration, label: "한 기수" },
+  { icon: Repeat, value: currentMeeting.schedule.cadence, label: "진행 주기" },
+  { icon: Clock3, value: currentMeeting.schedule.sessionDuration, label: "오프라인 회차별" },
+  { icon: UsersRound, value: currentMeeting.schedule.groupSize, label: "한 그룹 · 소규모" }
 ];
 
 const people = [
@@ -43,8 +35,7 @@ const principles = [
 const differences = [
   { number: "01", keyword: "DEEP TALK", title: "질문에서 시작하는 깊은 대화", text: <>책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다.<br />가이드는 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다.</> },
   { number: "02", keyword: "PEOPLE", title: "누구와 이야기하는가", text: <>좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다.<br />READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다.</> },
-  { number: "03", keyword: "CONNECTED FLOW", title: "삶을 연결한 커리큘럼", text: <>관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다.<br />한 기수에서 하나의 주제만 탐구하는게 아닌 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다.</> },
-  { number: "04", keyword: "ONE SPACE", title: "하나의 공간에서 이어지는 경험", text: <>신청부터 일정, 질문, 기록, 기수 커뮤니티까지 여러 곳에 흩어지지 않고 하나의 웹 공간에서 자연스럽게 이어집니다.</> }
+  { number: "03", keyword: "CONNECTED FLOW", title: "삶을 연결한 커리큘럼", text: <>관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다.<br />한 기수에서 하나의 주제만 탐구하는게 아닌 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다.</> }
 ];
 
 const faqs = [
@@ -81,10 +72,18 @@ export function HomePage() {
       </section>
 
       <section className="section meeting-format-section"><div className="section-shell">
-        <SectionTitle eyebrow="HOW IT WORKS" title={<>8주 동안,<br />작고 깊게 읽습니다.</>} />
-        <div className="meeting-facts">{meetingFacts.map(({ icon: Icon, ...fact }) => <article key={fact.label}><Icon size={20} strokeWidth={1.5} /><strong>{fact.value}</strong><span>{fact.label}</span></article>)}</div>
+        <SectionTitle eyebrow="HOW IT WORKS" title={<>8주 동안,<br />함께 깊게 읽습니다.</>} />
+        <div className="meeting-overview">
+          <div className="meeting-facts">{meetingFacts.map(({ icon: Icon, ...fact }) => <article key={fact.label}><Icon size={20} strokeWidth={1.5} /><strong>{fact.value}</strong><span>{fact.label}</span></article>)}</div>
+          <div className="meeting-rhythm">
+            <div className="meeting-rhythm__step"><span>1주차 · INPUT</span><strong>오프라인 토의</strong><p>책과 질문으로 깊게 대화합니다.</p></div>
+            <ArrowRight className="meeting-rhythm__arrow" size={22} aria-hidden="true" />
+            <div className="meeting-rhythm__step"><span>2주차 · OUTPUT</span><strong>온라인 실천과 기록</strong><p>대화에서 얻은 생각을 삶에 가져와 적용하고 기록합니다.</p></div>
+            <div className="meeting-rhythm__repeat"><Repeat size={17} aria-hidden="true" /><strong>이 흐름을 4번 반복</strong></div>
+          </div>
+        </div>
         <div className="participation-flow"><strong>참여 흐름</strong><p>책 읽기 <ArrowRight size={15} /> 사전 질문 <ArrowRight size={15} /> 오프라인 대화 <ArrowRight size={15} /> 기록 <ArrowRight size={15} /> 온라인 세션</p></div>
-        <div className="home-talk-preview"><div><p className="eyebrow">READ ME TALK ROOM</p><h3>대화에서 얻은 생각을<br />웹에서 이어갑니다.</h3><p>책을 읽으며 떠오른 생각을 먼저 적고, 함께 나눈 대화를 삶에 적용해 기록합니다.</p></div><TalkRoomPreview /></div>
+        <div className="home-talk-preview"><div><div className="home-talk-preview__label"><p className="eyebrow">READ ME TALK ROOM</p><span>사전 질문 예시</span></div><h3>대화에서 얻은 생각을<br />웹에서 이어갑니다.</h3><p>책을 읽으며 떠오른 생각을 먼저 적고, 함께 나눈 대화를 삶에 적용해 기록합니다.</p></div><TalkRoomPreview /></div>
         <article className="season-current">
           <div className="season-current__label"><p className="eyebrow">CURRENT SEASON</p>{currentMeeting.recruiting && <span className="season-current__badge">{currentMeeting.recruitingLabel}</span>}</div>
           <h3>{currentMeeting.cohort} — {currentTheme.name}, {currentTheme.subtitle}</h3>
@@ -97,11 +96,17 @@ export function HomePage() {
 
       <section className="section section--paper intro-remi-section"><div className="section-shell"><MeetRemi priority /></div></section>
 
-      <section className="section why-overview-section"><div className="section-shell why-overview"><div><p className="eyebrow">WHY READ ME</p><h2>READ ME가 중요하게 생각하는 것</h2></div><Link href="/about" className="button button--ghost">READ ME의 전체 이야기 보기 <ArrowRight size={15} /></Link></div></section>
-
-      <section className="section values-section"><div className="section-shell"><SectionTitle eyebrow="OUR VALUES" context="READ ME가 중요하게 생각하는 3가지 가치" title="사유 · 대화 · 관계" /><div className="value-grid">{values.map(({ icon: Icon, ...value }) => <article key={value.title}><Icon size={24} strokeWidth={1.5} /><p>{value.title}</p><h3>{value.subtitle}</h3><span>{value.text}</span></article>)}</div></div></section>
-
-      <section className="section why-section"><div className="section-shell"><SectionTitle eyebrow="WHY READ ME" title={<>READ ME가<br />다르게 생각하는 것</>} /><p className="why-section__origin">독서모임을 3년간 직접 해보고, 아쉬운 점은 바꾸고 좋은 점만 골라 만들었습니다.</p><div className="difference-grid">{differences.map((item) => <article key={item.number}><span>{item.number} — {item.keyword}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></div></section>
+      <section className="section why-section"><div className="section-shell why-layout">
+        <div className="why-section__intro">
+          <p className="eyebrow">WHY READ ME</p>
+          <h2>READ ME가<br />다르게 생각하는 것</h2>
+          <p className="why-section__origin">독서모임을 3년간 직접 해보며, 깊은 대화를 위해 필요한 3가지를 남겼습니다.</p>
+        </div>
+        <div className="why-section__details">
+          <div className="difference-list">{differences.map((item) => <article key={item.number}><span>{item.number}</span><div><small>{item.keyword}</small><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
+          <Link href="/about" className="button button--ghost why-section__link">READ ME의 전체 이야기 보기 <ArrowRight size={15} /></Link>
+        </div>
+      </div></section>
 
       <section className="section connection-section"><div className="section-shell"><div className="season-guide"><p className="eyebrow">AFTER THE SEASON</p><h2>한 기수가 끝나도,<br />관계까지 끝나지는 않도록.</h2></div><ul className="season-cycle connection-cycle">
         <li><div className="season-cycle__text"><div className="season-cycle__head"><span>언제든 · 나의 서재</span><h3>기록 보관</h3></div><div className="season-cycle__body"><p>온라인에서 나눈 질문과 서로의 답변을 언제든 다시 꺼내볼 수 있도록 남깁니다.</p></div></div><figure className="season-cycle__figure season-cycle__figure--art"><div className="season-cycle__frame"><Image src="/theme-remi-work.png" alt="책상에서 기록을 남기는 리미" width={960} height={600} sizes="(max-width: 820px) 92vw, 470px" /></div></figure></li>

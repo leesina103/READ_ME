@@ -37,12 +37,12 @@ export default function MeetingPage() {
         <div className="section-shell">
           <p className="eyebrow">RECRUITING</p>
           <h2 className="themes-section-title">모집 정보</h2>
-          <dl className="meeting-facts">
+          <dl className="meeting-recruiting-facts">
             {currentMeeting.facts.map((fact) => (
               <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>
             ))}
           </dl>
-          <p className="meeting-facts__note">요일과 시간, 회차별 정확한 날짜는 인터뷰에서 함께 조율합니다.</p>
+          <p className="meeting-facts__note">요일과 시간, 회차별 정확한 날짜는 인터뷰 후에 함께 조율합니다.</p>
         </div>
       </section>
 

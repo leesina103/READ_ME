@@ -206,7 +206,7 @@ export default function AboutPage() {
           <div className="about-section-heading">
             <span>05</span>
             <p className="eyebrow">OUR VALUES</p>
-            <p className="about-section-heading__context">READ ME가 중요하게 생각하는 세 가지 가치</p>
+            <p className="about-section-heading__context">READ ME가 중요하게 생각하는 3가지 가치</p>
             <h2>사유 · 대화 · 관계</h2>
           </div>
           <div className="about-value-grid">
