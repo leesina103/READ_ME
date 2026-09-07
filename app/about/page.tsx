@@ -153,33 +153,11 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="about-section about-name">
-        <div className="section-shell">
-          <div className="about-section-heading about-section-heading--center">
-            <span>03</span>
-            <p className="eyebrow">THE NAME</p>
-            <h2>READ ME라는 이름에<br />담긴 세 가지 이야기</h2>
-          </div>
-          <div className="about-name-grid">
-            {nameMeanings.map((meaning) => (
-              <article key={meaning.number}>
-                <span>{meaning.number}</span>
-                <p>{meaning.title}</p>
-                <h3>{meaning.subtitle}</h3>
-                <div />
-                <small>{meaning.text}</small>
-              </article>
-            ))}
-          </div>
-          <MeetRemi />
-        </div>
-      </section>
-
       <section className="about-section about-process">
         <div className="section-shell">
           <div className="about-process__heading">
             <div className="about-section-heading about-section-heading--light">
-              <span>04</span>
+              <span>03</span>
               <p className="eyebrow">HOW IT FLOWS</p>
               <h2>책에서 시작해,<br />삶으로 돌아갑니다.</h2>
             </div>
@@ -204,7 +182,7 @@ export default function AboutPage() {
       <section className="about-section about-values">
         <div className="section-shell">
           <div className="about-section-heading">
-            <span>05</span>
+            <span>04</span>
             <p className="eyebrow">OUR VALUES</p>
             <p className="about-section-heading__context">READ ME가 중요하게 생각하는 3가지 가치</p>
             <h2>사유 · 대화 · 관계</h2>
@@ -225,7 +203,7 @@ export default function AboutPage() {
       <section className="about-section about-difference">
         <div className="section-shell about-difference__grid">
           <div className="about-section-heading">
-            <span>06</span>
+            <span>05</span>
             <p className="eyebrow">WHY DIFFERENT</p>
             <h2>READ ME가<br />다르게 생각하는 것</h2>
             <p className="about-section-heading__lead">좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다.<br />독서모임을 3년간 직접 해보고, 아쉬운 점은 바꾸고 좋은 점만 골라 만들었습니다.</p>
@@ -241,11 +219,52 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="about-section about-name">
+        <div className="section-shell">
+          <div className="about-section-heading about-section-heading--center">
+            <span>06</span>
+            <p className="eyebrow">THE NAME</p>
+            <h2>READ ME라는 이름에<br />담긴 세 가지 이야기</h2>
+          </div>
+          <div className="about-name-grid">
+            {nameMeanings.map((meaning) => (
+              <article key={meaning.number}>
+                <span>{meaning.number}</span>
+                <p>{meaning.title}</p>
+                <h3>{meaning.subtitle}</h3>
+                <div />
+                <small>{meaning.text}</small>
+              </article>
+            ))}
+          </div>
+          <MeetRemi />
+        </div>
+      </section>
+
+      <section className="about-section about-promises">
+        <div className="section-shell">
+          <div className="about-section-heading about-section-heading--center">
+            <span>07</span>
+            <p className="eyebrow">OUR PROMISE</p>
+            <h2>우리가 지키고 싶은 약속</h2>
+          </div>
+          <div className="about-promise-grid">
+            {promises.map((promise, index) => (
+              <article key={promise.title}>
+                <span>0{index + 1}</span>
+                <h3>{promise.title}</h3>
+                <p>{promise.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="about-section about-culture">
         <div className="section-shell about-culture__grid">
           <div>
             <div className="about-section-heading">
-              <span>07</span>
+              <span>08</span>
               <p className="eyebrow">PEOPLE & CULTURE</p>
               <h2>잘난 사람이 아니라,<br />잘 대화할 수 있는 사람.</h2>
             </div>
@@ -262,25 +281,6 @@ export default function AboutPage() {
             <p>서로가 기대하는 모임의 방식과 대화 태도를 나누고, READ ME가 중요하게 생각하는 문화를 함께 만들 수 있을지 알아가는 짧은 대화입니다.</p>
             <Link href="/interview">인터뷰 안내 보기 <ArrowRight size={16} /></Link>
           </aside>
-        </div>
-      </section>
-
-      <section className="about-section about-promises">
-        <div className="section-shell">
-          <div className="about-section-heading about-section-heading--center">
-            <span>08</span>
-            <p className="eyebrow">OUR PROMISE</p>
-            <h2>우리가 지키고 싶은 약속</h2>
-          </div>
-          <div className="about-promise-grid">
-            {promises.map((promise, index) => (
-              <article key={promise.title}>
-                <span>0{index + 1}</span>
-                <h3>{promise.title}</h3>
-                <p>{promise.text}</p>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
 
