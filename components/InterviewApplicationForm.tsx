@@ -18,42 +18,50 @@ const initialState: InterviewApplicationState = { status: "idle", message: "" };
 const timeZone = "Asia/Seoul";
 const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
 
+// 서버(Node)와 브라우저의 로케일 데이터가 달라도 같은 문자열이 나오도록,
+// 로케일 포맷에 맡기지 않고 숫자만 뽑아 직접 조합한다. (예: 서버 "PM 6:00" vs 브라우저 "오후 6:00" 불일치 방지)
+const seoulPartsFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone,
+  hourCycle: "h23",
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric"
+});
+
+function seoulParts(startsAt: string) {
+  const parts = seoulPartsFormatter.formatToParts(new Date(startsAt));
+  const read = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((part) => part.type === type)?.value ?? 0);
+  const year = read("year");
+  const month = read("month");
+  const day = read("day");
+  const hour = read("hour");
+  const minute = read("minute");
+  const weekday = weekdayLabels[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
+  return { year, month, day, hour, minute, weekday };
+}
+
+const pad = (value: number) => String(value).padStart(2, "0");
+
 function dateKey(startsAt: string) {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).format(new Date(startsAt));
+  const { year, month, day } = seoulParts(startsAt);
+  return `${year}-${pad(month)}-${pad(day)}`;
 }
 
 function dateLabel(startsAt: string) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    timeZone,
-    month: "long",
-    day: "numeric",
-    weekday: "short"
-  }).format(new Date(startsAt));
-}
-
-function fullDateTimeLabel(startsAt: string) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    timeZone,
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    weekday: "short",
-    hour: "numeric",
-    minute: "2-digit"
-  }).format(new Date(startsAt));
+  const { month, day, weekday } = seoulParts(startsAt);
+  return `${month}월 ${day}일 (${weekday})`;
 }
 
 function timeLabel(startsAt: string) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    timeZone,
-    hour: "numeric",
-    minute: "2-digit"
-  }).format(new Date(startsAt));
+  const { hour, minute } = seoulParts(startsAt);
+  return `${hour < 12 ? "오전" : "오후"} ${hour % 12 || 12}:${pad(minute)}`;
+}
+
+function fullDateTimeLabel(startsAt: string) {
+  const { year } = seoulParts(startsAt);
+  return `${year}년 ${dateLabel(startsAt)} ${timeLabel(startsAt)}`;
 }
 
 type InterviewApplicationFormProps = {
