@@ -28,7 +28,7 @@ export default function ThemesPage() {
             <div><span>{currentMeeting.cohort}</span><p>현재 기수</p></div>
             <div><p>{currentTheme.name}</p><h3>{currentTheme.subtitle}</h3></div>
             <div className="current-theme-card__actions">
-              <Link href="/meeting" className="button button--light">{currentMeeting.cohort} 모임 안내 보기 <ArrowRight size={16} /></Link>
+              <Link href="/meeting" className="button button--light">{currentMeeting.meetingLabel} <ArrowRight size={16} /></Link>
             </div>
           </article>
           <Link href={currentMeeting.applyHref} className="theme-interview-cta">

@@ -9,6 +9,7 @@ import {
   Video,
   Wifi
 } from "lucide-react";
+import { currentMeeting } from "@/data/currentMeeting";
 
 export const metadata: Metadata = {
   title: "인터뷰 안내",
@@ -179,7 +180,7 @@ export default function InterviewPage() {
       </section>
 
       <section className="section cta-section">
-        <div className="section-shell"><div className="cta-card"><HeartHandshake size={34}/><p className="eyebrow">READY TO TALK?</p><h2>한 권의 책보다 먼저,<br />서로의 태도를 만나요.</h2><p>다가오는 모임을 살펴보고 마음이 닿는다면 편한 인터뷰 일정을 선택해 주세요.</p><div className="cta-actions"><Link href="/meeting" className="button button--light">모임 먼저 보기 <ArrowRight size={15}/></Link><Link href="/interview/apply" className="button button--outline-light">인터뷰 신청하기</Link></div></div></div>
+        <div className="section-shell"><div className="cta-card"><HeartHandshake size={34}/><p className="eyebrow">READY TO TALK?</p><h2>한 권의 책보다 먼저,<br />서로의 태도를 만나요.</h2><p>다가오는 모임을 살펴보고 마음이 닿는다면 편한 인터뷰 일정을 선택해 주세요.</p><div className="cta-actions"><Link href="/meeting" className="button button--light">모임 먼저 보기 <ArrowRight size={15}/></Link><Link href={currentMeeting.applyHref} className="button button--outline-light">{currentMeeting.applyLabel}</Link></div></div></div>
       </section>
     </main>
   );

@@ -1,6 +1,7 @@
 import { currentTheme } from "@/data/themes";
 
 const cohort = "1기";
+const recruiting: boolean = true;
 
 const schedule = {
   duration: "8주",
@@ -17,10 +18,11 @@ const schedule = {
 export const currentMeeting = {
   cohort,
   schedule,
-  recruiting: true,
+  recruiting,
   recruitingLabel: "모집중",
-  applyHref: "/interview",
-  applyLabel: `${cohort} 참여 신청하기`,
+  meetingLabel: recruiting ? `${cohort} 모집 안내 보기` : `${cohort} 모임 안내 보기`,
+  applyHref: "/interview/apply",
+  applyLabel: "인터뷰 예약하기",
   facts: [
     { label: "진행 기간", value: `${schedule.duration} · ${schedule.start}` },
     { label: "진행 주기", value: schedule.cadence },

@@ -42,7 +42,7 @@ export async function submitInterviewApplicationAction(
   }
 
   if (!privacyConsent) {
-    return { status: "error", message: "인터뷰 신청을 위한 개인정보 수집에 동의해 주세요." };
+    return { status: "error", message: "인터뷰 예약을 위한 개인정보 수집에 동의해 주세요." };
   }
 
   if (!isSupabaseConfigured()) {
@@ -62,10 +62,10 @@ export async function submitInterviewApplicationAction(
     }
 
     if (error.message.includes("already_applied")) {
-      return { status: "error", message: "이미 신청한 전화번호입니다. 일정 변경은 카카오톡 채널로 문의해 주세요." };
+      return { status: "error", message: "이미 예약한 전화번호입니다. 일정 변경은 카카오톡 채널로 문의해 주세요." };
     }
 
-    return { status: "error", message: "신청을 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
+    return { status: "error", message: "예약을 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
   }
 
   const booking = Array.isArray(data) ? data[0] : null;
@@ -80,7 +80,7 @@ export async function submitInterviewApplicationAction(
 
   return {
     status: "success",
-    message: "인터뷰 신청이 완료되었습니다.",
+    message: "인터뷰 예약이 완료되었습니다.",
     startsAt,
     notificationStatus
   };

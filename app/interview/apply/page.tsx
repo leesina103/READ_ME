@@ -5,12 +5,13 @@ import {
   InterviewApplicationForm,
   type InterviewSlot
 } from "@/components/InterviewApplicationForm";
+import { currentMeeting } from "@/data/currentMeeting";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "인터뷰 신청",
-  description: "READ ME 인터뷰 날짜와 시간을 선택하고 신청합니다."
+  title: "인터뷰 예약",
+  description: "READ ME 인터뷰 날짜와 시간을 선택하고 예약합니다."
 };
 
 type InterviewSlotRow = {
@@ -54,10 +55,10 @@ export default async function InterviewApplyPage() {
           <Link href="/interview" className="text-link"><ArrowLeft size={15} /> 인터뷰 안내</Link>
           <div className="interview-apply-heading">
             <div>
-              <p className="eyebrow">BOOK AN INTERVIEW</p>
+              <p className="eyebrow">BOOK AN INTERVIEW · {currentMeeting.cohort}</p>
               <h1>편한 날짜와 시간을<br />선택해 주세요.</h1>
             </div>
-            <p>이름과 전화번호만 남기면 신청이 완료됩니다.<br />예약 시간과 안내 페이지는 카카오톡으로 보내드려요.</p>
+            <p>{currentMeeting.cohort} 참여를 위한 인터뷰입니다. 이름과 전화번호만 남기면 예약이 완료됩니다.<br />예약 시간과 안내 페이지는 카카오톡으로 보내드려요.</p>
           </div>
         </div>
       </section>

@@ -150,7 +150,7 @@ export function InterviewApplicationForm({ slots }: InterviewApplicationFormProp
       <section className="interview-apply-success" aria-live="polite">
         <CheckCircle2 size={34} aria-hidden="true" />
         <p className="eyebrow">APPLICATION COMPLETE</p>
-        <h2>인터뷰 신청을 받았습니다.</h2>
+        <h2>인터뷰 예약을 받았습니다.</h2>
         <div className="interview-apply-success__time">
           <CalendarCheck2 size={20} aria-hidden="true" />
           <strong>{fullDateTimeLabel(state.startsAt)}</strong>
@@ -265,8 +265,8 @@ export function InterviewApplicationForm({ slots }: InterviewApplicationFormProp
       </div>
 
       <fieldset className="interview-apply-fieldset interview-contact-fields">
-        <legend><span>03</span> 신청자 정보</legend>
-        <p>신청 확인과 일정 안내에만 사용합니다.</p>
+        <legend><span>03</span> 예약자 정보</legend>
+        <p>예약 확인과 일정 안내에만 사용합니다.</p>
         <label>
           이름
           <input
@@ -301,7 +301,7 @@ export function InterviewApplicationForm({ slots }: InterviewApplicationFormProp
       )}
 
       <button type="submit" className="button button--primary interview-apply-submit" disabled={pending || !selectedSlotId}>
-        {pending ? "신청 중..." : "인터뷰 신청하기"}
+        {pending ? "예약 중..." : "이 일정으로 예약하기"}
       </button>
     </form>
   );

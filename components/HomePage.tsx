@@ -24,16 +24,8 @@ const people = [
   "자신의 삶을 조금 더 잘 살아보고 싶은 사람"
 ];
 
-const principles = [
-  "가이드가 일방적으로 이야기하는 모임을 만들지 않습니다.",
-  "한 번 만나고 끝나는 관계만을 만들고 싶지 않습니다.",
-  "사람 수만 늘리는 것을 목표로 하지 않습니다.",
-  "비싼 가격이 곧 좋은 경험이라고 생각하지 않습니다.",
-  "가격보다 실제 경험과 남는 가치를 중요하게 생각합니다."
-];
-
 const differences = [
-  { number: "01", keyword: "DEEP TALK", title: "질문에서 시작하는 깊은 대화", text: <>책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다.<br />가이드는 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다.</> },
+  { number: "01", keyword: "DEEP TALK", title: "질문에서 시작하는 깊은 대화", text: <>책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다.<br />가이드가 일방적으로 이야기하는 모임이 아니라, 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다.</> },
   { number: "02", keyword: "PEOPLE", title: "누구와 이야기하는가", text: <>좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다.<br />READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다.</> },
   { number: "03", keyword: "CONNECTED FLOW", title: "삶을 연결한 커리큘럼", text: <>관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다.<br />한 기수에서 하나의 주제만 탐구하는게 아닌 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다.</> }
 ];
@@ -62,8 +54,8 @@ export function HomePage() {
           <h1>Read Books.<br /><em>Read Yourself.</em></h1>
           <p className="hero__lead">책을 통해 나를 읽고,<br />결이 맞는 사람을 만나고,<br />삶의 방향을 찾아가는 독서 커뮤니티.</p>
           <div className="button-row hero__actions">
-            <Link href="/meeting" className="button button--primary">1기 모집 정보 보기 <ArrowRight size={16} /></Link>
-            <Link href="/interview/apply" className="button button--ghost">인터뷰 신청하기</Link>
+            <Link href="/meeting" className="button button--primary">{currentMeeting.meetingLabel} <ArrowRight size={16} /></Link>
+            <Link href={currentMeeting.applyHref} className="button button--ghost">{currentMeeting.applyLabel}</Link>
           </div>
           <Link href="/interview" className="text-link hero__interview-link">인터뷰가 궁금하다면? 인터뷰 안내 보기 <ArrowRight size={15} /></Link>
         </div>
@@ -87,7 +79,7 @@ export function HomePage() {
           <div className="season-current__label"><p className="eyebrow">CURRENT SEASON</p>{currentMeeting.recruiting && <span className="season-current__badge">{currentMeeting.recruitingLabel}</span>}</div>
           <h3>{currentMeeting.cohort} — {currentTheme.name}, {currentTheme.subtitle}</h3>
           <ol className="season-current__questions">{currentTheme.sessions.map((session, index) => <li key={session.title}><span className="season-current__num">{String(index + 1).padStart(2, "0")}</span><span className="season-current__topic">{session.title}</span><span className="season-current__q">{session.question}</span><span className="season-current__book">《{session.book}》</span></li>)}</ol>
-          <div className="season-current__actions"><Link href={`/themes/${currentTheme.slug}`} className="button button--primary">{currentTheme.name} 주제 자세히 보기 <ArrowRight size={15} /></Link><Link href="/meeting" className="button button--ghost">1기 상세 안내 보기</Link></div>
+          <div className="season-current__actions"><Link href={`/themes/${currentTheme.slug}`} className="button button--primary">{currentTheme.name} 주제 자세히 보기 <ArrowRight size={15} /></Link><Link href="/meeting" className="button button--ghost">{currentMeeting.cohort} 상세 안내 보기</Link></div>
           <p className="season-current__next">READ ME는 매 기수 새로운 주제와 질문으로 진행합니다.</p>
           <Link href="/themes" className="button button--ghost season-current__themes">전체 주제 보기 <ArrowRight size={15} /></Link>
         </article>
@@ -109,9 +101,7 @@ export function HomePage() {
 
       <section className="section connection-section"><div className="section-shell"><div className="season-guide"><p className="eyebrow">AFTER THE SEASON</p><h2>한 기수가 끝나도,<br />관계까지 끝나지는 않도록.</h2></div><AfterSeasonCarousel /></div></section>
 
-      <section className="section people-section"><div className="section-shell people-layout"><div><p className="eyebrow">PEOPLE WE WELCOME</p><h2>이런 사람들과<br />함께하고 싶어요.</h2><blockquote>정답을 가진 사람보다,<br />질문을 가진 사람을 환영합니다.</blockquote></div><ul>{people.map((person) => <li key={person}><Check size={17} /> {person}</li>)}</ul></div></section>
-
-      <section className="section principle-section"><div className="section-shell principle-layout"><div><p className="eyebrow">WHAT WE BELIEVE</p><h2>우리가 만들지 않는 모임</h2><p>무엇을 하지 않을지 분명히 하는 것도 READ ME다운 경험을 만드는 방법이라고 믿습니다.</p></div><ol>{principles.map((principle, index) => <li key={principle}><span>{String(index + 1).padStart(2, "0")}</span><p>{principle}</p></li>)}</ol></div></section>
+      <section className="section people-section"><div className="section-shell people-layout"><div><p className="eyebrow">RECOMMENDED FOR</p><h2>이런 사람에게<br />READ ME를 추천해요.</h2><blockquote>정답을 가진 사람보다,<br />질문을 가진 사람을 위한 모임입니다.</blockquote></div><ul>{people.map((person) => <li key={person}><Check size={17} /> {person}</li>)}</ul></div></section>
 
       <section className="section story-section"><div className="section-shell"><SectionTitle eyebrow="STORY" title="실제 사람들이 느낀 것" description={storySourceNote} /><StoryCarousel /><p className="story-closing">{storyClosing}</p><Link href="/story" className="button button--ghost story-link">전체 후기 보기 <ArrowRight size={16} /></Link></div></section>
 
@@ -119,7 +109,7 @@ export function HomePage() {
 
       <section className="section faq-section"><div className="section-shell faq-layout"><div><p className="eyebrow">FAQ</p><h2>참여하기 전에<br />궁금한 것들</h2><p>처음이라도 편안하게 시작할 수 있도록 자주 묻는 내용을 정리했습니다.</p></div><div className="faq-list">{faqs.map((item, index) => <details key={item.question}><summary><span>{String(index + 1).padStart(2, "0")}</span>{item.question}<i>+</i></summary><p>{item.answer}{item.href && <><br /><Link href={item.href} className="faq-answer-link">인터뷰 안내 자세히 보기 <ArrowRight size={14} /></Link></>}</p></details>)}</div></div></section>
 
-      <section className="section cta-section"><div className="section-shell cta-card cta-card--compact-title"><NotebookPen size={30} strokeWidth={1.4}/><p className="eyebrow">AN INVITATION</p><h2>삶의 답은 내가 찾지만,<br />그 과정을 혼자 걸을 필요는 없으니까.</h2><p>우리는 정답을 알려드리지 않습니다.<br />대신 더 좋은 질문을 함께 찾고 싶습니다.</p><div className="cta-actions"><Link href="/interview/apply" className="button button--light">READ ME와 함께하기 <ArrowRight size={16} /></Link><Link href="/meeting" className="button button--outline-light">1기 모집 정보 보기</Link></div></div></section>
+      <section className="section cta-section"><div className="section-shell cta-card cta-card--compact-title"><NotebookPen size={30} strokeWidth={1.4}/><p className="eyebrow">AN INVITATION</p><h2>삶의 답은 내가 찾지만,<br />그 과정을 혼자 걸을 필요는 없으니까.</h2><p>READ ME와 함께하는 첫걸음,<br />편안한 인터뷰로 시작해요.</p><div className="cta-actions"><Link href={currentMeeting.applyHref} className="button button--light">{currentMeeting.applyLabel} <ArrowRight size={16} /></Link><Link href="/meeting" className="button button--outline-light">{currentMeeting.meetingLabel}</Link></div></div></section>
     </main>
   );
 }

@@ -29,7 +29,7 @@ export default function MeetingPage() {
         <p className="meeting-hero__theme">이번 기수의 주제: {currentTheme.name}</p>
         <p className="meeting-hero__question">{currentTheme.subtitle}</p>
         <p className="meeting-hero__summary">{currentTheme.summary}</p>
-        <Link href="/interview/apply" className="button button--primary">인터뷰 신청하기 <ArrowRight size={15} /></Link>
+        <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={15} /></Link>
         <div><Link href="/interview" className="text-link">인터뷰 안내 보기 <ArrowRight size={15} /></Link></div>
       </section>
 
@@ -132,7 +132,7 @@ export default function MeetingPage() {
               <strong>함께 읽고 이야기하고 싶다면<br />인터뷰에서 먼저 만나요.</strong>
               <p>서로를 존중하며 깊이 대화할 수 있는지 가볍게 이야기를 나눕니다.</p>
             </div>
-            <Link href="/interview/apply" className="button button--primary">인터뷰 신청하기 <ArrowRight size={15} /></Link>
+            <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={15} /></Link>
           </div>
         </div>
       </section>

@@ -72,7 +72,7 @@ const cultureWords = ["존중", "경청", "수용", "솔직함", "따뜻함", "�
 const differences = [
   {
     title: "질문에서 시작하는 깊은 대화",
-    text: <>책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다.<br />가이드는 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다.</>
+    text: <>책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다.<br />가이드가 일방적으로 이야기하는 모임이 아니라, 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다.</>
   },
   {
     title: "누구와 이야기하는가",
@@ -92,7 +92,7 @@ const differences = [
   },
   {
     title: "납득할 수 있는 가격",
-    text: <>비싼 모임이 반드시 좋은 경험을 만든다고 생각하지 않습니다.<br />가격보다 참여하고 난 뒤 실제로 남는 가치에 집중합니다.</>
+    text: <>비싼 모임이 반드시 좋은 경험을 만든다고 생각하지 않습니다.<br />가격보다 실제 경험과 남는 가치를 중요하게 생각합니다.</>
   }
 ] as const;
 
@@ -288,10 +288,10 @@ export default function AboutPage() {
         <div className="section-shell about-finale__inner">
           <p className="eyebrow">READ BOOKS. READ YOURSELF.</p>
           <h2>나를 읽다.<br />서로를 읽다.<br />삶을 읽다.</h2>
-          <p>정답을 가진 사람보다 질문을 가진 사람과 함께하고 싶습니다.<br />당신의 다음 질문을 READ ME에서 만나보세요.</p>
+          <p>당신의 다음 질문을 READ ME에서 만나보세요.<br />첫걸음은 편안한 인터뷰로 시작해요.</p>
           <div className="cta-actions">
-            <Link href="/meeting" className="button button--light">현재 모임 보기 <ArrowRight size={16} /></Link>
-            <Link href={currentMeeting.applyHref} className="button button--outline-light">{currentMeeting.applyLabel}</Link>
+            <Link href={currentMeeting.applyHref} className="button button--light">{currentMeeting.applyLabel} <ArrowRight size={16} /></Link>
+            <Link href="/meeting" className="button button--outline-light">{currentMeeting.meetingLabel}</Link>
           </div>
         </div>
       </section>
