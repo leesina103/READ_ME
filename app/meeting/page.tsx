@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BookOpen, NotebookPen } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ProgramGuide } from "@/components/ProgramGuide";
 import { currentMeeting } from "@/data/currentMeeting";
 import { currentTheme } from "@/data/themes";
 
 export const metadata: Metadata = {
-  title: "모임 안내",
-  description: "READ ME 1기 모집 정보와 8주 동안 함께 읽고 나눌 네 번의 이야기를 안내합니다."
+  title: currentMeeting.recruiting ? "모집 안내" : "모임 안내",
+  description: `READ ME ${currentMeeting.cohort} ${currentMeeting.recruiting ? "모집 정보" : "진행 방식"}와 8주 동안 함께 읽고 나눌 네 번의 이야기를 안내합니다.`,
+  alternates: { canonical: "/meeting" }
 };
 
 const sessionFocus = [
@@ -42,35 +43,7 @@ export default function MeetingPage() {
               <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>
             ))}
           </dl>
-          <p className="meeting-facts__note">요일과 시간, 회차별 정확한 날짜는 인터뷰 후에 함께 조율합니다.</p>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-shell">
-          <div className="meeting-flow__heading">
-            <div><p className="eyebrow">HOW IT WORKS</p><h2>왜 2주에 한 번<br />만날까요?</h2></div>
-            <div>
-              <strong>읽고 이야기한 것을 삶으로 가져가는 시간</strong>
-              <p>READ ME가 격주로 만나는 이유는 단순히 쉬어가기 위해서가 아닙니다.<br />INPUT: 첫 주에는 책과 질문을 받아들입니다.<br />OUTPUT: 다음 주에는 대화에서 얻은 생각을 일상에 적용하고 기록합니다.<br />읽고 이야기한 것이 삶으로 이어질 시간을 남겨두기 위해 2주의 리듬으로 운영합니다.</p>
-              <p>매주 한 권은 벅차니까. 2주에 한 권, 깊게 읽습니다.</p>
-            </div>
-          </div>
-          <div className="meeting-flow__io">
-            <article>
-              <BookOpen size={22} strokeWidth={1.5} aria-hidden="true" />
-              <small>INPUT · 오프라인</small>
-              <h3>책을 읽고 질문을 나눕니다</h3>
-              <p>책은 다양한 사람의 경험을 가장 값싸게 배울 수 있는 수단입니다.</p>
-            </article>
-            <article>
-              <NotebookPen size={22} strokeWidth={1.5} aria-hidden="true" />
-              <small>OUTPUT · 온라인</small>
-              <h3>생각을 삶에 적용하고 기록합니다</h3>
-              <p>배운 것은 실천해야 비로소 온전히 내 것이 됩니다.</p>
-            </article>
-          </div>
-          <p className="meeting-flow__repeat">이 두 단계가 <strong>4회 반복</strong>되며 8주의 여정이 완성됩니다.</p>
+          <p className="meeting-facts__note">요일과 시간, 회차별 정확한 날짜는 인터뷰 후에 함께 조율합니다.<br />인터뷰는 {currentMeeting.interview.duration} 동안 진행되며, 결과는 {currentMeeting.interview.resultTiming} 안에 개별 안내합니다.</p>
         </div>
       </section>
 
@@ -84,14 +57,17 @@ export default function MeetingPage() {
               <h2 className="themes-section-title">이번 기수에서 나눌 이야기</h2>
               <p className="section-heading-row__lead">한 가지 질문만 반복하면 대화도 비슷해집니다.<br />삶은 여러 주제가 맞물려 있기에, 서로 맞닿은 네 개의 질문을 따라가며 회차마다 다른 이야기를 나눕니다.</p>
             </div>
-            <Link href={`/themes/${currentTheme.slug}`} className="text-link">{currentTheme.name} 주제 자세히 보기 <ArrowRight size={15} /></Link>
+            <div className="meeting-curriculum__theme">
+              <Link href={`/themes/${currentTheme.slug}`} className="text-link">{currentTheme.name} 주제 자세히 보기 <ArrowRight size={15} /></Link>
+              <small>* 기수마다 주제가 바뀝니다.</small>
+            </div>
           </div>
           <ol className="meeting-curriculum">
             {currentMeeting.sessions.map((session, index) => (
               <li key={session.order}>
                 <div className="meeting-curriculum__order">
                   <span>{session.order}회차</span>
-                  <small>{session.order * 2 - 1}–{session.order * 2}주차</small>
+                  <small>{session.order * 2 - 1}~{session.order * 2}주차</small>
                 </div>
                 <div className="meeting-curriculum__body">
                   <h3>{session.title}</h3>
@@ -107,19 +83,12 @@ export default function MeetingPage() {
         </div>
       </section>
 
-      <section className="section meeting-after-section">
+      <section className="meeting-after-section">
         <div className="section-shell">
-          <div className="section-heading-row">
-            <div>
-              <p className="eyebrow">AFTER THE SEASON</p>
-              <h2 className="themes-section-title">한 기수가 끝난 뒤에도<br />이어지는 것들</h2>
-              <p className="section-heading-row__lead">8주 동안 나눈 질문과 관계가 한 번의 경험으로 끝나지 않도록 연결합니다.</p>
-            </div>
-          </div>
-          <div className="meeting-after-grid">
-            <article><span>01</span><h3>기록이 남습니다</h3><p>온라인에서 나눈 질문과 답변을 나의 서재에서 다시 꺼내볼 수 있습니다.</p></article>
-            <article><span>02</span><h3>사람과 다시 만납니다</h3><p>기수가 끝난 뒤 READ ME 파티에서 못다 한 이야기와 새로운 만남을 이어갑니다.</p></article>
-            <article><span>03</span><h3>멤버십으로 이어집니다</h3><p>커뮤니티, 자유 북토의와 소모임을 통해 다음 질문과 일상을 계속 나눕니다.</p></article>
+          <div className="meeting-after-note">
+            <p className="eyebrow">AFTER THE SEASON</p>
+            <p>기수가 끝난 뒤에도 나의 서재에 기록이 남고, READ ME 파티와 멤버십 활동을 통해 사람과 관계를 이어갑니다.</p>
+            <Link href="/#after-season" className="text-link">이어지는 활동 자세히 보기 <ArrowRight size={15} /></Link>
           </div>
         </div>
       </section>

@@ -5,7 +5,8 @@ import { readingGroupStories, storyClosing, storySourceNote } from "@/data/stori
 
 export const metadata: Metadata = {
   title: "독서모임 이야기",
-  description: "독서모임을 경험한 사람들이 말하는 함께 읽고 대화하는 시간의 가치를 기록합니다."
+  description: "독서모임을 경험한 사람들이 말하는 함께 읽고 대화하는 시간의 가치를 기록합니다.",
+  alternates: { canonical: "/story" }
 };
 
 export default function StoryPage() {

@@ -11,7 +11,8 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "인터뷰 예약",
-  description: "READ ME 인터뷰 날짜와 시간을 선택하고 예약합니다."
+  description: "READ ME 인터뷰 날짜와 시간을 선택하고 예약합니다.",
+  alternates: { canonical: "/interview/apply" }
 };
 
 type InterviewSlotRow = {
@@ -69,7 +70,7 @@ export default async function InterviewApplyPage() {
             <MessageCircleMore size={28} aria-hidden="true" />
             <p className="eyebrow">BEFORE YOU BOOK</p>
             <h2>답을 준비하지 않아도<br />괜찮습니다.</h2>
-            <p>인터뷰는 1:1 온라인 대화로 진행하며 약 20–30분이 걸립니다. 서로의 대화 방식이 편안할지 가볍게 알아보는 시간이에요.</p>
+            <p>인터뷰는 1:1 온라인 대화로 진행하며 약 {currentMeeting.interview.duration}이 걸립니다. 서로의 대화 방식이 편안할지 가볍게 알아보는 시간이에요.</p>
           </aside>
           <InterviewApplicationForm slots={slots} />
         </div>

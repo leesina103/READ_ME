@@ -16,7 +16,8 @@ import { ReadingJourneyFlow } from "@/components/ReadingJourneyFlow";
 
 export const metadata: Metadata = {
   title: "READ ME 소개",
-  description: "책을 통해 나를 읽고, 서로를 만나며, 삶의 방향을 찾아가는 READ ME의 이야기와 철학을 소개합니다."
+  description: "책을 통해 나를 읽고, 서로를 만나며, 삶의 방향을 찾아가는 READ ME의 이야기와 철학을 소개합니다.",
+  alternates: { canonical: "/about" }
 };
 
 const nameMeanings = [
@@ -45,26 +46,20 @@ const values = [
     icon: BookOpen,
     title: "사유",
     subtitle: "좋은 질문으로 나를 이해하는 시간",
-    text: "책의 내용을 잘 기억하는 것보다, 책이 남긴 질문 앞에 머물며 타인의 답이 아닌 나의 답을 찾아가는 힘을 중요하게 생각합니다."
+    text: "몇 권을 읽었는지보다, 한 권의 책이 남긴 질문 앞에 머물며 무엇을 생각하게 되었는지를 중요하게 여깁니다. 타인의 답이 아닌 나의 답을 자신의 언어로 찾아가는 힘을 중요하게 생각합니다."
   },
   {
     icon: MessageCircle,
     title: "대화",
     subtitle: "존중과 경청으로 생각을 넓히는 시간",
-    text: "대화는 정답을 맞히는 토론이 아닙니다. 같은 책에서도 서로 다른 곳에 멈춘 사람을 통해 내가 미처 보지 못한 세계를 만나는 과정입니다."
+    text: "대화는 정답을 맞히는 토론이 아닙니다. 누구의 생각도 쉽게 평가하지 않고 서로 다른 경험과 가치관을 끝까지 들으며, 내가 미처 보지 못한 세계를 만나는 과정입니다."
   },
   {
     icon: HeartHandshake,
     title: "관계",
     subtitle: "혼자가 아니라 함께 나아가는 힘",
-    text: "무엇을 읽는지만큼 누구와 이야기하는지가 중요합니다. READ ME는 존중과 경청이 가능한 문화를 바탕으로, 깊은 대화가 한 번의 만남에 그치지 않고 서로의 변화와 다음 걸음을 응원하는 관계로 이어지길 바랍니다."
+    text: "무엇을 읽는지만큼 누구와 이야기하는지가 중요합니다. READ ME는 존중과 경청 속에서 좋은 사람들과 깊은 대화를 나눕니다. 한 번의 만남으로 끝내지 않고, 함께 나눈 생각과 관계가 기수 이후에도 이어지는 경험을 만듭니다."
   }
-] as const;
-
-const outcomes = [
-  { title: "생각하는 힘", text: "질문 앞에 머물며 생각을 자신의 언어로 표현합니다." },
-  { title: "새로운 관점", text: "혼자서는 발견하지 못했던 다른 생각과 삶을 만납니다." },
-  { title: "함께하는 힘", text: "좋은 사람과의 약속 속에서 읽고 생각하는 시간을 이어갑니다." }
 ] as const;
 
 const cultureWords = ["존중", "경청", "수용", "솔직함", "따뜻함", "성장하려는 마음"] as const;
@@ -80,7 +75,7 @@ const differences = [
   },
   {
     title: "삶을 연결한 커리큘럼",
-    text: <>관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다.<br />한 기수에서 하나의 주제만 탐구하는게 아닌 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다.</>
+    text: <>관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다.<br />한 기수에서 하나의 주제만 탐구하는 게 아니라 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다.</>
   },
   {
     title: "하나의 공간에서 이어지는 경험",
@@ -96,13 +91,6 @@ const differences = [
   }
 ] as const;
 
-const promises = [
-  { title: "진심", text: "운영의 편의보다 멤버가 실제로 느끼고 얻어가는 경험을 먼저 생각합니다." },
-  { title: "존중", text: "누구의 생각도 쉽게 평가하지 않고, 서로 다른 경험과 가치관을 끝까지 듣습니다." },
-  { title: "깊이", text: "몇 권을 읽었는지보다 한 권의 책으로 무엇을 생각하게 되었는지를 중요하게 여깁니다." },
-  { title: "연결", text: "한 번 만나고 사라지는 관계보다 좋은 사람과 생각이 계속 이어지는 경험을 만듭니다." }
-] as const;
-
 export default function AboutPage() {
   return (
     <main className="about-page">
@@ -113,6 +101,7 @@ export default function AboutPage() {
           <p className="about-hero__lead">책을 읽는 것을 넘어 나를 읽고,<br />서로의 이야기를 통해 다시 삶으로 나아가는 곳.</p>
         </div>
         <div className="about-hero__visual">
+          <span className="about-hero__remi-label">READ ME의 안내자, 리미</span>
           <RemiGuide compact />
           <p>나를 읽다.<br />서로를 읽다.<br />삶을 읽다.</p>
         </div>
@@ -164,18 +153,7 @@ export default function AboutPage() {
             <p>READ ME의 목적은 책을 많이 읽게 만드는 데 있지 않습니다. 한 권의 책을 매개로 나를 이해하고, 다른 사람을 이해하며, 삶을 조금 더 잘 살아가는 데 있습니다.</p>
           </div>
           <ReadingJourneyFlow className="about-process-flow" />
-          <div className="about-outcomes">
-            <p className="eyebrow">WHAT REMAINS</p>
-            <h3>함께 읽은 뒤에 남는 변화</h3>
-            <div className="about-outcome-grid">
-              {outcomes.map((outcome) => (
-                <article key={outcome.title}>
-                  <strong>{outcome.title}</strong>
-                  <p>{outcome.text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
+          <Link href="/meeting#program-guide" className="about-process__link">실제 1기 진행 방식 자세히 보기 <ArrowRight size={16} /></Link>
         </div>
       </section>
 
@@ -206,7 +184,7 @@ export default function AboutPage() {
             <span>05</span>
             <p className="eyebrow">WHY DIFFERENT</p>
             <h2>READ ME가<br />다르게 생각하는 것</h2>
-            <p className="about-section-heading__lead">좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다.<br />독서모임을 3년간 직접 해보고, 아쉬운 점은 바꾸고 좋은 점만 골라 만들었습니다.</p>
+            <p className="about-section-heading__lead">좋은 책, 좋은 사람, 연결된 질문과 기록이 하나의 경험이 되도록 설계합니다.<br />독서모임을 3년간 직접 운영하며, 운영의 편의보다 멤버가 실제로 느끼고 얻어가는 경험을 먼저 생각해 필요한 방식을 다듬었습니다.</p>
           </div>
           <ol>
             {differences.map((difference, index) => (
@@ -241,30 +219,11 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="about-section about-promises">
-        <div className="section-shell">
-          <div className="about-section-heading about-section-heading--center">
-            <span>07</span>
-            <p className="eyebrow">OUR PROMISE</p>
-            <h2>우리가 지키고 싶은 약속</h2>
-          </div>
-          <div className="about-promise-grid">
-            {promises.map((promise, index) => (
-              <article key={promise.title}>
-                <span>0{index + 1}</span>
-                <h3>{promise.title}</h3>
-                <p>{promise.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="about-section about-culture">
         <div className="section-shell about-culture__grid">
           <div>
             <div className="about-section-heading">
-              <span>08</span>
+              <span>07</span>
               <p className="eyebrow">PEOPLE & CULTURE</p>
               <h2>잘난 사람이 아니라,<br />잘 대화할 수 있는 사람.</h2>
             </div>

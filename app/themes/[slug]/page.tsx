@@ -16,7 +16,17 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: ThemePageProps): Promise<Metadata> {
   const theme = findTheme((await params).slug);
   if (!theme) return {};
-  return { title: `${theme.name} — 주제별 소개`, description: theme.summary };
+  return {
+    title: `${theme.name} — 주제별 소개`,
+    description: theme.summary,
+    alternates: { canonical: `/themes/${theme.slug}` },
+    openGraph: {
+      siteName: "READ ME",
+      locale: "ko_KR",
+      type: "website",
+      images: [{ url: `/theme-remi-${theme.slug}.png`, alt: `${theme.name} 주제를 표현한 READ ME 캐릭터 리미` }]
+    }
+  };
 }
 
 export default async function ThemePage({ params }: ThemePageProps) {
@@ -28,7 +38,7 @@ export default async function ThemePage({ params }: ThemePageProps) {
     <main className="theme-detail-page">
       <section className="theme-detail-hero">
         <div className="section-shell">
-          <Link href="/themes" className="theme-detail-back"><ArrowLeft size={15} /> 여섯 주제 보기</Link>
+          <Link href="/themes#themes" className="theme-detail-back"><ArrowLeft size={15} /> 여섯 주제 보기</Link>
           <div className="theme-detail-hero__grid">
             <div className="theme-detail-hero__title">
               <p className="eyebrow">THEME {String(themeIndex + 1).padStart(2, "0")}</p>
@@ -85,7 +95,7 @@ export default async function ThemePage({ params }: ThemePageProps) {
       <section className="section theme-detail-footer">
         <div className="section-shell">
           <p>다른 삶의 질문도 둘러보세요.</p>
-          <Link href="/themes" className="button button--primary">주제별 소개로 돌아가기 <ArrowRight size={15} /></Link>
+          <Link href="/themes#themes" className="button button--primary">주제별 소개로 돌아가기 <ArrowRight size={15} /></Link>
         </div>
       </section>
     </main>

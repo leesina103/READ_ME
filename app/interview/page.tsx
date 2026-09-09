@@ -13,7 +13,8 @@ import { currentMeeting } from "@/data/currentMeeting";
 
 export const metadata: Metadata = {
   title: "인터뷰 안내",
-  description: "READ ME에 참여하기 전 서로의 기대와 대화 방식을 맞춰보는 온라인 인터뷰를 안내합니다."
+  description: "READ ME에 참여하기 전 서로의 기대와 대화 방식을 맞춰보는 온라인 인터뷰를 안내합니다.",
+  alternates: { canonical: "/interview" }
 };
 
 const benefits = [
@@ -26,7 +27,7 @@ const process = [
   ["01", "날짜와 시간 선택", "예약 가능한 날짜를 고른 뒤, 편안하게 참여할 수 있는 시간을 선택합니다."],
   ["02", "이름과 연락처 입력", "신청자 확인과 일정 안내에 필요한 이름과 전화번호만 남깁니다."],
   ["03", "신청 완료 안내", "선택한 인터뷰 시간과 안내 페이지를 카카오톡 메시지로 보내드립니다."],
-  ["04", "20–30분 대화", "정해진 답을 평가하지 않고, 독서와 대화에 대한 생각을 차분히 나눕니다."]
+  ["04", `${currentMeeting.interview.duration} 대화`, "정해진 답을 평가하지 않고, 독서와 대화에 대한 생각을 차분히 나눕니다."]
 ] as const;
 
 const questions = [
@@ -45,7 +46,7 @@ const notices = [
   {
     title: "진행 형태와 시간",
     items: [
-      "인터뷰는 온라인 구글 화상 미팅으로 약 30분간 진행되며, 예약된 정각에 시작합니다.",
+      `인터뷰는 온라인 구글 화상 미팅으로 ${currentMeeting.interview.duration} 동안 진행되며, 예약된 정각에 시작합니다.`,
       "별도 연락 없이 5분 이상 접속이 늦어지면 다음 인터뷰 일정에 영향을 줄 수 있어 인터뷰가 취소될 수 있습니다."
     ]
   },
@@ -55,7 +56,7 @@ const notices = [
       "일정 변경이 필요하다면 인터뷰 시작 전에 카카오톡 채널로 알려주세요.",
       "별도 연락 없이 인터뷰에 불참한 경우, 다른 신청자의 기회를 보호하기 위해 불참일로부터 3개월간 READ ME 참여 신청이 제한됩니다.",
       "인터뷰 전에 카카오톡 또는 문자로 예약 시간과 접속 링크를 다시 안내합니다.",
-      "인터뷰 결과는 운영진 논의 후 3일 안으로 개별적으로 전달합니다."
+      `인터뷰 결과는 운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 개별적으로 전달합니다.`
     ]
   }
 ] as const;
@@ -71,7 +72,7 @@ const faqs = [
   ["책을 많이 읽어야 하나요?", "독서량은 기준이 아닙니다. 한 문장을 오래 생각하고 자신의 언어로 나눌 마음이 있다면 충분합니다."],
   ["무엇을 준비해야 하나요?", "별도의 답안이나 자기소개 자료는 필요하지 않습니다. 최근의 독서 경험과 모임에 기대하는 점만 가볍게 떠올려 주세요."],
   ["긴장해서 말을 잘 못하면 어떡하나요?", "운영진이 질문을 천천히 건넵니다. 잠시 생각한 뒤 답해도 되고, 답하기 어려운 질문은 건너뛸 수 있습니다."],
-  ["인터뷰 결과는 언제 알 수 있나요?", "운영진 논의 후 3일 안으로 개별적으로 전달합니다."]
+  ["인터뷰 결과는 언제 알 수 있나요?", `운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 개별적으로 전달합니다.`]
 ] as const;
 
 export default function InterviewPage() {
@@ -96,7 +97,7 @@ export default function InterviewPage() {
       <section className="proof-strip" aria-label="인터뷰 요약">
         <div className="section-shell proof-strip__inner">
           <article><strong>1:1</strong><span>운영진과 대화</span><small>여럿 앞에서 소개하지 않아요</small></article>
-          <article><strong>20–30</strong><span>예상 소요 시간</span><small>충분히 생각하며 이야기해요</small></article>
+          <article><strong>20~30</strong><span>예상 소요 시간</span><small>충분히 생각하며 이야기해요</small></article>
           <article><strong className="proof-strip__online">ONLINE</strong><span>화상 미팅</span><small>확정 링크는 개별 안내해요</small></article>
         </div>
       </section>
@@ -167,7 +168,7 @@ export default function InterviewPage() {
             ))}
           </div>
           <div className="button-row">
-            <Link href="/meeting" className="button button--primary">모임 진행 방식 자세히 보기 <ArrowRight size={15}/></Link>
+            <Link href="/meeting#program-guide" className="button button--primary">모임 진행 방식 자세히 보기 <ArrowRight size={15}/></Link>
           </div>
         </div>
       </section>

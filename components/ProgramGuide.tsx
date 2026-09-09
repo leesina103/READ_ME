@@ -3,14 +3,15 @@ import { TalkRoomPreview } from "@/components/TalkRoomPreview";
 
 export function ProgramGuide() {
   return (
-    <section className="section season-section">
+    <section id="program-guide" className="section season-section">
       <div className="section-shell">
         <div className="season-guide">
           <p className="eyebrow">PROGRAM GUIDE</p>
-          <h2>한 회차는<br />이렇게 진행됩니다.</h2>
-          <p>한 기수는 하나의 주제로 8주 동안 이어집니다.<br />격주 오프라인 토의에서 책과 질문으로 대화하고, 사이의 휴식 세션에서는 배운 것을 삶에 적용해봅니다.</p>
-          <small>* 기수마다 주제가 바뀝니다.</small>
+          <h2>왜 2주에 한 번<br />만날까요?</h2>
+          <strong className="season-guide__lead">읽고 이야기한 것을 삶으로 가져가는 시간</strong>
+          <p>READ ME가 격주로 만나는 이유는 단순히 쉬어가기 위해서가 아닙니다. 책을 읽고 대화한 생각을 일상에 적용하고 기록할 시간을 남겨두기 위해 2주의 리듬으로 운영합니다.<br />매주 한 권을 빠르게 읽기보다, 2주에 한 권을 깊게 읽습니다.</p>
         </div>
+        <h3 className="season-cycle__title">한 회차는 이렇게 진행됩니다.</h3>
         <ol className="season-cycle">
           <li>
             <div className="season-cycle__text">

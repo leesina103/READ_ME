@@ -7,7 +7,8 @@ import { currentTheme, themes } from "@/data/themes";
 
 export const metadata: Metadata = {
   title: "주제별 소개",
-  description: "READ ME가 기수별로 함께 읽고 대화하는 여섯 가지 삶의 주제를 소개합니다."
+  description: "READ ME가 기수별로 함께 읽고 대화하는 여섯 가지 삶의 주제를 소개합니다.",
+  alternates: { canonical: "/themes" }
 };
 
 export default function ThemesPage() {
@@ -42,7 +43,7 @@ export default function ThemesPage() {
         </div>
       </section>
 
-      <section className="section themes-index-section">
+      <section id="themes" className="section themes-index-section">
         <div className="section-shell">
           <div className="section-heading-row">
             <div><p className="eyebrow">SIX THEMES</p><h2 className="themes-section-title">어떤 삶을 읽어볼까요?</h2></div>

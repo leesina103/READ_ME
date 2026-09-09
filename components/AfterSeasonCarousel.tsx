@@ -30,8 +30,8 @@ const afterSeasonItems = [
     timing: "전 기수와 함께 · 온라인",
     title: "멤버십 커뮤니티",
     description: <><p>함께한 기수가 달라도, 다음 질문과 일상을 나누며 서로의 생각과 변화를 이어갑니다.</p><p>인생책을 소개하거나 직접 쓴 글을 공유하는 등, 각자의 읽기와 쓰기를 편하게 나눌 수 있는 커뮤니티를 운영합니다.</p></>,
-    image: "/theme-remi-change.png",
-    alt: "징검다리를 건너며 새싹에 물을 주는 리미"
+    image: "/membership-community-preview-full.png",
+    alt: "인생책 소개와 글 공유 탭이 보이는 READ ME 멤버십 커뮤니티 화면"
   },
   {
     timing: "원하는 책으로 · 멤버십 오프라인",
@@ -65,7 +65,7 @@ export function AfterSeasonCarousel() {
       <ul ref={trackRef} className="after-season__track" onScroll={handleScroll} tabIndex={0} aria-label="한 기수 이후 이어지는 활동">
         {afterSeasonItems.map((item, index) => (
           <li key={item.title}>
-            <figure>
+            <figure className={item.image === "/membership-community-preview-full.png" ? "after-season__figure--contain" : undefined}>
               <Image src={item.image} alt={item.alt} width={960} height={600} sizes="(max-width: 820px) 82vw, 560px" />
             </figure>
             <div className="after-season__copy">

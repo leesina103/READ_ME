@@ -42,7 +42,7 @@ const detailLinks = [
   { href: "/about", eyebrow: "ABOUT", title: "READ ME는 어떤 곳인가요?", text: "READ ME가 시작된 이유와 중요하게 생각하는 가치를 소개합니다.", icon: HeartHandshake },
   { href: "/meeting", eyebrow: "MEETING", title: "1기는 어떻게 진행되나요?", text: "모집 정보부터 8주의 진행 방식과 커리큘럼까지 확인합니다.", icon: CalendarDays },
   { href: `/themes/${currentTheme.slug}`, eyebrow: "CURRENT THEME", title: "어떤 책과 질문을 만나나요?", text: "1기 관계 주제에 담긴 네 번의 질문을 자세히 살펴봅니다.", icon: MessageCircle },
-  { href: "/themes", eyebrow: "ALL THEMES", title: "다른 주제들도 보고 싶어요", text: "READ ME가 앞으로 함께 읽고 이야기할 주제를 둘러봅니다.", icon: Repeat },
+  { href: "/themes#themes", eyebrow: "ALL THEMES", title: "다른 주제들도 보고 싶어요", text: "READ ME가 앞으로 함께 읽고 이야기할 주제를 둘러봅니다.", icon: Repeat },
 ];
 
 export function HomePage() {
@@ -81,7 +81,7 @@ export function HomePage() {
           <ol className="season-current__questions">{currentTheme.sessions.map((session, index) => <li key={session.title}><span className="season-current__num">{String(index + 1).padStart(2, "0")}</span><span className="season-current__topic">{session.title}</span><span className="season-current__q">{session.question}</span><span className="season-current__book">《{session.book}》</span></li>)}</ol>
           <div className="season-current__actions"><Link href={`/themes/${currentTheme.slug}`} className="button button--primary">{currentTheme.name} 주제 자세히 보기 <ArrowRight size={15} /></Link><Link href="/meeting" className="button button--ghost">{currentMeeting.cohort} 상세 안내 보기</Link></div>
           <p className="season-current__next">READ ME는 매 기수 새로운 주제와 질문으로 진행합니다.</p>
-          <Link href="/themes" className="button button--ghost season-current__themes">전체 주제 보기 <ArrowRight size={15} /></Link>
+          <Link href="/themes#themes" className="button button--ghost season-current__themes">전체 주제 보기 <ArrowRight size={15} /></Link>
         </article>
       </div></section>
 
@@ -99,7 +99,7 @@ export function HomePage() {
         </div>
       </div></section>
 
-      <section className="section connection-section"><div className="section-shell"><div className="season-guide"><p className="eyebrow">AFTER THE SEASON</p><h2>한 기수가 끝나도,<br />관계까지 끝나지는 않도록.</h2></div><AfterSeasonCarousel /></div></section>
+      <section id="after-season" className="section connection-section"><div className="section-shell"><div className="season-guide"><p className="eyebrow">AFTER THE SEASON</p><h2>한 기수가 끝나도,<br />관계까지 끝나지는 않도록.</h2></div><AfterSeasonCarousel /></div></section>
 
       <section className="section people-section"><div className="section-shell people-layout"><div><p className="eyebrow">RECOMMENDED FOR</p><h2>이런 사람에게<br />READ ME를 추천해요.</h2><blockquote>정답을 가진 사람보다,<br />질문을 가진 사람을 위한 모임입니다.</blockquote></div><ul>{people.map((person) => <li key={person}><Check size={17} /> {person}</li>)}</ul></div></section>
 

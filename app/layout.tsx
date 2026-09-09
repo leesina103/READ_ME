@@ -32,11 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: "READ ME — Read books. Read yourself.", template: "%s | READ ME" },
   description: "책을 읽고, 질문하고, 함께 사유하는 독서모임 READ ME.",
-  alternates: { canonical: "/" },
   openGraph: {
-    title: "READ ME — Read books. Read yourself.",
-    description: "책을 읽고, 질문하고, 함께 사유하는 독서모임 READ ME.",
-    url: "/",
     siteName: "READ ME",
     locale: "ko_KR",
     type: "website",

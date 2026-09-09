@@ -94,6 +94,7 @@ export function Header({ isAuthenticated = false, isMember = false, accountLabel
             <div className="desktop-membership-menu__panel"><MembershipMenuContent enabled={isMember} /></div>
           </details>
           <span className="nav-divider" aria-hidden="true" />
+          {currentMeeting.recruiting && <Link href={currentMeeting.applyHref} className="button button--primary header-apply-button">{currentMeeting.applyLabel}</Link>}
           <Link href={isAuthenticated ? "/my" : "/login"} className="desktop-account-link" aria-label={isAuthenticated ? `${accountLabel} 계정, 나의 서재로 이동` : "로그인"} title={accountLabel}><span>{accountLabel}</span><UserRound size={20} aria-hidden="true" /></Link>
         </nav>
 
@@ -113,6 +114,7 @@ export function Header({ isAuthenticated = false, isMember = false, accountLabel
                 <MembershipMenuContent enabled={isMember} onNavigate={closeMobileMenu} />
               </details>
             </nav>
+            {currentMeeting.recruiting && <div className="main-menu__apply"><Link href={currentMeeting.applyHref} className="button button--primary" onClick={closeMobileMenu}>{currentMeeting.applyLabel} <ArrowRight size={16} aria-hidden="true" /></Link></div>}
             <p className="main-menu__note">멤버십 공간은 로그인한 활성 멤버에게만 열립니다.</p>
           </div>
         </details>

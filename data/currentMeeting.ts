@@ -15,9 +15,15 @@ const schedule = {
   fee: "인터뷰 후 안내"
 } as const;
 
+const interview = {
+  duration: "20~30분",
+  resultTiming: "1~2일"
+} as const;
+
 export const currentMeeting = {
   cohort,
   schedule,
+  interview,
   recruiting,
   recruitingLabel: "모집중",
   meetingLabel: recruiting ? `${cohort} 모집 안내 보기` : `${cohort} 모임 안내 보기`,
