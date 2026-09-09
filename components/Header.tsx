@@ -47,7 +47,7 @@ function MembershipMenuContent({ enabled, onNavigate }: MembershipMenuContentPro
   return (
     <div className="membership-menu__content">
       <div className="membership-menu__intro">
-        <div><small>{enabled ? "MEMBER ONLY" : "LOCKED"}</small><strong>READ ME 멤버십</strong></div>
+        <div><small>{enabled ? "MEMBER ONLY" : "회원 전용"}</small><strong>READ ME 멤버십</strong></div>
         {enabled ? <Link href="/membership" onClick={onNavigate}>멤버십 홈 <ArrowRight size={14} /></Link> : <LockKeyhole size={17} aria-hidden="true" />}
       </div>
       <div className="membership-menu__groups">
@@ -64,7 +64,7 @@ function MembershipMenuContent({ enabled, onNavigate }: MembershipMenuContentPro
           </section>
         ))}
       </div>
-      {!enabled && <p className="membership-menu__locked-note">로그인한 활성 멤버에게 열리는 메뉴입니다.</p>}
+      {!enabled && <p className="membership-menu__locked-note">회원 전용 메뉴입니다.</p>}
     </div>
   );
 }
@@ -110,12 +110,12 @@ export function Header({ isAuthenticated = false, isMember = false, accountLabel
                 </Link>
               ))}
               <details className="main-menu__membership">
-                <summary><span className="main-menu__copy"><small>{isMember ? "회원 전용" : "잠김"}</small><strong>READ ME 멤버십</strong><span>커뮤니티와 멤버 활동</span></span><ChevronDown size={18} aria-hidden="true" /></summary>
+                <summary><span className="main-menu__copy"><small>회원 전용</small><strong>READ ME 멤버십</strong><span>커뮤니티와 멤버 활동</span></span><ChevronDown size={18} aria-hidden="true" /></summary>
                 <MembershipMenuContent enabled={isMember} onNavigate={closeMobileMenu} />
               </details>
             </nav>
             {currentMeeting.recruiting && <div className="main-menu__apply"><Link href={currentMeeting.applyHref} className="button button--primary" onClick={closeMobileMenu}>{currentMeeting.applyLabel} <ArrowRight size={16} aria-hidden="true" /></Link></div>}
-            <p className="main-menu__note">멤버십 공간은 로그인한 활성 멤버에게만 열립니다.</p>
+            <p className="main-menu__note">멤버십 공간은 회원 전용입니다.</p>
           </div>
         </details>
 
