@@ -63,7 +63,7 @@ const notices = [
 
 const membershipBenefits = [
   ["질문에서 시작하는 깊은 대화", "같은 책을 읽고도 서로 다르게 느낀 지점과 삶의 경험을 나눕니다."],
-  ["오프라인과 온라인으로 이어지는 8주", "2주에 한 권씩, 오프라인 대화와 온라인 실천·기록을 네 번 반복합니다."],
+  [`오프라인과 온라인으로 이어지는 ${currentMeeting.schedule.duration}`, "2주에 한 권씩, 오프라인 대화와 온라인 실천·기록을 네 번 반복합니다."],
   ["나의 생각을 발견하고 넓히는 시간", "타인의 관점을 만나며 내 생각을 자신의 언어로 정리하고, 일상에 작은 변화를 만들어갑니다."]
 ] as const;
 
@@ -157,7 +157,7 @@ export default function InterviewPage() {
         <div className="section-shell">
           <p className="eyebrow">READ ME JOURNEY</p>
           <h2 className="interview-section-title">인터뷰를 지나,<br />함께 읽게 된다면</h2>
-          <p className="interview-section-copy">READ ME 회원이 된 뒤에는 책과 질문, 사람을 따라가는 8주의 시간이 기다리고 있습니다.</p>
+          <p className="interview-section-copy">READ ME 회원이 된 뒤에는 책과 질문, 사람을 따라가는 {currentMeeting.schedule.duration}의 시간이 기다리고 있습니다.</p>
           <div className="step-grid">
             {membershipBenefits.map(([title, text], index) => (
               <article key={title} className="step-card">

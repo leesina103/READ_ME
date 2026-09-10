@@ -7,6 +7,8 @@ import { StoryCarousel } from "@/components/StoryCarousel";
 import { TalkRoomPreview } from "@/components/TalkRoomPreview";
 import { currentMeeting } from "@/data/currentMeeting";
 import { currentTheme } from "@/data/themes";
+import { coreDifferences } from "@/data/differences";
+import { MultilineText } from "@/components/MultilineText";
 import { storyClosing, storySourceNote } from "@/data/stories";
 
 const meetingFacts = [
@@ -24,12 +26,6 @@ const people = [
   "자신의 삶을 조금 더 잘 살아보고 싶은 사람"
 ];
 
-const differences = [
-  { number: "01", keyword: "DEEP TALK", title: "질문에서 시작하는 깊은 대화", text: <>책을 얼마나 읽었는지보다, 한 문장이 내 삶에 남긴 질문에서 대화를 시작합니다.<br />가이드가 일방적으로 이야기하는 모임이 아니라, 각자의 생각을 충분히 펼칠 수 있도록 회차별 질문을 설계합니다.</> },
-  { number: "02", keyword: "PEOPLE", title: "누구와 이야기하는가", text: <>좋은 대화는 어떤 책을 읽는가만큼 누구와 함께하는가도 중요합니다.<br />READ ME는 인터뷰를 통해 서로 다른 생각을 존중하며 편안하게 대화할 수 있는 사람들과 만납니다.</> },
-  { number: "03", keyword: "CONNECTED FLOW", title: "삶을 연결한 커리큘럼", text: <>관계, 나, 변화, 감정, 일과 건강은 서로 독립적인 주제가 아닙니다.<br />한 기수에서 하나의 주제만 탐구하는게 아닌 여러 회차를 따라 질문을 연결하며 삶을 입체적으로 탐색합니다.</> }
-];
-
 const faqs = [
   { question: "독서모임이 처음인데 괜찮나요?", answer: "물론입니다. 잘 말하는 능력보다 다른 사람의 이야기를 존중하며 듣는 마음이면 충분합니다." },
   { question: "책을 꼭 완독해야 하나요?", answer: "깊은 대화를 위해 완독하는 걸 권장합니다. 하지만 시간이 안 된다면, 사전 질문에 대해 깊게 생각해오는 것만으로 충분합니다." },
@@ -40,8 +36,8 @@ const faqs = [
 
 const detailLinks = [
   { href: "/about", eyebrow: "ABOUT", title: "READ ME는 어떤 곳인가요?", text: "READ ME가 시작된 이유와 중요하게 생각하는 가치를 소개합니다.", icon: HeartHandshake },
-  { href: "/meeting", eyebrow: "MEETING", title: "1기는 어떻게 진행되나요?", text: "모집 정보부터 8주의 진행 방식과 커리큘럼까지 확인합니다.", icon: CalendarDays },
-  { href: `/themes/${currentTheme.slug}`, eyebrow: "CURRENT THEME", title: "어떤 책과 질문을 만나나요?", text: "1기 관계 주제에 담긴 네 번의 질문을 자세히 살펴봅니다.", icon: MessageCircle },
+  { href: "/meeting", eyebrow: "MEETING", title: `${currentMeeting.cohort}는 어떻게 진행되나요?`, text: `모집 정보부터 ${currentMeeting.schedule.duration}의 진행 방식과 커리큘럼까지 확인합니다.`, icon: CalendarDays },
+  { href: `/themes/${currentTheme.slug}`, eyebrow: "CURRENT THEME", title: "어떤 책과 질문을 만나나요?", text: `${currentMeeting.cohort} ${currentTheme.name} 주제에 담긴 네 번의 질문을 자세히 살펴봅니다.`, icon: MessageCircle },
   { href: "/themes#themes", eyebrow: "ALL THEMES", title: "다른 주제들도 보고 싶어요", text: "READ ME가 앞으로 함께 읽고 이야기할 주제를 둘러봅니다.", icon: Repeat },
 ];
 
@@ -63,7 +59,7 @@ export function HomePage() {
       </section>
 
       <section className="section meeting-format-section"><div className="section-shell">
-        <SectionTitle eyebrow="HOW IT WORKS" title={<>8주 동안,<br />함께 깊게 읽습니다.</>} />
+        <SectionTitle eyebrow="HOW IT WORKS" title={<>{currentMeeting.schedule.duration} 동안,<br />함께 깊게 읽습니다.</>} />
         <div className="meeting-overview">
           <div className="meeting-facts">{meetingFacts.map(({ icon: Icon, ...fact }) => <article key={fact.label}><Icon size={20} strokeWidth={1.5} /><strong>{fact.value}</strong><span>{fact.label}</span></article>)}</div>
           <div className="meeting-rhythm">
@@ -78,7 +74,7 @@ export function HomePage() {
         <article className="season-current">
           <div className="season-current__label"><p className="eyebrow">CURRENT SEASON</p>{currentMeeting.recruiting && <span className="season-current__badge">{currentMeeting.recruitingLabel}</span>}</div>
           <h3>{currentMeeting.cohort} — {currentTheme.name}, {currentTheme.subtitle}</h3>
-          <ol className="season-current__questions">{currentTheme.sessions.map((session, index) => <li key={session.title}><span className="season-current__num">{String(index + 1).padStart(2, "0")}</span><span className="season-current__topic">{session.title}</span><span className="season-current__q">{session.question}</span><span className="season-current__book">《{session.book}》</span></li>)}</ol>
+          <ol className="season-current__questions">{currentTheme.sessions.map((session, index) => <li key={session.title}><span className="season-current__num">{String(index + 1).padStart(2, "0")}</span><span className="season-current__topic">{session.title}</span><span className="season-current__q">{session.question}</span><span className="season-current__book">『{session.book}』</span></li>)}</ol>
           <div className="season-current__actions"><Link href={`/themes/${currentTheme.slug}`} className="button button--primary">{currentTheme.name} 주제 자세히 보기 <ArrowRight size={15} /></Link><Link href="/meeting" className="button button--ghost">{currentMeeting.cohort} 상세 안내 보기</Link></div>
           <p className="season-current__next">READ ME는 매 기수 새로운 주제와 질문으로 진행합니다.</p>
           <Link href="/themes#themes" className="button button--ghost season-current__themes">전체 주제 보기 <ArrowRight size={15} /></Link>
@@ -94,7 +90,7 @@ export function HomePage() {
           <p className="why-section__origin">독서모임을 3년간 직접 해보며, 깊은 대화를 위해 필요한 3가지를 남겼습니다.</p>
         </div>
         <div className="why-section__details">
-          <div className="difference-list">{differences.map((item) => <article key={item.number}><span>{item.number}</span><div><small>{item.keyword}</small><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
+          <div className="difference-list">{coreDifferences.map((item, index) => <article key={item.title}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{item.keyword}</small><h3>{item.title}</h3><MultilineText lines={item.lines} /></div></article>)}</div>
           <Link href="/about" className="button button--ghost why-section__link">READ ME의 전체 이야기 보기 <ArrowRight size={15} /></Link>
         </div>
       </div></section>

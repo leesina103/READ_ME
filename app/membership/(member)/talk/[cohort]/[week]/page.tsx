@@ -55,7 +55,7 @@ export default async function TalkPage({ params }: TalkPageProps) {
         <header className="border-b border-[var(--line)] bg-[var(--paper)] px-6 py-5">
           <p className="text-xs font-bold tracking-[.14em] text-[var(--forest)]">READ ME {cohortName} · {week}주차 · {weekInfo.type === "input" ? "토의" : "휴식 & OUTPUT"}</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-[-0.02em]">{weekInfo.roomTitle}</h1>
-          <p className="mt-2 inline-flex items-center gap-2 text-sm text-[var(--muted)]"><BookOpen size={15} /> 《{weekInfo.book}》 {weekInfo.author}</p>
+          <p className="mt-2 inline-flex items-center gap-2 text-sm text-[var(--muted)]"><BookOpen size={15} /> 『{weekInfo.book}』 {weekInfo.author}</p>
         </header>
 
         <div className="flex flex-col gap-5 bg-[var(--sage)]/35 px-5 py-7 sm:px-6">

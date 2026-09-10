@@ -7,7 +7,7 @@ import { currentTheme } from "@/data/themes";
 
 export const metadata: Metadata = {
   title: currentMeeting.recruiting ? "모집 안내" : "모임 안내",
-  description: `READ ME ${currentMeeting.cohort} ${currentMeeting.recruiting ? "모집 정보" : "진행 방식"}와 8주 동안 함께 읽고 나눌 네 번의 이야기를 안내합니다.`,
+  description: `READ ME ${currentMeeting.cohort} ${currentMeeting.recruiting ? "모집 정보" : "진행 방식"}와 ${currentMeeting.schedule.duration} 동안 함께 읽고 나눌 네 번의 이야기를 안내합니다.`,
   alternates: { canonical: "/meeting" }
 };
 
@@ -15,7 +15,7 @@ const sessionFocus = [
   "쉬운 책과 가치관 질문으로 시작합니다. 가벼운 게임과 대화로 서로의 생각을 알아갑니다.",
   "조금 더 깊은 책과 질문을 만납니다. 지난 회차에 직접 실천해본 경험도 함께 나눕니다.",
   "익숙한 생각을 흔드는 책과 질문으로 대화합니다. 서로 다른 적용 방식에서 새로운 관점을 얻습니다.",
-  "마지막 책의 깊은 질문과 함께 8주 동안 달라진 생각과 가치관을 돌아봅니다."
+  `마지막 책의 깊은 질문과 함께 ${currentMeeting.schedule.duration} 동안 달라진 생각과 가치관을 돌아봅니다.`
 ] as const;
 
 export default function MeetingPage() {

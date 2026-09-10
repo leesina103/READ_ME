@@ -668,7 +668,7 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 .about-process-flow strong { margin-top: 32px; font-family: Georgia, var(--font-serif), serif; font-size: clamp(30px, 3.2vw, 42px); font-weight: 500; }
 .about-process-flow p { margin: 16px 0 0; color: rgba(247,243,231,.7); font-size: 13px; line-height: 1.7; }
 .about-process-flow article > svg { position: absolute; z-index: 1; top: 50%; right: -10px; padding: 3px; color: var(--sand); background: var(--forest); transform: translateY(-50%); }
-.about-process__link { width: fit-content; margin: 34px 0 0 auto; display: flex; align-items: center; gap: 8px; color: var(--sand); font-size: 13px; font-weight: 750; }
+.about-process__link { width: fit-content; min-height: 44px; margin: 22px 0 0 auto; display: flex; align-items: center; gap: 8px; color: var(--cream); font-size: 13px; font-weight: 750; }
 .about-culture { background: var(--sage); }
 .about-culture .about-section-heading > span { color: var(--forest); }
 .about-culture__grid { display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: 90px; }
@@ -732,7 +732,7 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .about-process-flow article:first-child { border-top: 0; }
   .about-process-flow article > svg { display: none; }
   .about-process-flow strong { margin-top: 22px; font-size: 36px; }
-  .about-process__link { margin-top: 28px; }
+  .about-process__link { margin-top: 16px; }
   .about-interview-card { min-height: 390px; padding: 28px; border-radius: 28px; }
   .about-interview-card h3 { font-size: 25px; }
   .about-difference__grid li { min-height: 140px; grid-template-columns: 44px 1fr; }

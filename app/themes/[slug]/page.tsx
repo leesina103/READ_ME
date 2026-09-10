@@ -83,7 +83,7 @@ export default async function ThemePage({ params }: ThemePageProps) {
                   </p>
                   <div className="theme-session-book">
                     <BookOpen size={20} aria-hidden="true" />
-                    <div><span>함께 읽는 책</span><strong>《{session.book}》</strong><small>{session.author}</small></div>
+                    <div><span>함께 읽는 책</span><strong>『{session.book}』</strong><small>{session.author}</small></div>
                   </div>
                 </article>
               </li>

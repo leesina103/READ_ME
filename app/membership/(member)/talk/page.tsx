@@ -16,7 +16,7 @@ export default async function TalkIndexPage() {
           {seasonWeeks.map((weekItem) => (
             <li key={weekItem.week} className="border-b border-[var(--line)] last:border-b-0">
               <Link href={`/membership/talk/${member.cohortNumber}/${weekItem.week}`} className="flex min-h-20 items-center justify-between gap-5 py-5">
-                <span className="flex min-w-0 items-center gap-4"><MessagesSquare className="shrink-0 text-[var(--forest)]" size={20} /><span><strong className="block">{weekItem.week}주차 · {weekItem.roomTitle}</strong><small className="mt-1 block truncate text-[var(--muted)]">《{weekItem.book}》 {weekItem.author}</small></span></span>
+                <span className="flex min-w-0 items-center gap-4"><MessagesSquare className="shrink-0 text-[var(--forest)]" size={20} /><span><strong className="block">{weekItem.week}주차 · {weekItem.roomTitle}</strong><small className="mt-1 block truncate text-[var(--muted)]">『{weekItem.book}』 {weekItem.author}</small></span></span>
                 <ArrowRight className="shrink-0 text-[var(--forest)]" size={17} />
               </Link>
             </li>

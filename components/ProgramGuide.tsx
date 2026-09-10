@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { TalkRoomPreview } from "@/components/TalkRoomPreview";
+import { currentMeeting } from "@/data/currentMeeting";
 
 export function ProgramGuide() {
   return (
@@ -42,7 +43,7 @@ export function ProgramGuide() {
             <TalkRoomPreview variant="output" />
           </li>
         </ol>
-        <p className="season-cycle__note">이 흐름이 2주마다 반복되며 8주의 여정이 완성됩니다.<br />온라인 세션은 READ ME 웹 안의 토크방에서 이뤄지고, 답변은 같은 기수끼리 공유됩니다.</p>
+        <p className="season-cycle__note">이 흐름이 2주마다 반복되며 {currentMeeting.schedule.duration}의 여정이 완성됩니다.<br />온라인 세션은 READ ME 웹 안의 토크방에서 이뤄지고, 답변은 같은 기수끼리 공유됩니다.</p>
       </div>
     </section>
   );

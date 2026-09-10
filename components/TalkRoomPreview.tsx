@@ -1,3 +1,5 @@
+import { currentMeeting } from "@/data/currentMeeting";
+
 type Props = {
   variant?: "question" | "output";
 };
@@ -10,9 +12,9 @@ export function TalkRoomPreview({ variant = "question" }: Props) {
       <div className="season-cycle__frame">
         <svg viewBox="0 0 320 200" role="img" aria-label={isOutput ? "READ ME 토크방 실천 기록 화면" : "READ ME 토크방 사전 질문 화면"}>
           <rect width="320" height="200" fill="var(--paper)" />
-          <text x="16" y="20" className="shot-eyebrow">READ ME 1기 · {isOutput ? "2주차 · 실천 & OUTPUT" : "1주차 · 토의"}</text>
+          <text x="16" y="20" className="shot-eyebrow">READ ME {currentMeeting.cohort} · {isOutput ? "2주차 · 실천 & OUTPUT" : "1주차 · 토의"}</text>
           <text x="16" y="38" className="shot-title">{isOutput ? "존중 실천 기록" : "존중 토의"}</text>
-          <text x="16" y="52" className="shot-meta">《관계의 언어》 문요한</text>
+          <text x="16" y="52" className="shot-meta">『관계의 언어』 문요한</text>
           <path d="M0 62h320" stroke="var(--line)" />
           <rect y="62" width="320" height="96" fill="var(--sage)" opacity=".38" />
           <circle cx="26" cy="82" r="10" fill="var(--forest)" />

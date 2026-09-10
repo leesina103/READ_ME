@@ -94,7 +94,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
                       {weekItem.type === "input" ? "토의" : "휴식 & OUTPUT"}
                     </span>
                     <span className="truncate text-[15px]">
-                      {weekItem.type === "input" ? <>{weekItem.sessionTitle} — 《{weekItem.book}》</> : <><strong className="font-semibold">{weekItem.sessionTitle}</strong> 실천 기록</>}
+                      {weekItem.type === "input" ? <>{weekItem.sessionTitle} — 『{weekItem.book}』</> : <><strong className="font-semibold">{weekItem.sessionTitle}</strong> 실천 기록</>}
                     </span>
                   </div>
                   <ArrowRight size={16} className="shrink-0 text-[var(--muted)]" />
