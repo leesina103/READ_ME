@@ -11,9 +11,11 @@ const schedule = {
   onlineSessions: "4회",
   sessionDuration: "3시간",
   location: "서울 오프라인",
-  groupSize: "6명 안팎",
+  groupSize: "4~6명",
   fee: "인터뷰 후 안내"
 } as const;
+
+const meetingTitle = recruiting ? `${cohort} 모집 안내` : `${cohort} 모임 안내`;
 
 const interview = {
   duration: "20~30분",
@@ -26,7 +28,8 @@ export const currentMeeting = {
   interview,
   recruiting,
   recruitingLabel: "모집중",
-  meetingLabel: recruiting ? `${cohort} 모집 안내 보기` : `${cohort} 모임 안내 보기`,
+  meetingTitle,
+  meetingLabel: `${meetingTitle} 보기`,
   applyHref: "/interview/apply",
   applyLabel: "인터뷰 예약하기",
   facts: [

@@ -77,7 +77,7 @@ export default function AboutPage() {
         </div>
         <div className="about-hero__visual">
           <span className="about-hero__remi-label">READ ME의 안내자, 리미</span>
-          <RemiGuide compact />
+          <RemiGuide compact priority />
           <p>나를 읽다.<br />서로를 읽다.<br />삶을 읽다.</p>
         </div>
       </section>

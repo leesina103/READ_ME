@@ -10,6 +10,7 @@ import {
   Wifi
 } from "lucide-react";
 import { currentMeeting } from "@/data/currentMeeting";
+import { homeStories, storySourceNote } from "@/data/stories";
 
 export const metadata: Metadata = {
   title: "인터뷰 안내",
@@ -20,15 +21,10 @@ export const metadata: Metadata = {
 const benefits = [
   [MessageCircleQuestion, "말하다 보면 내가 보여요", "답을 잘 만들기보다 생각을 천천히 꺼내는 동안, 내가 중요하게 여기는 기준이 자연스럽게 드러납니다."],
   [CalendarCheck, "지금 필요한 질문을 발견해요", "요즘 마음에 머무는 고민을 함께 짚어보며, 지금의 나에게 필요한 질문을 발견합니다."],
-  [HeartHandshake, "모임의 대화를 먼저 느껴봐요", "서로의 말을 서두르지 않고 듣는 시간을 통해, READ ME의 대화가 나와 잘 맞는지 미리 느껴봅니다."]
+  [HeartHandshake, "모임의 대화를 먼저 느껴봐요", "서로의 말을 서두르지 않고 듣는 시간을 통해, READ ME가 나누는 대화의 분위기를 먼저 경험합니다."]
 ] as const;
 
-const process = [
-  ["01", "날짜와 시간 선택", "예약 가능한 날짜를 고른 뒤, 편안하게 참여할 수 있는 시간을 선택합니다."],
-  ["02", "이름과 연락처 입력", "신청자 확인과 일정 안내에 필요한 이름과 전화번호만 남깁니다."],
-  ["03", "신청 완료 안내", "선택한 인터뷰 시간과 안내 페이지를 카카오톡 메시지로 보내드립니다."],
-  ["04", `${currentMeeting.interview.duration} 대화`, "정해진 답을 평가하지 않고, 독서와 대화에 대한 생각을 차분히 나눕니다."]
-] as const;
+const [featuredStory] = homeStories;
 
 const questions = [
   "최근 읽은 문장 중 오래 마음에 남은 것은 무엇이며, 왜 그런가요?",
@@ -38,15 +34,15 @@ const questions = [
 
 const preparations = [
   [Video, "카메라와 마이크", "표정과 목소리를 나눌 수 있는 환경에서 접속해 주세요."],
-  [Wifi, "안정적인 연결", "대화가 끊기지 않도록 조용하고 네트워크가 안정적인 장소를 권합니다."],
-  [Clock3, "약속한 시간", "변경이 필요하다면 다른 신청자를 위해 가능한 한 미리 알려주세요."]
+  [Wifi, "조용하고 연결이 안정적인 장소", "대화가 끊기지 않도록 조용하고 네트워크 연결이 안정적인 장소를 권합니다."],
+  [Clock3, "예약한 시간 확인", "안내받은 인터뷰 날짜와 시간을 미리 확인해 주세요."]
 ] as const;
 
 const notices = [
   {
     title: "진행 형태와 시간",
     items: [
-      `인터뷰는 온라인 구글 화상 미팅으로 ${currentMeeting.interview.duration} 동안 진행되며, 예약된 정각에 시작합니다.`,
+      `인터뷰는 온라인 화상 미팅으로 ${currentMeeting.interview.duration} 동안 진행되며, 예약된 정각에 시작합니다.`,
       "별도 연락 없이 5분 이상 접속이 늦어지면 다음 인터뷰 일정에 영향을 줄 수 있어 인터뷰가 취소될 수 있습니다."
     ]
   },
@@ -55,7 +51,7 @@ const notices = [
     items: [
       "일정 변경이 필요하다면 인터뷰 시작 전에 카카오톡 채널로 알려주세요.",
       "별도 연락 없이 인터뷰에 불참한 경우, 다른 신청자의 기회를 보호하기 위해 불참일로부터 3개월간 READ ME 참여 신청이 제한됩니다.",
-      "인터뷰 전에 카카오톡 또는 문자로 예약 시간과 접속 링크를 다시 안내합니다.",
+      "인터뷰 전에 카카오톡으로 예약 시간과 접속 링크를 다시 안내합니다.",
       `인터뷰 결과는 운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 개별적으로 전달합니다.`
     ]
   }
@@ -84,6 +80,9 @@ export default function InterviewPage() {
             <p className="eyebrow">BEFORE WE READ TOGETHER</p>
             <h1>서로를 고르는 대신,<br /><span>대화를 준비합니다.</span></h1>
             <p className="interview-hero__lead">READ ME 인터뷰는 잘 준비된 답을 확인하는 자리가 아닙니다.<br />함께 읽고 말하는 방식이 서로에게 편안할지 알아보는 짧은 사전 대화입니다.</p>
+            <div className="button-row">
+              <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={15} /></Link>
+            </div>
           </div>
           <aside className="interview-brief" aria-label="인터뷰 기본 안내">
             <p>INTERVIEW NOTE</p>
@@ -96,10 +95,11 @@ export default function InterviewPage() {
 
       <section className="proof-strip" aria-label="인터뷰 요약">
         <div className="section-shell proof-strip__inner">
-          <article><strong>1:1</strong><span>운영진과 대화</span><small>여럿 앞에서 소개하지 않아요</small></article>
-          <article><strong>20~30</strong><span>예상 소요 시간</span><small>충분히 생각하며 이야기해요</small></article>
+          <article><strong className="proof-strip__ratio">1:1</strong><span>운영진과 대화</span><small>여럿 앞에서 소개하지 않아요</small></article>
+          <article><strong className="proof-strip__duration">{currentMeeting.interview.duration}</strong><span>예상 소요 시간</span><small>충분히 생각하며 이야기해요</small></article>
           <article><strong className="proof-strip__online">ONLINE</strong><span>화상 미팅</span><small>확정 링크는 개별 안내해요</small></article>
         </div>
+        <p className="section-shell proof-strip__note">READ ME는 {currentMeeting.schedule.groupSize}이 함께하는 유료 모임입니다.<br />모든 참여자와 인터뷰를 나눈 뒤 함께하며, 회비는 인터뷰 후 안내합니다.</p>
       </section>
 
       <section className="section section--paper interview-purpose">
@@ -113,18 +113,11 @@ export default function InterviewPage() {
         </div>
       </section>
 
-      <section id="process" className="section promise-section">
-        <div className="section-shell promise-grid">
-          <div><p className="eyebrow">INTERVIEW FLOW</p><h2>신청부터<br />첫 안내까지</h2><p>안내 메시지를 놓치지 않도록 신청할 때 연락처를 정확히 남겨주세요.</p></div>
-          <ol>{process.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
-        </div>
-      </section>
-
       <section id="questions" className="section">
         <div className="section-shell">
           <p className="eyebrow">A FEW QUESTIONS</p>
-          <h2 className="interview-section-title">이런 이야기를 나눌 수 있어요</h2>
-          <p className="interview-section-copy">외운 답은 필요하지 않습니다.<br />지금의 생각을 솔직한 문장으로 들려주세요.</p>
+          <h2 className="interview-section-title">가볍게 떠올려볼 대화 주제</h2>
+          <p className="interview-section-copy">미리 답을 정리하거나 외울 필요는 없습니다.<br />인터뷰 전에 지금의 생각만 가볍게 떠올려보세요.</p>
           <div className="interview-question-grid">{questions.map((question, index) => <article key={question}><span>Q{index + 1}</span><p>{question}</p></article>)}</div>
         </div>
       </section>
@@ -173,6 +166,15 @@ export default function InterviewPage() {
         </div>
       </section>
 
+      <section className="section interview-story-section">
+        <div className="section-shell interview-story">
+          <p className="eyebrow">STORY</p>
+          <blockquote>“{featuredStory.quote}”</blockquote>
+          <p className="interview-story__source">{featuredStory.name} · {storySourceNote}</p>
+          <Link href="/story" className="text-link">전체 후기 보기 <ArrowRight size={14} /></Link>
+        </div>
+      </section>
+
       <section className="section faq-section">
         <div className="section-shell faq-layout">
           <div><p className="eyebrow">FAQ</p><h2>인터뷰 전에<br />궁금한 것들</h2><p>정답을 준비하지 않아도 괜찮습니다.<br />궁금한 점이 남으면 문의 채널로 편하게 알려주세요.</p><a href="#contact" className="text-link">문의하기 <ArrowRight size={14}/></a></div>
@@ -181,7 +183,7 @@ export default function InterviewPage() {
       </section>
 
       <section className="section cta-section">
-        <div className="section-shell"><div className="cta-card"><HeartHandshake size={34}/><p className="eyebrow">READY TO TALK?</p><h2>한 권의 책보다 먼저,<br />서로의 태도를 만나요.</h2><p>다가오는 모임을 살펴보고 마음이 닿는다면 편한 인터뷰 일정을 선택해 주세요.</p><div className="cta-actions"><Link href="/meeting" className="button button--light">모임 먼저 보기 <ArrowRight size={15}/></Link><Link href={currentMeeting.applyHref} className="button button--outline-light">{currentMeeting.applyLabel}</Link></div></div></div>
+        <div className="section-shell"><div className="cta-card"><HeartHandshake size={34}/><p className="eyebrow">READY TO TALK?</p><h2>한 권의 책보다 먼저,<br />서로의 태도를 만나요.</h2><p>마음이 닿는다면 편한 인터뷰 일정을 선택해 주세요.<br />모임이 어떻게 진행되는지 먼저 보고 결정해도 좋아요.</p><div className="cta-actions"><Link href={currentMeeting.applyHref} className="button button--light">{currentMeeting.applyLabel} <ArrowRight size={16}/></Link><Link href="/meeting" className="button button--outline-light">{currentMeeting.meetingLabel}</Link></div></div></div>
       </section>
     </main>
   );

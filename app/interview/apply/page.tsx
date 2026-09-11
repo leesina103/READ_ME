@@ -25,6 +25,8 @@ type AvailableInterviewSlotRow = Omit<InterviewSlotRow, "is_available">;
 
 export default async function InterviewApplyPage() {
   let slots: InterviewSlot[] = [];
+  // 일정이 아직 열리지 않은 것과, 조회 자체가 실패한 것을 구분해서 안내한다.
+  let loadFailed = !isSupabaseConfigured();
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
@@ -33,7 +35,8 @@ export default async function InterviewApplyPage() {
     let calendarRows: InterviewSlotRow[] = (data ?? []) as InterviewSlotRow[];
 
     if (error) {
-      const { data: availableData } = await supabase.rpc("list_available_interview_slots");
+      const { data: availableData, error: fallbackError } = await supabase.rpc("list_available_interview_slots");
+      loadFailed = Boolean(fallbackError);
       calendarRows = ((availableData ?? []) as AvailableInterviewSlotRow[]).map((slot) => ({
         ...slot,
         is_available: true
@@ -72,7 +75,7 @@ export default async function InterviewApplyPage() {
             <h2>답을 준비하지 않아도<br />괜찮습니다.</h2>
             <p>인터뷰는 1:1 온라인 대화로 진행하며 약 {currentMeeting.interview.duration}이 걸립니다. 서로의 대화 방식이 편안할지 가볍게 알아보는 시간이에요.</p>
           </aside>
-          <InterviewApplicationForm slots={slots} />
+          <InterviewApplicationForm slots={slots} loadFailed={loadFailed} />
         </div>
       </section>
     </main>

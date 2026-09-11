@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useMemo, useState } from "react";
-import { CalendarCheck2, CheckCircle2, ChevronLeft, ChevronRight, Clock3 } from "lucide-react";
+import { CalendarCheck2, CheckCircle2, ChevronLeft, ChevronRight, Clock3, TriangleAlert } from "lucide-react";
 import {
   submitInterviewApplicationAction,
   type InterviewApplicationState
@@ -66,9 +66,10 @@ function fullDateTimeLabel(startsAt: string) {
 
 type InterviewApplicationFormProps = {
   slots: InterviewSlot[];
+  loadFailed?: boolean;
 };
 
-export function InterviewApplicationForm({ slots }: InterviewApplicationFormProps) {
+export function InterviewApplicationForm({ slots, loadFailed = false }: InterviewApplicationFormProps) {
   const groupedSlots = useMemo(() => {
     const groups = new Map<string, InterviewSlot[]>();
 
@@ -80,16 +81,18 @@ export function InterviewApplicationForm({ slots }: InterviewApplicationFormProp
     return [...groups.entries()].map(([key, dateSlots]) => ({ key, slots: dateSlots }));
   }, [slots]);
 
-  const months = useMemo(
-    () => [...new Set(groupedSlots.map((group) => group.key.slice(0, 7)))],
-    [groupedSlots]
-  );
   const firstAvailableGroup = groupedSlots.find((group) =>
     group.slots.some((slot) => slot.available)
   );
+  const months = useMemo(() => {
+    const allMonths = [...new Set(groupedSlots.map((group) => group.key.slice(0, 7)))];
+    const firstOpenMonth = firstAvailableGroup?.key.slice(0, 7);
+    const firstOpenIndex = firstOpenMonth ? allMonths.indexOf(firstOpenMonth) : -1;
+    return firstOpenIndex > 0 ? allMonths.slice(firstOpenIndex) : allMonths;
+  }, [groupedSlots, firstAvailableGroup]);
   const firstAvailableSlot = firstAvailableGroup?.slots.find((slot) => slot.available);
   const [selectedDate, setSelectedDate] = useState(firstAvailableGroup?.key ?? "");
-  const [selectedMonth, setSelectedMonth] = useState(months[0] ?? "");
+  const [selectedMonth, setSelectedMonth] = useState(firstAvailableGroup?.key.slice(0, 7) ?? months[0] ?? "");
   const [selectedSlotId, setSelectedSlotId] = useState(firstAvailableSlot?.id ?? 0);
   const [state, formAction, pending] = useActionState(submitInterviewApplicationAction, initialState);
   const selectedDateSlots = (
@@ -157,11 +160,22 @@ export function InterviewApplicationForm({ slots }: InterviewApplicationFormProp
         </div>
         {state.notificationStatus === "sent" && <p>선택한 일정과 안내 페이지를 카카오톡으로 보내드렸어요.</p>}
         {state.notificationStatus === "not_configured" && <p>예약은 저장됐습니다. 카카오 알림 연동 전이라 이 화면에서 일정을 확인해 주세요.</p>}
-        {state.notificationStatus === "failed" && <p>예약은 저장됐지만 카카오 안내 전송이 지연되고 있습니다. 운영진이 다시 확인할게요.</p>}
+        {state.notificationStatus === "failed" && <p>예약은 저장됐지만 카카오톡 안내 전송이 지연되고 있습니다. 운영진이 다시 확인할게요.</p>}
         <div className="cta-actions">
           <Link href="/interview" className="button button--primary">인터뷰 안내 다시 보기</Link>
           <Link href="/" className="button button--ghost">READ ME 홈</Link>
         </div>
+      </section>
+    );
+  }
+
+  if (loadFailed) {
+    return (
+      <section className="interview-apply-empty" role="alert">
+        <TriangleAlert size={30} aria-hidden="true" />
+        <h2>예약 일정을 불러오지 못했어요.</h2>
+        <p>일시적인 오류로 보입니다. 잠시 뒤 다시 시도해 주세요.<br />같은 화면이 계속 보이면 운영진에게 알려주시면 바로 확인할게요.</p>
+        <Link href="/interview" className="button button--primary">인터뷰 안내로 돌아가기</Link>
       </section>
     );
   }

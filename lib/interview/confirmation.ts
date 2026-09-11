@@ -37,9 +37,9 @@ export function buildInterviewConfirmationMessage({ name, startsAt }: Omit<SendI
   const interviewUrl = `${baseUrl}/interview`;
 
   return [
-    "[READ ME] 인터뷰 신청이 완료되었습니다.",
+    "[READ ME] 인터뷰 예약이 완료되었습니다.",
     "",
-    `${name}님, 아래 일정으로 인터뷰를 신청했어요.`,
+    `${name}님, 아래 일정으로 인터뷰를 예약했어요.`,
     `- 인터뷰 시간: ${formatInterviewTime(startsAt)}`,
     "",
     "인터뷰 준비와 READ ME에 관한 정보는 아래 페이지에서 확인해 주세요.",
