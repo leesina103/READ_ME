@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, BookHeart, ExternalLink, PenLine } from "lucide-react";
 import { notFound } from "next/navigation";
 import { CommunityPostDeleteForm } from "@/components/CommunityPostDeleteForm";
+import { CommunityDataError } from "@/components/CommunityDataError";
 import { createClient } from "@/lib/supabase/server";
 
 type CommunityPostPageProps = { params: Promise<{ postId: string }> };
@@ -12,7 +13,8 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
   if (!Number.isInteger(postId) || postId < 1) notFound();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  const { data: post } = await supabase.from("community_posts").select("id, user_id, display_name, cohort, category, title, content, book_title, book_author, external_url, created_at").eq("id", postId).maybeSingle();
+  const { data: post, error } = await supabase.from("community_posts").select("id, user_id, display_name, cohort, category, title, content, book_title, book_author, external_url, created_at").eq("id", postId).maybeSingle();
+  if (error) return <main className="mx-auto max-w-3xl px-6 py-16 md:py-24"><CommunityDataError /></main>;
   if (!post) notFound();
   const category = post.category === "writing" ? "writing" : "books";
   const isOwner = user?.id === post.user_id;

@@ -44,9 +44,11 @@ export async function updateSession(request: NextRequest) {
   const isProtectedMembership = pathname.startsWith("/membership") && !isPublicMembershipApply;
 
   if (!user && (pathname.startsWith("/my") || pathname.startsWith("/onboarding") || pathname.startsWith("/admin") || isProtectedMembership)) {
+    const nextPath = `${pathname}${request.nextUrl.search}`;
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    url.searchParams.set("next", pathname);
+    url.search = "";
+    url.searchParams.set("next", nextPath);
     return copyCookies(response, NextResponse.redirect(url));
   }
 

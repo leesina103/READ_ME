@@ -287,11 +287,19 @@ export async function saveSessionAnswerAction(
 
   if (!user) return { status: "error", message: "로그인이 만료되었습니다. 다시 로그인해 주세요." };
 
-  const { data: profile } = await supabase
+  const { data: hasActiveMembership, error: membershipError } = await supabase.rpc("has_active_membership");
+  if (membershipError) return { status: "error", message: "멤버십 상태를 확인하지 못했습니다. 잠시 후 다시 시도해 주세요." };
+  if (hasActiveMembership !== true) return { status: "error", message: "활성 멤버십이 있어야 답변을 저장할 수 있어요." };
+
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("cohort")
     .eq("id", user.id)
     .maybeSingle();
+
+  if (profileError) {
+    return { status: "error", message: "회원 정보를 확인하지 못했습니다. 잠시 후 다시 시도해 주세요." };
+  }
 
   if (!profile?.cohort || cohortNumberFromName(profile.cohort) !== cohortNumber) {
     return { status: "error", message: "참여 중인 기수의 토크방에만 답변을 남길 수 있어요." };
@@ -306,7 +314,7 @@ export async function saveSessionAnswerAction(
   }
 
   revalidatePath(`/membership/talk/${cohortNumber}/${week}`);
-  return { status: "success", message: "답변을 남겼습니다." };
+  return { status: "success", message: "답변을 저장했습니다." };
 }
 
 export async function logoutAction() {

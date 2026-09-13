@@ -14,6 +14,19 @@ const blurredFillers = [
   "먼저 나의 답변을 남기고, 서로의 생각을 읽어보세요."
 ];
 
+function TalkDataError() {
+  return (
+    <main className="mx-auto max-w-3xl px-6 py-14 md:py-20">
+      <Link href="/membership/talk" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)]">
+        <ArrowLeft size={15} /> 온라인 대화 목록으로
+      </Link>
+      <div role="alert" className="mt-6 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 text-sm leading-7 text-[var(--muted)]">
+        대화를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.
+      </div>
+    </main>
+  );
+}
+
 export default async function TalkPage({ params }: TalkPageProps) {
   const { cohort: cohortParam, week: weekParam } = await params;
   const cohortNumber = Number(cohortParam);
@@ -28,29 +41,32 @@ export default async function TalkPage({ params }: TalkPageProps) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=/membership/talk/${cohortNumber}/${week}`);
 
-  const { data: profile } = await supabase.from("profiles").select("cohort").eq("id", user.id).maybeSingle();
+  const { data: profile, error: profileError } = await supabase.from("profiles").select("cohort").eq("id", user.id).maybeSingle();
+  if (profileError) return <TalkDataError />;
   if (!profile?.cohort || cohortNumberFromName(profile.cohort) !== cohortNumber) redirect("/membership");
   const cohortName = profile.cohort;
 
-  const { data: answers } = await supabase
+  const { data: answers, error: answersError } = await supabase
     .from("session_answers")
     .select("user_id, display_name, content, created_at")
     .eq("cohort", cohortName)
     .eq("week_number", week)
     .order("created_at", { ascending: true });
+  if (answersError) return <TalkDataError />;
 
   const mine = answers?.find((answer) => answer.user_id === user.id) ?? null;
   const others = (answers ?? []).filter((answer) => answer.user_id !== user.id);
   let hiddenCount = 0;
 
   if (!mine) {
-    const { data: totalCount } = await supabase.rpc("session_answer_count", { target_cohort: cohortName, target_week: week });
+    const { data: totalCount, error: countError } = await supabase.rpc("session_answer_count", { target_cohort: cohortName, target_week: week });
+    if (countError) return <TalkDataError />;
     hiddenCount = typeof totalCount === "number" ? totalCount : 0;
   }
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-14 md:py-20">
-      <Link href="/membership" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)]"><ArrowLeft size={15} /> 멤버십 홈으로</Link>
+      <Link href="/membership/talk" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)]"><ArrowLeft size={15} /> 온라인 대화 목록으로</Link>
       <div className="mt-6 overflow-hidden rounded-[28px] border border-[var(--line)]">
         <header className="border-b border-[var(--line)] bg-[var(--paper)] px-6 py-5">
           <p className="text-xs font-bold tracking-[.14em] text-[var(--forest)]">READ ME {cohortName} · {week}주차 · {weekInfo.type === "input" ? "토의" : "휴식 & OUTPUT"}</p>

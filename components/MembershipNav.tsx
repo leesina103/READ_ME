@@ -15,7 +15,7 @@ export function MembershipNav({ cohortNumber }: { cohortNumber: number | null })
 
   return (
     <nav className="border-b border-[var(--line)] bg-[var(--paper)]" aria-label="멤버십 메뉴">
-      <div className="mx-auto flex max-w-5xl gap-1 overflow-x-auto px-4 py-3 sm:px-6">
+      <div className="membership-nav__items mx-auto flex max-w-5xl gap-1 overflow-x-auto px-4 py-3 sm:px-6">
         {items.map(({ href, label, icon: Icon, active }) => active ? (
           <span key={label} aria-current="page" aria-disabled="true" className="inline-flex min-h-11 shrink-0 cursor-default items-center gap-2 rounded-full bg-[var(--forest)] px-4 text-sm font-semibold text-[var(--cream)]">
             <Icon size={16} /> {label}

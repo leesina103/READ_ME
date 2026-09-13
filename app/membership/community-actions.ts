@@ -42,7 +42,7 @@ function validatePost(formData: FormData): ValidationResult {
   const content = textValue(formData, "content");
   const bookTitle = textValue(formData, "bookTitle");
   const bookAuthor = textValue(formData, "bookAuthor");
-  const externalUrl = textValue(formData, "externalUrl");
+  const externalUrl = category === "writing" ? textValue(formData, "externalUrl") : "";
 
   if (!category) return { error: "글 분류를 선택해 주세요." };
   if (title.length < 2 || title.length > 120) return { error: "제목은 2자 이상 120자 이하로 입력해 주세요." };
