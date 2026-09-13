@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { cohortNumberFromName } from "@/data/seasonWeeks";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -9,7 +10,7 @@ export function canUseLegacyMembershipFallback(errorCode?: string) {
   return missingMembershipFunctionCodes.has(errorCode ?? "");
 }
 
-export async function requireActiveMembership() {
+export const requireActiveMembership = cache(async function requireActiveMembership() {
   if (!isSupabaseConfigured()) redirect("/my");
 
   const supabase = await createClient();
@@ -39,4 +40,4 @@ export async function requireActiveMembership() {
     cohort: profile.cohort,
     cohortNumber: profile.cohort ? cohortNumberFromName(profile.cohort) : null
   };
-}
+});

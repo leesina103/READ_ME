@@ -14,6 +14,10 @@ function textValue(formData: FormData, key: string) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 export async function submitMembershipApplicationAction(
   _previousState: MembershipApplicationState,
   formData: FormData
@@ -28,7 +32,7 @@ export async function submitMembershipApplicationAction(
     return { status: "error", message: "이름은 2자 이상 30자 이하로 입력해 주세요." };
   }
 
-  if (!email || email.length > 320) {
+  if (email.length > 320 || !isValidEmail(email)) {
     return { status: "error", message: "연락받을 이메일을 확인해 주세요." };
   }
 

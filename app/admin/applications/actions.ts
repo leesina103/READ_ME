@@ -60,7 +60,7 @@ export async function reviewMembershipApplicationAction(
   revalidatePath("/admin/applications");
   return {
     status: "success",
-    message: decision === "approved" ? "승인하고 가입 허용 명단에 등록했습니다." : "신청을 거절 처리했습니다."
+    message: decision === "approved" ? "승인하고 멤버십 정보를 반영했습니다." : "신청을 거절 처리했습니다."
   };
 }
 
