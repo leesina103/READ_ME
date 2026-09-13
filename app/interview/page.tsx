@@ -10,7 +10,7 @@ import {
   Wifi
 } from "lucide-react";
 import { currentMeeting } from "@/data/currentMeeting";
-import { homeStories, storySourceNote } from "@/data/stories";
+import { homeStories } from "@/data/stories";
 
 export const metadata: Metadata = {
   title: "인터뷰 안내",
@@ -170,7 +170,7 @@ export default function InterviewPage() {
         <div className="section-shell interview-story">
           <p className="eyebrow">STORY</p>
           <blockquote>“{featuredStory.quote}”</blockquote>
-          <p className="interview-story__source">{featuredStory.name} · {storySourceNote}</p>
+          <p className="interview-story__source">{featuredStory.name} · {featuredStory.source}</p>
           <Link href="/story" className="text-link">전체 후기 보기 <ArrowRight size={14} /></Link>
         </div>
       </section>

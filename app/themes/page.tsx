@@ -27,19 +27,12 @@ export default function ThemesPage() {
           </div>
           <article className="current-theme-card">
             <div><span>{currentMeeting.cohort}</span><p>현재 기수</p></div>
-            <div><p>{currentTheme.name}</p><h3>{currentTheme.subtitle}</h3></div>
+            <div><p className="current-theme-card__name">{currentTheme.name}</p><h3>{currentTheme.subtitle}</h3></div>
             <div className="current-theme-card__actions">
-              <Link href="/meeting" className="button button--light">{currentMeeting.meetingLabel} <ArrowRight size={16} /></Link>
+              <Link href={currentMeeting.applyHref} className="button button--light">{currentMeeting.applyLabel} <ArrowRight size={16} /></Link>
+              <Link href="/meeting" className="button button--outline-light">{currentMeeting.meetingLabel}</Link>
             </div>
           </article>
-          <Link href={currentMeeting.applyHref} className="theme-interview-cta">
-            <div>
-              <span>JOIN THE CONVERSATION</span>
-              <strong>{currentMeeting.applyLabel}</strong>
-              <p>서로를 존중하며 깊이 대화할 수 있는지, 가볍게 이야기를 나누며 먼저 만나봅니다.</p>
-            </div>
-            <ArrowRight size={26} aria-hidden="true" />
-          </Link>
         </div>
       </section>
 

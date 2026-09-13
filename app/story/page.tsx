@@ -13,7 +13,7 @@ export default function StoryPage() {
   return (
     <main className="stories-page">
       <section className="stories-hero section-shell">
-        <Link href="/" className="text-link"><ArrowLeft size={15} /> Main으로 돌아가기</Link>
+        <Link href="/" className="text-link"><ArrowLeft size={15} /> 홈으로 돌아가기</Link>
         <p className="eyebrow">STORY ARCHIVE</p>
         <h1>함께 읽으며<br />만난 이야기</h1>
         <p>{storySourceNote}</p>
@@ -32,6 +32,7 @@ export default function StoryPage() {
                 <div className="stories-list__meta">
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <strong>{story.name}</strong>
+                  <small>{story.source}</small>
                 </div>
                 {longform ? (
                   <>
@@ -39,17 +40,26 @@ export default function StoryPage() {
                       <h2>{longform.title}</h2>
                       <div>{longform.topics.map((topic) => <span key={topic}>{topic}</span>)}</div>
                     </div>
+                    <blockquote className="stories-longform__quote">“{story.quote}”</blockquote>
                     <div className="stories-longform__intro">
                       {longform.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                     </div>
-                    <div className="stories-longform__points">
-                      {longform.points.map((point) => (
-                        <section key={point.number}>
-                          <span>{point.number.padStart(2, "0")}</span>
-                          <div>{point.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
-                        </section>
-                      ))}
-                    </div>
+                    <details className="stories-longform__details">
+                      <summary><span>전체 이야기 읽기</span><i aria-hidden="true">+</i></summary>
+                      <div className="stories-longform__details-body">
+                        <div className="stories-longform__points">
+                          {longform.points.map((point) => (
+                            <section key={point.number}>
+                              <span>{point.number})</span>
+                              <div>
+                                <h3 className="stories-longform__point-title">{point.title}</h3>
+                                {point.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                              </div>
+                            </section>
+                          ))}
+                        </div>
+                      </div>
+                    </details>
                   </>
                 ) : (
                   <>
@@ -66,7 +76,7 @@ export default function StoryPage() {
       <section className="stories-closing">
         <div className="section-shell">
           <p>{storyClosing}</p>
-          <Link href="/" className="button button--light">Main으로 돌아가기</Link>
+          <Link href="/" className="button button--light">홈으로 돌아가기</Link>
         </div>
       </section>
     </main>

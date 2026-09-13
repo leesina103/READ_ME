@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
-import { findTheme, themes } from "@/data/themes";
+import { currentMeeting } from "@/data/currentMeeting";
+import { currentTheme, findTheme, themes } from "@/data/themes";
 import { notFound } from "next/navigation";
 
 type ThemePageProps = {
@@ -33,6 +34,7 @@ export default async function ThemePage({ params }: ThemePageProps) {
   const theme = findTheme((await params).slug);
   if (!theme) notFound();
   const themeIndex = themes.findIndex((item) => item.slug === theme.slug);
+  const isCurrentTheme = theme.slug === currentTheme.slug;
 
   return (
     <main className="theme-detail-page">
@@ -94,8 +96,20 @@ export default async function ThemePage({ params }: ThemePageProps) {
 
       <section className="section theme-detail-footer">
         <div className="section-shell">
-          <p>다른 삶의 질문도 둘러보세요.</p>
-          <Link href="/themes#themes" className="button button--primary">주제별 소개로 돌아가기 <ArrowRight size={15} /></Link>
+          <p>{isCurrentTheme ? `이 주제로 함께 읽고 싶다면, READ ME ${currentMeeting.cohort}에서 만나요.` : `지금은 ${currentMeeting.cohort}에서 ${currentTheme.name} 주제를 함께 읽습니다.`}</p>
+          <div className="theme-detail-footer__actions">
+            {isCurrentTheme ? (
+              <>
+                <Link href={currentMeeting.applyHref} className="button button--primary">{currentMeeting.applyLabel} <ArrowRight size={15} /></Link>
+                <Link href="/meeting" className="button button--ghost">{currentMeeting.meetingLabel}</Link>
+              </>
+            ) : (
+              <>
+                <Link href={`/themes/${currentTheme.slug}`} className="button button--primary">현재 모집 주제 보기 <ArrowRight size={15} /></Link>
+                <Link href="/themes#themes" className="button button--ghost">여섯 주제 보기</Link>
+              </>
+            )}
+          </div>
         </div>
       </section>
     </main>

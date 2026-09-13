@@ -110,8 +110,11 @@ export const themes = [
   }
 ] as const satisfies readonly Theme[];
 
-export const currentTheme = themes[0];
-
 export function findTheme(slug: string) {
   return themes.find((theme) => theme.slug === slug);
 }
+
+export type ThemeSlug = (typeof themes)[number]["slug"];
+
+export const currentThemeSlug: ThemeSlug = "relationship";
+export const currentTheme = findTheme(currentThemeSlug)!;
