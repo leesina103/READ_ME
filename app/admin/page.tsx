@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CalendarClock, ClipboardList, LockKeyhole, UserRound, UsersRound } from "lucide-react";
+import { ArrowRight, CalendarClock, CalendarRange, ClipboardList, LockKeyhole, UserRound, UsersRound } from "lucide-react";
 import { logoutAction } from "@/app/auth/actions";
 import { requireAdmin } from "@/lib/admin/access";
 import { seoulDateKey } from "@/lib/admin/format";
@@ -33,7 +33,8 @@ export default async function AdminPage() {
   const sections = [
     { href: "/admin/applications", icon: UsersRound, title: "가입 신청 관리", description: "접수된 신청을 확인하고 승인하거나 거절합니다.", badge: pendingApplications === null ? null : `검토 대기 ${pendingApplications}건` },
     { href: "/admin/members", icon: ClipboardList, title: "기수 회원 명단", description: "기수별 승인 명단과 가입 상태를 확인합니다.", badge: null },
-    { href: "/admin/interviews", icon: CalendarClock, title: "인터뷰 예약", description: "예약된 인터뷰 일정과 신청자 연락처를 확인합니다.", badge: upcomingInterviews === null ? null : `다가오는 인터뷰 ${upcomingInterviews}건` }
+    { href: "/admin/interviews", icon: CalendarClock, title: "인터뷰 예약", description: "예약된 인터뷰 일정과 신청자 연락처를 확인합니다.", badge: upcomingInterviews === null ? null : `다가오는 인터뷰 ${upcomingInterviews}건` },
+    { href: "/admin/cohorts", icon: CalendarRange, title: "기수 일정 관리", description: "기수 시작일·종료일과 가입 신청 접수 여부를 관리합니다.", badge: null }
   ];
 
   return (
