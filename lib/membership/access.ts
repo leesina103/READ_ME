@@ -41,3 +41,32 @@ export const requireActiveMembership = cache(async function requireActiveMembers
     cohortNumber: profile.cohort ? cohortNumberFromName(profile.cohort) : null
   };
 });
+
+export type MemberCohort = { name: string; number: number };
+
+// 참여했던 기수 이력. 현재 기수는 프로필을 따르고, 나머지는 지난 기수로 읽기만 허용한다.
+// 현재 기수도 종료일이 지났으면 읽기만 허용한다. 이력 표가 아직 없으면(마이그레이션 미적용) 현재 기수만 사용한다.
+export const getMemberCohortHistory = cache(async function getMemberCohortHistory() {
+  const member = await requireActiveMembership();
+  const supabase = await createClient();
+  const [{ data: rows, error }, { data: currentCohortRow }] = await Promise.all([
+    supabase.from("member_cohorts").select("cohort").eq("user_id", member.user.id),
+    member.cohort
+      ? supabase.from("cohorts").select("ends_at").eq("name", member.cohort).maybeSingle()
+      : Promise.resolve({ data: null as { ends_at: string | null } | null })
+  ]);
+
+  const cohortNames = new Set<string>(error ? [] : (rows ?? []).map((row: { cohort: string }) => row.cohort));
+  if (member.cohort) cohortNames.add(member.cohort);
+
+  const pastCohorts = [...cohortNames]
+    .filter((name) => name !== member.cohort)
+    .map((name) => ({ name, number: cohortNumberFromName(name) }))
+    .filter((cohort): cohort is MemberCohort => cohort.number !== null)
+    .sort((a, b) => b.number - a.number);
+
+  const endsAt = currentCohortRow?.ends_at ? new Date(currentCohortRow.ends_at).getTime() : null;
+  const currentCohortEnded = endsAt !== null && endsAt <= Date.now();
+
+  return { member, cohortNames, pastCohorts, currentCohortEnded };
+});

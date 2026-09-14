@@ -270,7 +270,7 @@ export async function saveSessionAnswerAction(
   const week = Number(textValue(formData, "week"));
   const content = textValue(formData, "content");
 
-  if (!Number.isInteger(cohortNumber) || cohortNumber < 1 || !findSeasonWeek(week)) {
+  if (!Number.isInteger(cohortNumber) || cohortNumber < 1 || !findSeasonWeek(cohortNumber, week)) {
     return { status: "error", message: "잘못된 요청입니다." };
   }
 
@@ -310,6 +310,9 @@ export async function saveSessionAnswerAction(
   });
 
   if (error) {
+    if (error.message.includes("cohort_ended")) {
+      return { status: "error", message: "기수가 마무리되어 답변을 남길 수 없어요." };
+    }
     return { status: "error", message: "답변을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요." };
   }
 

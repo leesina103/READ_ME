@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BookOpenText, CalendarHeart, MessagesSquare } from "lucide-react";
 import { requireActiveMembership } from "@/lib/membership/access";
+
+export const metadata: Metadata = {
+  title: "멤버십 홈",
+  robots: { index: false, follow: false }
+};
 
 export default async function MembershipPage() {
   const member = await requireActiveMembership();

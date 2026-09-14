@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { seasonWeeks } from "@/data/seasonWeeks";
+import { seasonWeeksForCohort } from "@/data/seasonWeeks";
 
 export function SeasonWeekList({ cohortNumber }: { cohortNumber: number }) {
+  const seasonWeeks = seasonWeeksForCohort(cohortNumber);
+
   return (
     <ol className="border-t border-[var(--line)]">
       {seasonWeeks.map((weekItem) => (
@@ -20,7 +22,7 @@ export function SeasonWeekList({ cohortNumber }: { cohortNumber: number }) {
                     : "bg-[var(--sand)]/40 text-[var(--muted)]"
                 }`}
               >
-                {weekItem.type === "input" ? "토의" : "휴식 & OUTPUT"}
+                {weekItem.type === "input" ? "토의" : "실천 & OUTPUT"}
               </span>
               <span className="truncate text-[15px]">
                 {weekItem.type === "input" ? (

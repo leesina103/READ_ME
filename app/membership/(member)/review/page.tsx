@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { TallyReviewEmbed } from "@/components/TallyReviewEmbed";
-import { currentTheme } from "@/data/themes";
+import { themeForCohort } from "@/data/cohortThemes";
 import { requireActiveMembership } from "@/lib/membership/access";
 import { parseReviewEvent, reviewEventDetails } from "@/lib/membership/reviews";
 
@@ -17,13 +17,14 @@ type ReviewPageProps = {
 
 export default async function ReviewPage({ searchParams }: ReviewPageProps) {
   const member = await requireActiveMembership();
+  const cohortTheme = themeForCohort(member.cohortNumber);
   const params = await searchParams;
   const requestedEvent = parseReviewEvent(params.event);
   const requestedSession = Number(params.session);
   const session = requestedEvent === "session"
     && Number.isInteger(requestedSession)
     && requestedSession >= 1
-    && requestedSession <= currentTheme.sessions.length
+    && requestedSession <= cohortTheme.sessions.length
     ? requestedSession
     : undefined;
   const event = requestedEvent === "session" && !session ? "cohort" : requestedEvent;
