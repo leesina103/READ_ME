@@ -5,6 +5,7 @@ import { ArrowRight, BookOpen, ChevronDown, LockKeyhole, Menu, UserRound, X } fr
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { currentMeeting } from "@/data/currentMeeting";
+import { communityCategories, communityCategoryKeys } from "@/data/communityCategories";
 import { currentTheme } from "@/data/themes";
 
 const publicMenuItems = [
@@ -18,10 +19,7 @@ const membershipGroups = [
   {
     label: "커뮤니티",
     href: "/membership/community",
-    items: [
-      { label: "인생책 소개", href: "/membership/community?tab=books" },
-      { label: "글 공유", href: "/membership/community?tab=writing" }
-    ]
+    items: communityCategoryKeys.map((key) => ({ label: communityCategories[key].label, href: `/membership/community?tab=${key}` }))
   },
   {
     label: "멤버 활동",

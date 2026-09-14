@@ -8,6 +8,7 @@ import {
   type CommunityCategory,
   type CommunityPostActionState
 } from "@/app/membership/community-actions";
+import { communityCategories, communityCategoryKeys } from "@/data/communityCategories";
 
 const initialState: CommunityPostActionState = { status: "idle", message: "" };
 
@@ -35,7 +36,7 @@ export function CommunityPostForm({ mode, initial, initialCategory = "books" }: 
       {initial && <input type="hidden" name="postId" value={initial.id} />}
       <label className="block text-sm font-medium">글 분류
         <select name="category" value={category} onChange={(event) => setCategory(event.target.value as CommunityCategory)} className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]">
-          <option value="books">인생책 소개</option><option value="writing">글 공유</option>
+          {communityCategoryKeys.map((key) => <option key={key} value={key}>{communityCategories[key].label}</option>)}
         </select>
       </label>
 
