@@ -35,7 +35,7 @@ const questions = [
 const preparations = [
   [Video, "카메라와 마이크", "표정과 목소리를 나눌 수 있는 환경에서 접속해 주세요."],
   [Wifi, "조용하고 연결이 안정적인 장소", "대화가 끊기지 않도록 조용하고 네트워크 연결이 안정적인 장소를 권합니다."],
-  [Clock3, "예약한 시간 확인", "안내받은 인터뷰 날짜와 시간을 미리 확인해 주세요."]
+  [Clock3, "예약한 시간 확인", "예약 시간 5분 전에 접속 링크를 열어 두세요. 정각에 시작하니 여유 있게 준비해 주시면 좋아요."]
 ] as const;
 
 const notices = [
@@ -66,7 +66,7 @@ const membershipBenefits = [
 const faqs = [
   ["인터뷰는 합격자를 가리는 시험인가요?", "아니요. READ ME가 지향하는 대화 방식과 참여자가 기대하는 경험이 서로 맞는지 확인하는 시간입니다."],
   ["책을 많이 읽어야 하나요?", "독서량은 기준이 아닙니다. 한 문장을 오래 생각하고 자신의 언어로 나눌 마음이 있다면 충분합니다."],
-  ["무엇을 준비해야 하나요?", "별도의 답안이나 자기소개 자료는 필요하지 않습니다. 최근의 독서 경험과 모임에 기대하는 점만 가볍게 떠올려 주세요."],
+  ["무엇을 준비해야 하나요?", "따로 준비할 자료는 없습니다. 카메라와 마이크가 되는 조용한 곳에서 접속해 주시고, 위의 ‘가볍게 떠올려볼 대화 주제’ 세 가지만 한 번 읽고 생각해보시면 충분합니다."],
   ["긴장해서 말을 잘 못하면 어떡하나요?", "운영진이 질문을 천천히 건넵니다. 잠시 생각한 뒤 답해도 되고, 답하기 어려운 질문은 건너뛸 수 있습니다."],
   ["인터뷰 결과는 언제 알 수 있나요?", `운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 개별적으로 전달합니다.`]
 ] as const;
@@ -99,7 +99,7 @@ export default function InterviewPage() {
           <article><strong className="proof-strip__duration">{currentMeeting.interview.duration}</strong><span>예상 소요 시간</span><small>충분히 생각하며 이야기해요</small></article>
           <article><strong className="proof-strip__online">ONLINE</strong><span>화상 미팅</span><small>확정 링크는 개별 안내해요</small></article>
         </div>
-        <p className="section-shell proof-strip__note">READ ME는 {currentMeeting.schedule.groupSize}이 함께하는 유료 모임입니다.<br />모든 참여자와 인터뷰를 나눈 뒤 함께하며, 회비는 인터뷰 후 안내합니다.</p>
+        <p className="section-shell proof-strip__note">READ ME는 {currentMeeting.schedule.groupSize}이 함께하는 유료 모임입니다.<br />모든 참여자를 인터뷰로 먼저 만나며, 회비는 인터뷰 후 안내합니다.</p>
       </section>
 
       <section className="section section--paper interview-purpose">
