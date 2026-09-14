@@ -364,6 +364,9 @@ export async function saveSessionAnswerAction(
     if (error.message.includes("cohort_ended")) {
       return { status: "error", message: "기수가 마무리되어 답변을 남길 수 없어요." };
     }
+    if (error.message.includes("week_not_open")) {
+      return { status: "error", message: "아직 열리지 않은 주차예요. 공개 날짜에 다시 찾아주세요." };
+    }
     return { status: "error", message: "답변을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요." };
   }
 

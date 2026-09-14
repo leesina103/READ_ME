@@ -11,7 +11,7 @@ function ReadOnlyBadge() {
 }
 
 export default async function TalkIndexPage() {
-  const { member, pastCohorts, currentCohortEnded } = await getMemberCohortHistory();
+  const { member, pastCohorts, currentCohortEnded, currentCohortStartsAt } = await getMemberCohortHistory();
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-16 md:py-24">
@@ -30,7 +30,7 @@ export default async function TalkIndexPage() {
               <ReadOnlyBadge />
             </div>
           )}
-          <SeasonWeekList cohortNumber={member.cohortNumber} />
+          <SeasonWeekList cohortNumber={member.cohortNumber} startsAt={currentCohortStartsAt} />
         </section>
       ) : (
         <p className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 text-[var(--muted)]">참여 중인 기수가 확인되면 대화 목록이 열립니다.</p>

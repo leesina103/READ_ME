@@ -4,6 +4,7 @@ import { ArrowLeft, BookOpen, Lock } from "lucide-react";
 import { TalkComposer } from "@/components/TalkComposer";
 import { cohortNameFromNumber, findSeasonWeek } from "@/data/seasonWeeks";
 import { getMemberCohortHistory } from "@/lib/membership/access";
+import { isTalkWeekOpen } from "@/lib/membership/talkSchedule";
 import { createClient } from "@/lib/supabase/server";
 
 type TalkPageProps = { params: Promise<{ cohort: string; week: string }> };
@@ -37,10 +38,12 @@ export default async function TalkPage({ params }: TalkPageProps) {
   if (!weekInfo) notFound();
 
   // 진행 중인 현재 기수만 읽기·쓰기. 지난 기수와 종료일이 지난 기수는 읽기만 허용하고, 그 외 기수는 멤버십 홈으로 보낸다.
-  const { member, cohortNames, currentCohortEnded } = await getMemberCohortHistory();
+  const { member, cohortNames, currentCohortEnded, currentCohortStartsAt } = await getMemberCohortHistory();
   const cohortName = cohortNameFromNumber(cohortNumber);
   if (!cohortNames.has(cohortName)) redirect("/membership");
   const isCurrentCohort = member.cohort === cohortName;
+  // 현재 기수의 아직 열리지 않은 주차는 목록으로 돌려보낸다. 지난 기수는 읽기 전용이라 모두 연다.
+  if (isCurrentCohort && !isTalkWeekOpen(currentCohortStartsAt, week)) redirect("/membership/talk");
   const readOnly = !isCurrentCohort || currentCohortEnded;
   const user = member.user;
 
