@@ -1,13 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
-import {
-  loginAction,
-  signupAction,
-  type FormActionState
-} from "@/app/auth/actions";
+import { startTransition, useActionState } from "react";
+import { loginAction, resendConfirmationAction, signupAction, type AuthField, type AuthFormState } from "@/app/auth/actions";
+import { FormField, FormMessage, inputClassName } from "@/components/FormField";
+import { PasswordInput } from "@/components/PasswordInput";
 
-const initialState: FormActionState = { status: "idle", message: "" };
+const initialState: AuthFormState = { status: "idle", message: "" };
 
 type AuthFormProps = {
   mode: "login" | "signup";
@@ -17,41 +15,62 @@ type AuthFormProps = {
 };
 
 export function AuthForm({ mode, configured, next = "/my", notice }: AuthFormProps) {
-  const action = mode === "login" ? loginAction : signupAction;
-  const [state, formAction, pending] = useActionState(action, initialState);
   const isLogin = mode === "login";
+  const [state, formAction, pending] = useActionState(isLogin ? loginAction : signupAction, initialState);
+  const [resendState, resendAction, resendPending] = useActionState(resendConfirmationAction, initialState);
+  const errorField = state.status === "error" ? state.field : undefined;
+  const errorFor = (field: AuthField) => (errorField === field ? state.message : undefined);
+  const generalMessage = errorField ? "" : state.message || notice || (configured ? "" : "Supabase 프로젝트 연결 후 로그인할 수 있습니다.");
+  const values = resendState.values ?? state.values;
+  const showResend = isLogin && state.status === "error" && state.canResendConfirmation;
 
   return (
     <form action={formAction} className="mt-8 space-y-4">
-      {mode === "signup" && (
-        <label className="block text-sm font-medium">
-          이름
-          <input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]" name="displayName" autoComplete="name" minLength={2} maxLength={30} required placeholder="승인 명단에 등록된 실명" />
-        </label>
+      {!isLogin && (
+        <FormField label="이름" error={errorFor("displayName")}>
+          <input className={inputClassName(errorField === "displayName")} name="displayName" autoComplete="name" minLength={2} maxLength={30} required placeholder="가입 신청서에 적은 이름" defaultValue={values?.displayName ?? ""} />
+        </FormField>
       )}
-      <label className="block text-sm font-medium">
-        이메일
+      <FormField label="이메일" error={errorFor("email")}>
         <input
-          className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]"
+          className={inputClassName(errorField === "email")}
           type={isLogin ? "text" : "email"}
           name="email"
+          inputMode="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           autoComplete={isLogin ? "username" : "email"}
           required
           placeholder="hello@example.com"
+          defaultValue={values?.email ?? ""}
         />
-      </label>
-      <label className="block text-sm font-medium">
-        비밀번호
-        <input className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]" type="password" name="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={8} required placeholder="8자 이상" />
-      </label>
-      {mode === "login" && <input type="hidden" name="next" value={next} />}
-      {(state.message || notice || !configured) && (
-        <p role="status" className={`rounded-2xl border border-[var(--line)] px-4 py-3 text-sm leading-6 ${state.status === "error" || !configured ? "text-[var(--ink)]" : "text-[var(--forest)]"}`}>
-          {state.message || notice || "Supabase 프로젝트 연결 후 로그인할 수 있습니다."}
-        </p>
-      )}
+      </FormField>
+      {showResend && (resendState.status === "success" ? (
+        <FormMessage tone="success">{resendState.message}</FormMessage>
+      ) : (
+        <div className="flex flex-wrap items-center gap-3 text-sm">
+          <button
+            type="button"
+            disabled={resendPending}
+            onClick={(event) => {
+              const formData = new FormData(event.currentTarget.form ?? undefined);
+              startTransition(() => resendAction(formData));
+            }}
+            className="font-medium text-[var(--forest)] underline underline-offset-4 disabled:opacity-50"
+          >
+            {resendPending ? "보내는 중..." : "인증 메일 다시 보내기"}
+          </button>
+          {resendState.status === "error" && <span className="text-[#9c3d22]">{resendState.message}</span>}
+        </div>
+      ))}
+      <FormField label="비밀번호" error={errorFor("password")}>
+        <PasswordInput invalid={errorField === "password"} name="password" autoComplete={isLogin ? "current-password" : "new-password"} minLength={8} required placeholder="8자 이상" />
+      </FormField>
+      {isLogin && <input type="hidden" name="next" value={next} />}
+      {generalMessage && <FormMessage tone={state.status === "success" ? "success" : "error"}>{generalMessage}</FormMessage>}
       <button type="submit" disabled={pending || !configured} className="w-full rounded-2xl bg-[var(--ink)] px-4 py-3 font-medium text-[var(--cream)] disabled:cursor-not-allowed disabled:opacity-50">
-        {pending ? "처리 중..." : mode === "login" ? "로그인" : "회원가입"}
+        {pending ? "처리 중..." : isLogin ? "로그인" : "회원가입"}
       </button>
     </form>
   );

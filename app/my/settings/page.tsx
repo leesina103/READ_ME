@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, LockKeyhole } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -5,11 +6,19 @@ import { PasswordChangeForm } from "@/components/PasswordChangeForm";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
+export const metadata: Metadata = {
+  title: "계정 설정",
+  robots: { index: false, follow: false }
+};
+
 export default async function SettingsPage() {
   if (!isSupabaseConfigured()) redirect("/my");
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/my/settings");
+
+  const { data: profile } = await supabase.from("profiles").select("onboarding_completed_at").eq("id", user.id).maybeSingle();
+  if (profile && !profile.onboarding_completed_at) redirect("/onboarding");
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16 md:py-24">
@@ -17,7 +26,7 @@ export default async function SettingsPage() {
       <p className="eyebrow mt-8">ACCOUNT SETTINGS</p>
       <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">계정 설정</h1>
       <section className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
-        <div className="flex items-start gap-4"><LockKeyhole className="mt-1 shrink-0 text-[var(--forest)]" /><div><h2 className="text-xl font-semibold">비밀번호 변경</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">현재 비밀번호로 본인 확인 후 새 비밀번호를 저장합니다.</p><p className="mt-1 text-sm text-[var(--muted)]">로그인 이메일 · {user.email}</p></div></div>
+        <div className="flex items-start gap-4"><LockKeyhole className="mt-1 shrink-0 text-[var(--forest)]" /><div><h2 className="text-xl font-semibold">비밀번호 변경</h2></div></div>
         <PasswordChangeForm />
       </section>
     </main>

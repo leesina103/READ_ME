@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { cohortNumberFromName, findSeasonWeek } from "@/data/seasonWeeks";
+import { authCallbackUrl } from "@/lib/auth/site-url";
 
 export type FormActionState = {
   status: "idle" | "error" | "success";
@@ -38,22 +39,35 @@ function authErrorMessage(code?: string) {
   }
 }
 
-const nicknameLockedMessage = "기수가 시작되어 닉네임을 변경할 수 없습니다.";
+const nicknameLockedMessage = "기수가 시작되어 닉네임을 바꿀 수 없어요.";
+
+export type AuthField = "displayName" | "email" | "password";
+export type AuthFormState = FormActionState & {
+  field?: AuthField;
+  canResendConfirmation?: boolean;
+  values?: { displayName?: string; email?: string };
+};
+
+const invitationRequiredMessage = "가입 신청서에 적은 이름과 이메일이 일치해야 가입할 수 있어요. 승인 안내를 받지 못했다면 운영진에게 문의해 주세요.";
+
+function authFieldError(field: AuthField, message: string, extra: Omit<AuthFormState, "status" | "message" | "field"> = {}): AuthFormState {
+  return { status: "error", field, message, ...extra };
+}
 
 export async function loginAction(
-  _previousState: FormActionState,
+  _previousState: AuthFormState,
   formData: FormData
-): Promise<FormActionState> {
+): Promise<AuthFormState> {
   const loginId = textValue(formData, "email");
   const password = textValue(formData, "password");
   const next = safeNextPath(textValue(formData, "next"));
+  const values = { email: loginId };
 
-  if (!loginId || !password) {
-    return { status: "error", message: "이메일과 비밀번호를 모두 입력해 주세요." };
-  }
+  if (!loginId) return authFieldError("email", "이메일을 입력해 주세요.");
+  if (!password) return authFieldError("password", "비밀번호를 입력해 주세요.", { values });
 
   if (!isSupabaseConfigured()) {
-    return { status: "error", message: "Supabase 환경변수 설정이 필요합니다." };
+    return { status: "error", message: "Supabase 환경변수 설정이 필요합니다.", values };
   }
 
   const isAdminAlias = loginId.toLowerCase() === "admin";
@@ -62,13 +76,18 @@ export async function loginAction(
     : loginId;
 
   if (!email) {
-    return { status: "error", message: "관리자 로그인 설정이 필요합니다." };
+    return { status: "error", message: "관리자 로그인 설정이 필요합니다.", values };
   }
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if (error) return { status: "error", message: authErrorMessage(error.code) };
+  if (error) {
+    const message = authErrorMessage(error.code);
+    return error.code === "email_not_confirmed"
+      ? authFieldError("email", message, { canResendConfirmation: true, values })
+      : { status: "error", message, values };
+  }
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -81,24 +100,51 @@ export async function loginAction(
   redirect(profile?.onboarding_completed_at ? next : "/onboarding");
 }
 
-export async function signupAction(
-  _previousState: FormActionState,
+export async function resendConfirmationAction(
+  _previousState: AuthFormState,
   formData: FormData
-): Promise<FormActionState> {
+): Promise<AuthFormState> {
+  const email = textValue(formData, "email");
+  const values = { email };
+
+  if (!email) return { status: "error", message: "이메일을 입력해 주세요." };
+  if (!isSupabaseConfigured()) return { status: "error", message: "Supabase 환경변수 설정이 필요합니다.", values };
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email,
+    options: { emailRedirectTo: authCallbackUrl("/onboarding") }
+  });
+
+  if (error) {
+    const message = error.code === "over_email_send_rate_limit"
+      ? "인증 메일 요청이 많습니다. 잠시 뒤 다시 시도해 주세요."
+      : "인증 메일을 다시 보내지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
+    return { status: "error", message, values };
+  }
+
+  return { status: "success", message: "인증 메일을 다시 보냈습니다. 메일함을 확인해 주세요.", values };
+}
+
+export async function signupAction(
+  _previousState: AuthFormState,
+  formData: FormData
+): Promise<AuthFormState> {
   const displayName = textValue(formData, "displayName");
   const email = textValue(formData, "email");
   const password = textValue(formData, "password");
+  const values = { displayName, email };
 
   if (displayName.length < 2 || displayName.length > 30) {
-    return { status: "error", message: "이름은 2자 이상 30자 이하로 입력해 주세요." };
+    return authFieldError("displayName", "이름은 2자 이상 30자 이하로 입력해 주세요.", { values });
   }
 
-  if (!email || password.length < 8) {
-    return { status: "error", message: "이메일과 8자 이상의 비밀번호를 입력해 주세요." };
-  }
+  if (!email) return authFieldError("email", "이메일을 입력해 주세요.", { values });
+  if (password.length < 8) return authFieldError("password", "비밀번호는 8자 이상 입력해 주세요.", { values });
 
   if (!isSupabaseConfigured()) {
-    return { status: "error", message: "Supabase 환경변수 설정이 필요합니다." };
+    return { status: "error", message: "Supabase 환경변수 설정이 필요합니다.", values };
   }
 
   const supabase = await createClient();
@@ -108,28 +154,30 @@ export async function signupAction(
   });
 
   if (invitationError) {
-    return { status: "error", message: "가입 허용 명단을 확인하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
+    return { status: "error", message: "가입 허용 명단을 확인하지 못했습니다. 잠시 뒤 다시 시도해 주세요.", values };
   }
 
   if (!isInvited) {
-    return { status: "error", message: "인터뷰 합격 승인 후에 회원가입 가능합니다." };
+    return { status: "error", message: invitationRequiredMessage, values };
   }
 
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { display_name: displayName },
-      emailRedirectTo: `${siteUrl}/auth/callback?next=/onboarding`
+      emailRedirectTo: authCallbackUrl("/onboarding")
     }
   });
 
   if (error) {
-    const message = error.code === "unexpected_failure"
-      ? "인터뷰 합격 승인 후에 회원가입 가능합니다."
-      : authErrorMessage(error.code);
-    return { status: "error", message };
+    if (error.code === "unexpected_failure") {
+      return { status: "error", message: invitationRequiredMessage, values };
+    }
+    const message = authErrorMessage(error.code);
+    if (error.code === "user_already_exists" || error.code === "email_exists") return authFieldError("email", message, { values });
+    if (error.code === "weak_password") return authFieldError("password", message, { values });
+    return { status: "error", message, values };
   }
 
   if (data.session) {
@@ -139,28 +187,31 @@ export async function signupAction(
 
   return {
     status: "success",
-    message: "가입 확인 메일을 보냈습니다. 이메일 인증 후 로그인해 주세요."
+    message: "가입 확인 메일을 보냈습니다. 메일의 링크를 누르면 첫 회원 정보 작성으로 이어져요."
   };
 }
 
+export type OnboardingField = "displayName" | "bio" | "cohortMessage";
+export type OnboardingFormState = FormActionState & { field?: OnboardingField };
+
 export async function completeOnboardingAction(
-  _previousState: FormActionState,
+  _previousState: OnboardingFormState,
   formData: FormData
-): Promise<FormActionState> {
+): Promise<OnboardingFormState> {
   const displayName = textValue(formData, "displayName");
   const bio = textValue(formData, "bio");
   const cohortMessage = textValue(formData, "cohortMessage");
 
   if (displayName.length < 2 || displayName.length > 30) {
-    return { status: "error", message: "닉네임은 2자 이상 30자 이하로 입력해 주세요." };
+    return { status: "error", field: "displayName", message: "닉네임은 2자 이상 30자 이하로 입력해 주세요." };
   }
 
   if (bio.length < 2 || bio.length > 200) {
-    return { status: "error", message: "자기소개는 2자 이상 200자 이하로 입력해 주세요." };
+    return { status: "error", field: "bio", message: "자기소개는 2자 이상 200자 이하로 입력해 주세요." };
   }
 
   if (cohortMessage.length < 2 || cohortMessage.length > 300) {
-    return { status: "error", message: "동료들에게 전할 말은 2자 이상 300자 이하로 입력해 주세요." };
+    return { status: "error", field: "cohortMessage", message: "동료들에게 하고 싶은 말은 2자 이상 300자 이하로 입력해 주세요." };
   }
 
   if (!isSupabaseConfigured()) {
@@ -191,7 +242,7 @@ function withJosa(word: string, batchimForm: string, openForm: string) {
 const profileFields = {
   displayName: { column: "display_name", label: "닉네임", min: 2, max: 30 },
   bio: { column: "bio", label: "자기소개", min: 2, max: 200 },
-  cohortMessage: { column: "cohort_message", label: "동료들에게 전할 말", min: 2, max: 300 }
+  cohortMessage: { column: "cohort_message", label: "동료들에게 하고 싶은 말", min: 2, max: 300 }
 } as const;
 
 export type ProfileFieldName = keyof typeof profileFields;
@@ -251,7 +302,7 @@ export async function updateProfileFieldAction(
     if (error.message.includes("nickname_locked")) {
       return { status: "error", message: nicknameLockedMessage };
     }
-    return { status: "error", message: `${withJosa(field.label, "을", "를")} 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.` };
+    return { status: "error", message: `${withJosa(field.label, "을", "를")} 저장하지 못했어요. 잠시 후 다시 시도해 주세요.` };
   }
 
   revalidatePath("/my");
@@ -259,7 +310,7 @@ export async function updateProfileFieldAction(
     revalidatePath("/membership/community");
     revalidatePath("/membership/talk", "layout");
   }
-  return { status: "success", message: `${withJosa(field.label, "을", "를")} 저장했습니다.` };
+  return { status: "success", message: `${withJosa(field.label, "을", "를")} 저장했어요.` };
 }
 
 export async function saveSessionAnswerAction(

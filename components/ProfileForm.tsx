@@ -105,7 +105,7 @@ function ProfileField({ name, label, value, minLength, maxLength, multiline, loc
             disabled={pending}
             className="rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-[var(--cream)] disabled:opacity-50"
           >
-            {pending ? "저장 중..." : "작성 완료"}
+            {pending ? "저장 중..." : "저장"}
           </button>
         </div>
       </div>
@@ -130,7 +130,7 @@ export function ProfileForm({ displayName, bio, cohortMessage, nicknameLocked }:
         minLength={2}
         maxLength={30}
         locked={nicknameLocked}
-        note={nicknameLocked ? "기수가 시작되어 닉네임을 변경할 수 없습니다." : "기수 시작 후에는 닉네임 변경이 불가합니다."}
+        note={nicknameLocked ? "기수가 시작되어 닉네임을 바꿀 수 없어요." : "기수가 시작되면 닉네임을 바꿀 수 없어요."}
       />
       <ProfileField name="bio" label="자기소개" value={bio} minLength={2} maxLength={200} multiline />
       <ProfileField

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { resetLinkExpiredMessage } from "@/lib/auth/reset-password";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -18,7 +19,8 @@ export async function GET(request: Request) {
     if (!error) return NextResponse.redirect(new URL(next, url.origin));
   }
 
-  const loginUrl = new URL("/login", url.origin);
-  loginUrl.searchParams.set("message", "이메일 인증에 실패했습니다. 다시 로그인해 주세요.");
-  return NextResponse.redirect(loginUrl);
+  const isPasswordReset = next.startsWith("/reset-password");
+  const failureUrl = new URL(isPasswordReset ? "/reset-password" : "/login", url.origin);
+  failureUrl.searchParams.set("message", isPasswordReset ? resetLinkExpiredMessage : "이메일 인증에 실패했습니다. 다시 로그인해 주세요.");
+  return NextResponse.redirect(failureUrl);
 }
