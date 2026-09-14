@@ -9,6 +9,8 @@ export type MembershipApplicationState = {
   message: string;
 };
 
+const minBirthYear = 1900;
+
 function textValue(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
@@ -18,12 +20,19 @@ function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function parseBirthYear(value: string) {
+  if (!/^\d{4}$/.test(value)) return null;
+  const year = Number(value);
+  return year >= minBirthYear && year <= new Date().getFullYear() ? year : null;
+}
+
 export async function submitMembershipApplicationAction(
   _previousState: MembershipApplicationState,
   formData: FormData
 ): Promise<MembershipApplicationState> {
   const name = textValue(formData, "name");
   const email = textValue(formData, "email");
+  const birthYear = parseBirthYear(textValue(formData, "birthYear"));
   const cohort = textValue(formData, "cohort");
   const message = textValue(formData, "message");
   const privacyConsent = formData.get("privacyConsent") === "on";
@@ -34,6 +43,10 @@ export async function submitMembershipApplicationAction(
 
   if (email.length > 320 || !isValidEmail(email)) {
     return { status: "error", message: "연락받을 이메일을 확인해 주세요." };
+  }
+
+  if (birthYear === null) {
+    return { status: "error", message: "출생연도를 네 자리 숫자로 확인해 주세요." };
   }
 
   if (cohort !== currentMeeting.cohort) {
@@ -61,6 +74,7 @@ export async function submitMembershipApplicationAction(
     p_name: name,
     p_email: email,
     p_cohort: cohort,
+    p_birth_year: birthYear,
     p_message: message
   });
 

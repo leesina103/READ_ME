@@ -44,6 +44,20 @@ export function MembershipApplicationForm({ cohort, configured }: MembershipAppl
         />
       </label>
       <label className="block text-sm font-medium">
+        출생연도
+        <input
+          className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]"
+          name="birthYear"
+          inputMode="numeric"
+          autoComplete="bday-year"
+          pattern="[0-9]{4}"
+          minLength={4}
+          maxLength={4}
+          required
+          placeholder="1990"
+        />
+      </label>
+      <label className="block text-sm font-medium">
         신청 기수
         <input
           className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--sand)] px-4 py-3 text-[var(--muted)]"
@@ -62,7 +76,7 @@ export function MembershipApplicationForm({ cohort, configured }: MembershipAppl
       </label>
       <label className="flex items-start gap-3 rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-4 text-sm leading-6">
         <input className="mt-1 accent-[var(--forest)]" type="checkbox" name="privacyConsent" required />
-        <span>입력한 이름과 이메일을 가입 신청 검토와 참여 안내에 사용하는 것에 동의합니다.</span>
+        <span>입력한 이름, 이메일, 출생연도를 가입 신청 검토와 참여 안내에 사용하는 것에 동의합니다.</span>
       </label>
       {(state.message || !configured) && (
         <p role="status" className="rounded-2xl border border-[var(--line)] px-4 py-3 text-sm leading-6 text-[var(--ink)]">
