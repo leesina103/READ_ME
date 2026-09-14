@@ -36,6 +36,7 @@ const membershipGroups = [
 type HeaderProps = {
   isAuthenticated?: boolean;
   isMember?: boolean;
+  isAdmin?: boolean;
   accountLabel?: string;
 };
 
@@ -70,8 +71,10 @@ function MembershipMenuContent({ enabled, onNavigate }: MembershipMenuContentPro
   );
 }
 
-export function Header({ isAuthenticated = false, isMember = false, accountLabel = "로그인" }: HeaderProps) {
+export function Header({ isAuthenticated = false, isMember = false, isAdmin = false, accountLabel = "로그인" }: HeaderProps) {
   const pathname = usePathname();
+  const accountHref = !isAuthenticated ? "/login" : isAdmin ? "/admin" : "/my";
+  const accountAriaLabel = !isAuthenticated ? "로그인" : `${accountLabel} 계정, ${isAdmin ? "운영자 공간" : "나의 서재"}으로 이동`;
   const mainMenuRef = useRef<HTMLDetailsElement>(null);
 
   const closeMobileMenu = () => {
@@ -96,7 +99,7 @@ export function Header({ isAuthenticated = false, isMember = false, accountLabel
           </details>
           <span className="nav-divider" aria-hidden="true" />
           {currentMeeting.recruiting && <Link href={currentMeeting.applyHref} className="button button--primary header-apply-button">{currentMeeting.applyLabel}</Link>}
-          <Link href={isAuthenticated ? "/my" : "/login"} className="desktop-account-link" aria-label={isAuthenticated ? `${accountLabel} 계정, 나의 서재로 이동` : "로그인"} title={accountLabel}><span>{accountLabel}</span><UserRound size={20} aria-hidden="true" /></Link>
+          <Link href={accountHref} className="desktop-account-link" aria-label={accountAriaLabel} title={accountLabel}><span>{accountLabel}</span><UserRound size={20} aria-hidden="true" /></Link>
         </nav>
 
         <details ref={mainMenuRef} name="mobile-header-menu" className="mobile-menu mobile-menu--main">
@@ -120,7 +123,7 @@ export function Header({ isAuthenticated = false, isMember = false, accountLabel
           </div>
         </details>
 
-        <Link href={isAuthenticated ? "/my" : "/login"} className="mobile-account-link" aria-label={isAuthenticated ? `${accountLabel} 계정, 나의 서재로 이동` : "로그인"} title={accountLabel}><span>{accountLabel}</span><UserRound size={20} aria-hidden="true" /></Link>
+        <Link href={accountHref} className="mobile-account-link" aria-label={accountAriaLabel} title={accountLabel}><span>{accountLabel}</span><UserRound size={20} aria-hidden="true" /></Link>
       </div>
     </header>
   );

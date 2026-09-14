@@ -1,18 +1,20 @@
 "use client";
 
 import { useActionState } from "react";
-import { Check, X } from "lucide-react";
+import { Check, Clock3, X } from "lucide-react";
 import {
   archiveMembershipApplicationAction,
   reviewMembershipApplicationAction,
   type ApplicationReviewState
 } from "@/app/admin/applications/actions";
+import { formatSeoulDateTime } from "@/lib/admin/format";
 
 export type MembershipApplication = {
   id: number;
   name: string;
   email: string;
   cohort: string;
+  birth_year: number | null;
   message: string;
   status: "pending" | "approved" | "rejected";
   admin_note: string;
@@ -28,17 +30,20 @@ const statusLabel = {
   rejected: "거절"
 } as const;
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    dateStyle: "medium",
-    timeStyle: "short"
-  }).format(new Date(value));
-}
+const statusStyle = {
+  pending: { className: "bg-[var(--sand)] text-[#7a5a22]", Icon: Clock3 },
+  approved: { className: "bg-[var(--forest)] text-[var(--cream)]", Icon: Check },
+  rejected: { className: "bg-[var(--line)] text-[var(--muted)]", Icon: X }
+} as const;
+
+const errorTextClassName = "text-[#9c3d22]";
 
 function ApplicationReviewCard({ application }: { application: MembershipApplication }) {
   const [state, formAction, pending] = useActionState(reviewMembershipApplicationAction, initialState);
   const [archiveState, archiveAction, archivePending] = useActionState(archiveMembershipApplicationAction, initialState);
   const reviewed = application.status !== "pending" || state.status === "success";
+  const StatusIcon = statusStyle[application.status].Icon;
+  const details = [application.email, application.birth_year ? `${application.birth_year}년생` : null, `READ ME ${application.cohort}`].filter(Boolean).join(" · ");
 
   return (
     <article className="rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-6 sm:p-7">
@@ -46,22 +51,22 @@ function ApplicationReviewCard({ application }: { application: MembershipApplica
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-xl font-semibold">{application.name}</h2>
-            <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold text-[var(--forest)]">
-              {statusLabel[application.status]}
+            <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${statusStyle[application.status].className}`}>
+              <StatusIcon size={13} strokeWidth={2.5} aria-hidden="true" /> {statusLabel[application.status]}
             </span>
           </div>
-          <p className="mt-2 text-sm text-[var(--muted)]">{application.email} · READ ME {application.cohort}</p>
+          <p className="mt-2 text-sm text-[var(--muted)]">{details}</p>
         </div>
         <div className="flex items-center gap-3">
-          <time className="text-xs text-[var(--muted)]" dateTime={application.created_at}>{formatDate(application.created_at)}</time>
+          <time className="text-xs text-[var(--muted)]" dateTime={application.created_at}>{formatSeoulDateTime(application.created_at)}</time>
           {application.status !== "pending" && (
             <form action={archiveAction}>
               <input type="hidden" name="applicationId" value={application.id} />
               <button
                 type="submit"
                 disabled={archivePending}
-                aria-label={`${application.name} 신청 카드 닫기`}
-                title="목록에서 닫기"
+                aria-label={`${application.name} 신청 보관`}
+                title="보관"
                 className="inline-flex size-9 items-center justify-center rounded-full border border-[var(--line)] text-[var(--muted)] transition hover:border-[var(--forest)] hover:text-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <X size={16} />
@@ -79,8 +84,8 @@ function ApplicationReviewCard({ application }: { application: MembershipApplica
       {reviewed ? (
         <div className="mt-5 border-t border-[var(--line)] pt-5 text-sm leading-6 text-[var(--muted)]">
           <p>{application.admin_note || state.message || "관리자 메모가 없습니다."}</p>
-          {application.reviewed_at && <time className="mt-2 block text-xs" dateTime={application.reviewed_at}>처리: {formatDate(application.reviewed_at)}</time>}
-          {archiveState.status === "error" && <p role="status" className="mt-3 text-[var(--ink)]">{archiveState.message}</p>}
+          {application.reviewed_at && <time className="mt-2 block text-xs" dateTime={application.reviewed_at}>처리: {formatSeoulDateTime(application.reviewed_at)}</time>}
+          {archiveState.status === "error" && <p role="status" className={`mt-3 ${errorTextClassName}`}>{archiveState.message}</p>}
         </div>
       ) : (
         <form action={formAction} className="mt-5 border-t border-[var(--line)] pt-5">
@@ -94,7 +99,7 @@ function ApplicationReviewCard({ application }: { application: MembershipApplica
               placeholder="승인 또는 거절 사유를 남겨두세요."
             />
           </label>
-          {state.message && <p role="status" className="mt-3 text-sm text-[var(--ink)]">{state.message}</p>}
+          {state.message && <p role="status" className={`mt-3 text-sm ${state.status === "error" ? errorTextClassName : "text-[var(--forest)]"}`}>{state.message}</p>}
           <div className="mt-4 flex flex-wrap gap-2">
             <button
               type="submit"

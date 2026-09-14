@@ -50,6 +50,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   let isAuthenticated = false;
   let isMember = false;
+  let isAdmin = false;
   let accountLabel = "로그인";
 
   if (isSupabaseConfigured()) {
@@ -58,6 +59,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     isAuthenticated = Boolean(user);
 
     if (user) {
+      isAdmin = user.app_metadata?.role === "admin";
       const { data: profile } = await supabase
         .from("profiles")
         .select("display_name, cohort, onboarding_completed_at")
@@ -77,5 +79,5 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     }
   }
 
-  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header isAuthenticated={isAuthenticated} isMember={isMember} accountLabel={accountLabel} />{children}<Footer /></body></html>;
+  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header isAuthenticated={isAuthenticated} isMember={isMember} isAdmin={isAdmin} accountLabel={accountLabel} />{children}<Footer /></body></html>;
 }

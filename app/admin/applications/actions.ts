@@ -48,11 +48,13 @@ export async function reviewMembershipApplicationAction(
   });
 
   if (error) {
-    const message = error.message.includes("invitation_already_claimed")
-      ? "이미 회원가입에 사용된 이메일입니다."
-      : error.message.includes("application_already_reviewed")
-        ? "이미 검토가 끝난 신청입니다."
-        : "신청 상태를 변경하지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
+    const message = error.message.includes("application_already_reviewed")
+      ? "이미 검토가 끝난 신청입니다."
+      : error.message.includes("member_profile_not_found")
+        ? "회원 정보를 찾지 못해 기수를 반영하지 못했습니다."
+        : error.message.includes("invitation_claim_invalid")
+          ? "가입 허용 명단 상태가 올바르지 않습니다. 데이터를 확인해 주세요."
+          : "신청 상태를 변경하지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
     return { status: "error", message };
   }
 
@@ -60,7 +62,7 @@ export async function reviewMembershipApplicationAction(
   revalidatePath("/admin/applications");
   return {
     status: "success",
-    message: decision === "approved" ? "승인하고 멤버십 정보를 반영했습니다." : "신청을 거절 처리했습니다."
+    message: decision === "approved" ? "승인했습니다. 신청자에게 회원가입 안내를 보내 주세요." : "신청을 거절 처리했습니다."
   };
 }
 
@@ -91,8 +93,8 @@ export async function archiveMembershipApplicationAction(
 
   if (error) {
     const message = error.message.includes("application_not_reviewed")
-      ? "검토를 마친 신청만 닫을 수 있습니다."
-      : "신청을 닫지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
+      ? "검토를 마친 신청만 보관할 수 있습니다."
+      : "신청을 보관하지 못했습니다. 잠시 뒤 다시 시도해 주세요.";
     return { status: "error", message };
   }
 
