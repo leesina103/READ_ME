@@ -30,13 +30,6 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   const pathname = request.nextUrl.pathname;
-  const legacyTalkMatch = /^\/my\/talk\/(\d+)\/(\d+)$/.exec(pathname);
-
-  if (legacyTalkMatch) {
-    const url = request.nextUrl.clone();
-    url.pathname = `/membership/talk/${legacyTalkMatch[1]}/${legacyTalkMatch[2]}`;
-    return copyCookies(response, NextResponse.redirect(url));
-  }
 
   const isPublicMembershipApply = pathname === "/membership/apply"
     || pathname.startsWith("/membership/apply/")
