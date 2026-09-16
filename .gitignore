@@ -12,3 +12,6 @@ next-env.d.ts
 
 # Claude Code 로컬 설정
 .claude/settings.local.json
+
+# 임시 작업 폴더 (PDF 렌더링 등)
+tmp/

@@ -23,10 +23,10 @@ export function OnboardingForm() {
       <FormField label="닉네임" error={errorFor("displayName")} hint="기수가 시작되면 바꿀 수 없어요." counter={counterFor("displayName")}>
         <input className={inputClassName(errorField === "displayName")} name="displayName" value={values.displayName} onChange={update("displayName")} minLength={2} maxLength={limits.displayName} placeholder="모임에서 사용할 닉네임" required />
       </FormField>
-      <FormField label="자기소개" error={errorFor("bio")} counter={counterFor("bio")}>
+      <FormField label="자기소개" error={errorFor("bio")} hint="같은 기수 동료들에게 보여요." counter={counterFor("bio")}>
         <textarea className={`${inputClassName(errorField === "bio")} min-h-28 resize-y`} name="bio" value={values.bio} onChange={update("bio")} minLength={2} maxLength={limits.bio} placeholder="함께 읽는 사람들에게 나를 소개해 주세요." required />
       </FormField>
-      <FormField label="같은 기수 동료들에게 하고 싶은 말" error={errorFor("cohortMessage")} counter={counterFor("cohortMessage")}>
+      <FormField label="같은 기수 동료들에게 하고 싶은 말" error={errorFor("cohortMessage")} hint="같은 기수 동료들에게 보여요." counter={counterFor("cohortMessage")}>
         <textarea className={`${inputClassName(errorField === "cohortMessage")} min-h-32 resize-y`} name="cohortMessage" value={values.cohortMessage} onChange={update("cohortMessage")} minLength={2} maxLength={limits.cohortMessage} placeholder="앞으로 함께할 동료들에게 인사를 남겨 주세요." required />
       </FormField>
       {!errorField && state.message && <FormMessage tone="error">{state.message}</FormMessage>}

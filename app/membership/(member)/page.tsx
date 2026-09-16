@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BookOpenText, CalendarHeart, MessagesSquare } from "lucide-react";
+import { ArrowRight, BookOpenText, CalendarHeart, MessagesSquare, UsersRound } from "lucide-react";
 import { requireActiveMembership } from "@/lib/membership/access";
 
 export const metadata: Metadata = {
@@ -14,6 +14,7 @@ export default async function MembershipPage() {
   const sections = [
     { href: talkHref, icon: MessagesSquare, eyebrow: "ONLINE TALK", title: "온라인 대화", description: `${member.cohort ?? "참여 기수"}의 질문에 답하고 같은 기수 멤버의 생각을 만나보세요.` },
     { href: "/membership/community", icon: BookOpenText, eyebrow: "COMMUNITY", title: "멤버십 커뮤니티", description: "인생책을 소개하고 직접 쓴 글을 멤버들과 나눠보세요." },
+    { href: "/membership/members", icon: UsersRound, eyebrow: "MEMBERS", title: "멤버 소개", description: "같은 기수 동료들이 남긴 소개와 인사를 읽어보세요." },
     { href: "/membership/activities", icon: CalendarHeart, eyebrow: "ACTIVITIES", title: "멤버 활동", description: "북토의와 산책, 영화, 전시 같은 소모임을 함께해요." }
   ];
 
@@ -22,7 +23,7 @@ export default async function MembershipPage() {
       <p className="eyebrow">READ ME MEMBERSHIP</p>
       <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">함께 읽은 다음의 이야기</h1>
       <p className="mt-5 max-w-2xl leading-8 text-[var(--muted)]">{member.displayName}님, 기수의 대화부터 멤버들이 만드는 새로운 만남까지 이곳에서 이어가세요.</p>
-      <div className="mt-10 grid gap-5 md:grid-cols-3">
+      <div className="mt-10 grid gap-5 sm:grid-cols-2">
         {sections.map(({ href, icon: Icon, eyebrow, title, description }) => (
           <Link key={href} href={href} className="group rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 transition-transform hover:-translate-y-1">
             <Icon className="text-[var(--forest)]" size={26} />
