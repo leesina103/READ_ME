@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import ThemeSessionBook from "@/components/ThemeSessionBook";
 import { currentMeeting } from "@/data/currentMeeting";
 import { currentTheme, findTheme, themes } from "@/data/themes";
 import { notFound } from "next/navigation";
@@ -83,10 +84,7 @@ export default async function ThemePage({ params }: ThemePageProps) {
                   <p className="theme-session-description">
                     {session.description.split(/(?<=\.)\s+/).map((sentence) => <span key={sentence}>{sentence}</span>)}
                   </p>
-                  <div className="theme-session-book">
-                    <BookOpen size={20} aria-hidden="true" />
-                    <div><span>함께 읽는 책</span><strong>『{session.book}』</strong><small>{session.author}</small></div>
-                  </div>
+                  <ThemeSessionBook session={session} />
                 </article>
               </li>
             ))}
