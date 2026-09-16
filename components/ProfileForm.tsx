@@ -132,7 +132,7 @@ export function ProfileForm({ displayName, bio, cohortMessage, nicknameLocked }:
         locked={nicknameLocked}
         note={nicknameLocked ? "기수가 시작되어 닉네임을 바꿀 수 없어요." : "기수가 시작되면 닉네임을 바꿀 수 없어요."}
       />
-      <ProfileField name="bio" label="자기소개" value={bio} minLength={2} maxLength={200} multiline />
+      <ProfileField name="bio" label="자기소개" value={bio} minLength={2} maxLength={200} multiline note="같은 기수 동료들에게 보여요." />
       <ProfileField
         name="cohortMessage"
         label="같은 기수 동료들에게 하고 싶은 말"
@@ -140,6 +140,7 @@ export function ProfileForm({ displayName, bio, cohortMessage, nicknameLocked }:
         minLength={2}
         maxLength={300}
         multiline
+        note="같은 기수 동료들에게 보여요."
       />
     </div>
   );
