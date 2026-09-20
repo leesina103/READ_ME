@@ -9,9 +9,9 @@ export function MembershipNav({ cohortNumber }: { cohortNumber: number | null })
   const items = [
     { href: "/membership", label: "멤버십 홈", icon: House, active: pathname === "/membership" },
     { href: cohortNumber ? "/membership/talk" : "/membership", label: "온라인 대화", icon: MessagesSquare, active: pathname.startsWith("/membership/talk") },
-    { href: "/membership/community", label: "커뮤니티", icon: BookOpenText, active: pathname.startsWith("/membership/community") },
-    { href: "/membership/members", label: "멤버 소개", icon: UsersRound, active: pathname.startsWith("/membership/members") },
-    { href: "/membership/activities", label: "멤버 활동", icon: CalendarHeart, active: pathname.startsWith("/membership/activities") }
+    { href: "/membership/community", label: "멤버 커뮤니티", icon: BookOpenText, active: pathname.startsWith("/membership/community") },
+    { href: "/membership/activities", label: "멤버 활동", icon: CalendarHeart, active: pathname.startsWith("/membership/activities") },
+    { href: "/membership/members", label: "멤버 소개", icon: UsersRound, active: pathname.startsWith("/membership/members") }
   ];
 
   return (

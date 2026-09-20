@@ -12,7 +12,7 @@ export type CommunityCategoryInfo = {
 // 커뮤니티 분류의 이름과 안내 문구. 상단 메뉴, 탭, 글쓰기 폼, 글 상세가 모두 여기를 따른다.
 export const communityCategories: Readonly<Record<CommunityCategory, CommunityCategoryInfo>> = {
   books: {
-    label: "인생책",
+    label: "나만의 인생책 소개",
     eyebrow: "LIFE-CHANGING BOOK",
     description: "내 삶에 오래 남은 책과 그 이유를 멤버들에게 소개하는 공간입니다.",
     empty: "아직 소개된 인생책이 없어요.",

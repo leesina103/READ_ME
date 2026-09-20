@@ -17,7 +17,7 @@ const publicMenuItems = [
 
 const membershipGroups = [
   {
-    label: "커뮤니티",
+    label: "멤버 커뮤니티",
     href: "/membership/community",
     items: communityCategoryKeys.map((key) => ({ label: communityCategories[key].label, href: `/membership/community?tab=${key}` }))
   },
