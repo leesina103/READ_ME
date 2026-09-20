@@ -7,6 +7,7 @@ type SeasonWeekListProps = {
   cohortNumber: number;
   // 기수 시작 시각(cohorts.starts_at). 있으면 1주차부터 매주 같은 요일·시각에 순차 공개하고, 없으면 전부 연다.
   startsAt?: string | null;
+  showIntroduction?: boolean;
 };
 
 function WeekSummary({ weekItem, locked }: { weekItem: SeasonWeek; locked: boolean }) {
@@ -35,12 +36,19 @@ function WeekSummary({ weekItem, locked }: { weekItem: SeasonWeek; locked: boole
   );
 }
 
-export function SeasonWeekList({ cohortNumber, startsAt = null }: SeasonWeekListProps) {
+export function SeasonWeekList({ cohortNumber, startsAt = null, showIntroduction = true }: SeasonWeekListProps) {
   const seasonWeeks = seasonWeeksForCohort(cohortNumber);
   const now = Date.now();
 
   return (
     <ol className="border-t border-[var(--line)]">
+      {showIntroduction && <li className="border-b border-[var(--line)]">
+        <Link href={`/membership/talk/${cohortNumber}/0`} className="first-meeting-link">
+          <span className="first-meeting-link__label">첫 만남</span>
+          <span className="first-meeting-link__copy"><strong>나를 소개해요</strong><small>첫 모임 전에 작성하고 동료들의 소개를 읽어보세요.</small></span>
+          <ArrowRight size={16} className="shrink-0 text-[var(--forest)]" aria-hidden="true" />
+        </Link>
+      </li>}
       {seasonWeeks.map((weekItem) => {
         const opensAt = talkWeekOpensAt(startsAt, weekItem.week);
         const locked = opensAt !== null && opensAt.getTime() > now;

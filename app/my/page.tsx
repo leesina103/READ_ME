@@ -4,6 +4,7 @@ import { CalendarDays, Settings, UserRound } from "lucide-react";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/app/auth/actions";
 import { ProfileForm } from "@/components/ProfileForm";
+import { MemberIntroductionForm } from "@/components/MemberIntroductionForm";
 import { SeasonWeekList } from "@/components/SeasonWeekList";
 import { cohortNumberFromName } from "@/data/seasonWeeks";
 import { themeForCohort } from "@/data/cohortThemes";
@@ -39,7 +40,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("full_name, display_name, bio, cohort, cohort_message, onboarding_completed_at")
+    .select("full_name, display_name, introduction_word, bio, cohort, cohort_message, onboarding_completed_at")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -51,8 +52,6 @@ export default async function MyPage({ searchParams }: MyPageProps) {
 
   const displayName = profile?.display_name
     ?? (typeof user.user_metadata?.display_name === "string" ? user.user_metadata.display_name : "READ ME 회원");
-  const bio = profile?.bio ?? "";
-  const cohortMessage = profile?.cohort_message ?? "";
   const cohort = profile?.cohort ?? "기수 미지정";
   const cohortNumber = profile?.cohort ? cohortNumberFromName(profile.cohort) : null;
   const cohortTheme = cohortNumber ? themeForCohort(cohortNumber) : null;
@@ -84,9 +83,16 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       {membershipRequired && <p className="mt-8 rounded-2xl border border-[var(--line)] bg-[var(--sand)] px-5 py-4 text-sm leading-6">멤버십이 필요한 공간이에요. 멤버십이 만료되었거나 아직 승인 전이라면 운영진에게 문의해 주세요.</p>}
 
       <section className="mt-12 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
-        <div className="flex items-start gap-4"><UserRound className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">회원 정보</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">현재 기수는 <strong className="text-[var(--ink)]">{cohort}</strong>입니다. 닉네임과 소개를 관리할 수 있어요.</p></div></div>
+        <div className="flex items-start gap-4"><UserRound className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">회원 정보</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">현재 기수는 <strong className="text-[var(--ink)]">{cohort}</strong>입니다. 모임에서 사용하는 닉네임을 관리할 수 있어요.</p></div></div>
         {profileError && <p className="mt-5 text-sm text-[var(--muted)]">회원 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>}
-        <ProfileForm displayName={displayName} bio={bio} cohortMessage={cohortMessage} nicknameLocked={nicknameLocked} />
+        {profile && <ProfileForm displayName={displayName} nicknameLocked={nicknameLocked} />}
+      </section>
+
+      <section id="introduction" className="my-introduction-section">
+        <div className="first-meeting-room__section-heading"><h2>나의 소개</h2>{cohortNumber && <Link href={`/membership/talk/${cohortNumber}/0`} className="text-sm font-semibold text-[var(--forest)]">첫 만남으로 가기</Link>}</div>
+        <p className="introduction-sharing-note">첫 모임 전에 나를 소개해 주세요. 현재 기수 동료들에게만 보여요. 첫 만남과 멤버 소개에도 같은 내용이 반영됩니다.</p>
+        {profile ? <MemberIntroductionForm introduction={{ introduction_word: profile.introduction_word, bio: profile.bio, cohort_message: profile.cohort_message }} />
+          : <p role="alert" className="mt-5 text-sm leading-7 text-[var(--muted)]">소개를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>}
       </section>
 
       <section className="mt-5 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">

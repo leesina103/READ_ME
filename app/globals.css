@@ -933,3 +933,77 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 }
 
 .nav-badge { margin-left: 8px; vertical-align: middle; }
+
+/* 첫 만남 소개와 나의 서재에서 함께 사용하는 입력·읽기 화면 */
+.first-meeting-page { max-width: 800px; margin-inline: auto; padding: 56px 24px 80px; }
+.first-meeting-room { margin-top: 24px; overflow: hidden; border: 1px solid var(--line); border-radius: 28px; background: var(--paper); }
+.first-meeting-room__header { padding: 32px; border-bottom: 1px solid var(--line); }
+.first-meeting-room__header h1 { margin: 16px 0 0; font-family: var(--font-serif), serif; font-size: 32px; line-height: 1.4; letter-spacing: -.04em; }
+.first-meeting-room__header > p:last-child { margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.9; }
+.first-meeting-room__guide { display: flex; align-items: flex-start; gap: 12px; padding: 28px 32px; background: color-mix(in srgb, var(--sage) 35%, var(--paper)); }
+.first-meeting-room__guide > div { min-width: 0; }
+.first-meeting-room__avatar { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; background: var(--forest); color: var(--cream); font-size: 12px; font-weight: 700; }
+.first-meeting-room__bubble { margin-top: 6px; padding: 16px; border: 1px solid var(--line); border-radius: 2px 18px 18px; background: var(--paper); font-size: 14px; line-height: 1.9; overflow-wrap: anywhere; }
+.first-meeting-room__mine, .first-meeting-room__peers { padding: 32px; border-top: 1px solid var(--line); }
+.first-meeting-room__section-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.first-meeting-room__section-heading h2 { margin: 0; font-size: 21px; font-weight: 600; }
+.first-meeting-room__section-heading > span { color: var(--forest); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.introduction-sharing-note { margin: 12px 0 0; font-size: 13px; color: var(--muted); line-height: 1.9; }
+.introduction-editor { margin-top: 24px; display: grid; gap: 20px; }
+.introduction-editor > .button { justify-self: start; }
+.introduction-form { display: grid; gap: 24px; min-width: 0; }
+.introduction-form__field { display: grid; min-width: 0; gap: 10px; font-size: 14px; font-weight: 600; }
+.introduction-form__input { width: 100%; min-width: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); color: var(--ink); font: inherit; font-weight: 400; line-height: 1.8; }
+textarea.introduction-form__input { resize: vertical; min-height: 120px; }
+.introduction-form__input::placeholder { color: var(--muted); }
+.introduction-form__input:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
+.introduction-form__input[aria-invalid="true"] { border-color: var(--ink); }
+.introduction-form__hint { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.7; }
+.introduction-form__hint > span:last-child { flex-shrink: 0; }
+.introduction-form__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.introduction-form__actions button:disabled { cursor: wait; opacity: .6; }
+.introduction-content { margin-top: 20px; display: grid; gap: 20px; min-width: 0; overflow-wrap: anywhere; }
+.introduction-editor > .introduction-content { margin-top: 0; }
+.introduction-content__label { margin: 0; color: var(--muted); font-size: 12px; font-weight: 600; }
+.introduction-content__word { margin: 8px 0 0; color: var(--forest); font-family: var(--font-serif), serif; font-size: 28px; line-height: 1.5; }
+.introduction-content__text { margin: 8px 0 0; white-space: pre-wrap; font-size: 14px; line-height: 1.9; }
+.introduction-content__message { padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--sage) 25%, var(--paper)); }
+.first-meeting-room__peer-list { margin-top: 28px; border-top: 1px solid var(--line); }
+.first-meeting-room__peer { min-width: 0; padding: 32px 0; overflow-wrap: anywhere; }
+.first-meeting-room__peer + .first-meeting-room__peer { border-top: 1px solid var(--line); }
+.first-meeting-room__peer:last-child { padding-bottom: 0; }
+.first-meeting-room__peer h3 { margin: 0; color: var(--forest); font-size: 17px; font-weight: 700; line-height: 1.6; }
+.introduction-content--reading { margin-top: 12px; gap: 18px; }
+.introduction-content--reading .introduction-content__word { margin: 0; color: var(--ink); font-size: 32px; line-height: 1.4; }
+.introduction-content--reading .introduction-content__text { margin: 0; font-size: 17px; line-height: 1.9; }
+.introduction-content--reading .introduction-content__message { margin-top: 4px; padding: 0; border: 0; border-radius: 0; background: none; }
+.introduction-content--reading .introduction-content__label { margin-bottom: 8px; font-size: 13px; }
+.my-introduction-section { margin-top: 20px; padding: 32px; border: 1px solid var(--line); border-radius: 28px; background: var(--paper); scroll-margin-top: 120px; }
+.first-meeting-link { display: flex; align-items: center; gap: 20px; min-height: 88px; padding-block: 20px; }
+.first-meeting-link__label { flex-shrink: 0; color: var(--forest); font-size: 14px; font-weight: 600; }
+.first-meeting-link__copy { display: grid; flex: 1; min-width: 0; gap: 6px; }
+.first-meeting-link__copy strong { font-size: 15px; }
+.first-meeting-link__copy small { color: var(--muted); font-size: 12px; line-height: 1.8; }
+@media (max-width: 820px) {
+  .first-meeting-page { padding-block: 40px 64px; }
+  .first-meeting-room__header, .first-meeting-room__mine, .first-meeting-room__peers, .my-introduction-section { padding: 28px; }
+  .first-meeting-room__guide { padding: 24px 28px; }
+  .introduction-content--reading .introduction-content__text { font-size: 16px; }
+}
+@media (max-width: 600px) {
+  .first-meeting-room__peers .first-meeting-room__section-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .first-meeting-room__peers .first-meeting-room__section-heading > a { align-self: flex-end; }
+}
+@media (max-width: 430px) {
+  .first-meeting-page { padding-inline: 20px; }
+  .first-meeting-room__header, .first-meeting-room__mine, .first-meeting-room__peers, .my-introduction-section { padding: 24px 20px; }
+  .first-meeting-room__header h1 { font-size: 26px; }
+  .first-meeting-room__guide { padding: 24px 16px; gap: 8px; }
+  .first-meeting-room__bubble { padding: 14px; font-size: 13px; }
+  .first-meeting-room__peer { padding: 28px 0; }
+  .introduction-content--reading .introduction-content__word { font-size: 28px; }
+  .introduction-form__hint { flex-wrap: wrap; }
+  .introduction-form__actions { display: grid; grid-template-columns: 1fr; }
+  .introduction-form__actions .button { width: 100%; }
+  .first-meeting-link { gap: 12px; }
+}

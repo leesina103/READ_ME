@@ -191,7 +191,7 @@ export async function signupAction(
   };
 }
 
-export type OnboardingField = "displayName" | "bio" | "cohortMessage";
+export type OnboardingField = "displayName";
 export type OnboardingFormState = FormActionState & { field?: OnboardingField };
 
 export async function completeOnboardingAction(
@@ -199,19 +199,9 @@ export async function completeOnboardingAction(
   formData: FormData
 ): Promise<OnboardingFormState> {
   const displayName = textValue(formData, "displayName");
-  const bio = textValue(formData, "bio");
-  const cohortMessage = textValue(formData, "cohortMessage");
 
   if (displayName.length < 2 || displayName.length > 30) {
     return { status: "error", field: "displayName", message: "닉네임은 2자 이상 30자 이하로 입력해 주세요." };
-  }
-
-  if (bio.length < 2 || bio.length > 200) {
-    return { status: "error", field: "bio", message: "자기소개는 2자 이상 200자 이하로 입력해 주세요." };
-  }
-
-  if (cohortMessage.length < 2 || cohortMessage.length > 300) {
-    return { status: "error", field: "cohortMessage", message: "동료들에게 하고 싶은 말은 2자 이상 300자 이하로 입력해 주세요." };
   }
 
   if (!isSupabaseConfigured()) {
@@ -220,9 +210,7 @@ export async function completeOnboardingAction(
 
   const supabase = await createClient();
   const { error } = await supabase.rpc("complete_member_onboarding", {
-    p_display_name: displayName,
-    p_bio: bio,
-    p_cohort_message: cohortMessage
+    p_display_name: displayName
   });
 
   if (error) {
@@ -306,9 +294,10 @@ export async function updateProfileFieldAction(
   }
 
   revalidatePath("/my");
+  revalidatePath("/membership/members");
+  revalidatePath("/membership/talk", "layout");
   if (fieldName === "displayName") {
     revalidatePath("/membership/community");
-    revalidatePath("/membership/talk", "layout");
   }
   return { status: "success", message: `${withJosa(field.label, "을", "를")} 저장했어요.` };
 }

@@ -20,7 +20,7 @@ export default async function TalkIndexPage() {
       <p className="mt-5 max-w-2xl leading-8 text-[var(--muted)]">
         {currentCohortEnded
           ? `${member.cohort}가 마무리되어 대화방은 읽기만 가능해요. 답변을 남겼던 주차의 이야기를 다시 볼 수 있어요.`
-          : "먼저 내 답변을 남긴 뒤 같은 기수 멤버들의 생각을 읽을 수 있어요."}
+          : "첫 만남에서는 서로의 소개를 자유롭게 읽어보세요. 1~8주차 대화는 내 답변을 남기면 동료들의 생각이 열려요."}
       </p>
       {member.cohortNumber ? (
         <section className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
@@ -47,7 +47,7 @@ export default async function TalkIndexPage() {
                 <h3 className="text-xl font-semibold">{cohort.name} 온라인 대화</h3>
                 <ReadOnlyBadge />
               </div>
-              <div className="mt-5"><SeasonWeekList cohortNumber={cohort.number} /></div>
+              <div className="mt-5"><SeasonWeekList cohortNumber={cohort.number} showIntroduction={false} /></div>
             </div>
           ))}
         </section>
