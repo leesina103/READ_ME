@@ -9,6 +9,7 @@ import { currentMeeting } from "@/data/currentMeeting";
 import { currentTheme } from "@/data/themes";
 import { coreDifferences } from "@/data/differences";
 import { MultilineText } from "@/components/MultilineText";
+import { FaqList } from "@/components/FaqList";
 import { storyClosing, storySourceNote } from "@/data/stories";
 
 const meetingFacts = [
@@ -30,8 +31,7 @@ const faqs = [
   { question: "독서모임이 처음인데 괜찮나요?", answer: "물론입니다. 잘 말하는 능력보다 다른 사람의 이야기를 존중하며 듣는 마음이면 충분합니다." },
   { question: "책을 꼭 완독해야 하나요?", answer: "깊은 대화를 위해 완독하는 걸 권장합니다. 하지만 시간이 안 된다면, 사전 질문에 대해 깊게 생각해오는 것만으로 충분합니다." },
   { question: "혼자 참여해도 괜찮나요?", answer: "네. 대부분 혼자 신청합니다. 처음 만난 사람도 편안히 이야기할 수 있도록 소규모로 진행합니다." },
-  { question: "인터뷰는 왜 하나요?", answer: "평가가 아니라 서로 기대하는 모임의 방식과 대화 태도가 잘 맞는지 확인하는 짧은 사전 대화입니다.", href: "/interview" },
-  { question: "한 기수는 어떻게 진행되나요?", answer: "격주로 네 번 만나며, 매 회차 책 읽기와 사전 질문, 오프라인 대화, 기록의 순서로 이어집니다." }
+  { question: "인터뷰는 왜 하나요?", answer: "평가가 아니라 서로 기대하는 모임의 방식과 대화 태도가 잘 맞는지 확인하는 짧은 사전 대화입니다.", href: "/interview", linkLabel: "인터뷰 안내 자세히 보기" }
 ];
 
 const detailLinks = [
@@ -103,7 +103,7 @@ export function HomePage() {
 
       <section className="section detail-links-section"><div className="section-shell"><SectionTitle eyebrow="EXPLORE READ ME" title="궁금한 이야기부터 살펴보세요." /><div className="detail-link-grid">{detailLinks.map(({ icon: Icon, ...item }) => <Link key={item.href} href={item.href}><Icon size={22} strokeWidth={1.5} /><small>{item.eyebrow}</small><h3>{item.title}</h3><p>{item.text}</p><span>자세히 보기 <ArrowRight size={14} /></span></Link>)}</div></div></section>
 
-      <section className="section faq-section"><div className="section-shell faq-layout"><div><p className="eyebrow">FAQ</p><h2>참여하기 전에<br />궁금한 것들</h2><p>처음이라도 편안하게 시작할 수 있도록 자주 묻는 내용을 정리했습니다.</p></div><div className="faq-list">{faqs.map((item, index) => <details key={item.question}><summary><span>{String(index + 1).padStart(2, "0")}</span>{item.question}<i>+</i></summary><p>{item.answer}{item.href && <><br /><Link href={item.href} className="faq-answer-link">인터뷰 안내 자세히 보기 <ArrowRight size={14} /></Link></>}</p></details>)}</div></div></section>
+      <section className="section faq-section"><div className="section-shell faq-layout"><div><p className="eyebrow">FAQ</p><h2>참여하기 전에<br />궁금한 것들</h2><p>처음이라도 편안하게 시작할 수 있도록 자주 묻는 내용을 정리했습니다.</p><Link href="/meeting#faq" className="text-link">인원·일정·온라인 진행 안내 보기 <ArrowRight size={14} /></Link></div><FaqList items={faqs} /></div></section>
 
       <section className="section cta-section"><div className="section-shell cta-card cta-card--compact-title"><NotebookPen size={30} strokeWidth={1.4}/><p className="eyebrow">AN INVITATION</p><h2>삶의 답은 내가 찾지만,<br />그 과정을 혼자 걸을 필요는 없으니까.</h2><p>READ ME와 함께하는 첫걸음,<br />편안한 인터뷰로 시작해요.</p><div className="cta-actions"><Link href={currentMeeting.applyHref} className="button button--light">{currentMeeting.applyLabel} <ArrowRight size={16} /></Link><Link href="/meeting" className="button button--outline-light">{currentMeeting.meetingLabel}</Link></div></div></section>
     </main>

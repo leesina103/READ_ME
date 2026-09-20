@@ -11,6 +11,7 @@ const schedule = {
   onlineSessions: "4회",
   sessionDuration: "3시간",
   location: "서울 오프라인",
+  cohortSize: "30~40명",
   groupSize: "4~6명",
   fee: "인터뷰 후 안내"
 } as const;
@@ -39,7 +40,7 @@ export const currentMeeting = {
     { label: "온라인 실천·기록", value: schedule.onlineSessions },
     { label: "회차별 소요", value: schedule.sessionDuration },
     { label: "장소", value: schedule.location },
-    { label: "정원", value: schedule.groupSize },
+    { label: "그룹당 인원", value: schedule.groupSize },
     { label: "회비", value: schedule.fee }
   ],
   sessions: currentTheme.sessions.map((session, index) => ({ order: index + 1, ...session }))

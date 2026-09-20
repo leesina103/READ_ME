@@ -37,7 +37,7 @@ export function ProgramGuide() {
           </li>
           <li>
             <div className="season-cycle__text">
-              <div className="season-cycle__head"><span>2주차 · 온라인</span><h3>실천 <em className="is-output">OUTPUT</em></h3></div>
+              <div className="season-cycle__head"><span>2주차 · 온라인</span><h3>실천과 기록 <em className="is-output">OUTPUT</em></h3></div>
               <div className="season-cycle__body"><p>토의에서 나눈 이야기로 생각을 다시 정리해 적습니다. 써봐야 생각이 정리되고, 서로의 답을 보며 시야가 넓어집니다.</p><p>정리한 생각을 일상에 접목해 실천하고, 어떤 행동을 했는지 조원들과 공유합니다.</p></div>
             </div>
             <TalkRoomPreview variant="output" />
