@@ -46,7 +46,7 @@ function CohortScheduleCard({ cohort, now }: { cohort?: CohortSchedule; now: num
             <input className={inputClassName()} name="name" required pattern="\d+\s*기" placeholder="2기" autoComplete="off" />
           </FormField>
         )}
-        <FormField label="시작일" hint="시작일이 지나면 회원 닉네임이 잠깁니다.">
+        <FormField label="시작일 · 1주차 사전 질문 공개" hint="1주차 사전 질문은 이 날짜에 열립니다. 다른 주차 공개일과 작성 마감은 그룹별 모임일로 정합니다. 시작일이 지나면 회원 닉네임이 잠깁니다.">
           <input className={inputClassName()} type="date" name="startDate" required defaultValue={cohort ? seoulDateKey(cohort.starts_at) : ""} />
         </FormField>
         <FormField label="종료일" hint="비워두면 진행 중으로 봅니다. 종료일 당일까지 답변을 남길 수 있어요.">

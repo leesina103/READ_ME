@@ -360,6 +360,8 @@ export async function saveSessionAnswerAction(
   }
 
   revalidatePath(`/membership/talk/${cohortNumber}/${week}`);
+  revalidatePath("/membership/talk");
+  revalidatePath("/membership");
   return { status: "success", message: "답변을 저장했습니다." };
 }
 

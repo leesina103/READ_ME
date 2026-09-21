@@ -4,8 +4,10 @@ import { ArrowLeft, BookOpen, Lock } from "lucide-react";
 import { TalkComposer } from "@/components/TalkComposer";
 import { cohortNameFromNumber, findSeasonWeek } from "@/data/seasonWeeks";
 import { getMemberCohortHistory } from "@/lib/membership/access";
-import { isTalkWeekOpen } from "@/lib/membership/talkSchedule";
 import { createClient } from "@/lib/supabase/server";
+import { getTalkSchedule } from "@/lib/membership/talkData";
+import { deadlineText } from "@/lib/membership/talkDeadlines";
+import { formatSeoulDayHeading, formatSeoulTime } from "@/lib/admin/format";
 
 type TalkPageProps = { params: Promise<{ cohort: string; week: string }> };
 
@@ -38,12 +40,14 @@ export default async function TalkPage({ params }: TalkPageProps) {
   if (!weekInfo) notFound();
 
   // 진행 중인 현재 기수만 읽기·쓰기. 지난 기수와 종료일이 지난 기수는 읽기만 허용하고, 그 외 기수는 멤버십 홈으로 보낸다.
-  const { member, cohortNames, currentCohortEnded, currentCohortStartsAt } = await getMemberCohortHistory();
+  const { member, cohortNames, currentCohortEnded } = await getMemberCohortHistory();
   const cohortName = cohortNameFromNumber(cohortNumber);
   if (!cohortNames.has(cohortName)) redirect("/membership");
   const isCurrentCohort = member.cohort === cohortName;
+  const { schedule } = await getTalkSchedule(cohortName);
+  const timing = schedule.find((item) => item.week_number === week);
   // 현재 기수의 아직 열리지 않은 주차는 목록으로 돌려보낸다. 지난 기수는 읽기 전용이라 모두 연다.
-  if (isCurrentCohort && !isTalkWeekOpen(currentCohortStartsAt, week)) redirect("/membership/talk");
+  if (isCurrentCohort && !currentCohortEnded && (!timing?.opens_at || Date.parse(timing.opens_at) > Date.now())) redirect("/membership/talk");
   const readOnly = !isCurrentCohort || currentCohortEnded;
   const user = member.user;
 
@@ -74,6 +78,12 @@ export default async function TalkPage({ params }: TalkPageProps) {
           <p className="text-xs font-bold tracking-[.14em] text-[var(--forest)]">READ ME {cohortName} · {week}주차 · {weekInfo.type === "input" ? "토의" : "실천 & OUTPUT"}{readOnly && " · 읽기 전용"}</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-[-0.02em]">{weekInfo.roomTitle}</h1>
           <p className="mt-2 inline-flex items-center gap-2 text-sm text-[var(--muted)]"><BookOpen size={15} /> 『{weekInfo.book}』 {weekInfo.author}</p>
+          {!readOnly && <div className="mt-4 rounded-2xl bg-[var(--sage)]/35 p-4 text-sm leading-7">
+            {timing?.meeting_at && <p>{formatSeoulDayHeading(timing.meeting_at)} {formatSeoulTime(timing.meeting_at)} 모임</p>}
+            <p className="font-semibold">{timing?.due_at ? deadlineText(timing.due_at) : "모임 일정이 정해지면 작성 날짜를 알려드려요."}</p>
+            <p className="text-xs text-[var(--muted)]">날짜가 지나도 기수가 끝나기 전까지 작성하거나 수정할 수 있어요.</p>
+            <p className="text-xs text-[var(--muted)]">답변은 같은 기수 동료들과 나눠요. 내 답변을 남기면 동료들의 답변이 열립니다.</p>
+          </div>}
         </header>
 
         <div className="flex flex-col gap-5 bg-[var(--sage)]/35 px-5 py-7 sm:px-6">

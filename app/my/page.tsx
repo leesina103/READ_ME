@@ -10,6 +10,7 @@ import { cohortNumberFromName } from "@/data/seasonWeeks";
 import { themeForCohort } from "@/data/cohortThemes";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
+import { getTalkSchedule } from "@/lib/membership/talkData";
 
 export const metadata: Metadata = {
   title: "나의 서재",
@@ -47,7 +48,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
   if (profile && !profile.onboarding_completed_at) redirect("/onboarding");
 
   const { data: cohortSchedule } = profile?.cohort
-    ? await supabase.from("cohorts").select("starts_at").eq("name", profile.cohort).maybeSingle()
+    ? await supabase.from("cohorts").select("starts_at,ends_at").eq("name", profile.cohort).maybeSingle()
     : { data: null };
 
   const displayName = profile?.display_name
@@ -55,6 +56,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
   const cohort = profile?.cohort ?? "기수 미지정";
   const cohortNumber = profile?.cohort ? cohortNumberFromName(profile.cohort) : null;
   const cohortTheme = cohortNumber ? themeForCohort(cohortNumber) : null;
+  const { schedule } = profile?.cohort ? await getTalkSchedule(profile.cohort) : { schedule: [] };
   const nicknameLocked = Boolean(
     cohortSchedule?.starts_at && new Date(cohortSchedule.starts_at).getTime() <= Date.now()
   );
@@ -98,7 +100,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       <section className="mt-5 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
         <div className="flex items-start gap-4"><CalendarDays className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">나의 현재 기수</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">{cohortTheme ? <>READ ME <strong className="text-[var(--ink)]">{cohort}</strong> · {cohortTheme.name}, {cohortTheme.subtitle}</> : "아직 참여 중인 기수가 없어요."}</p></div></div>
         {cohortNumber && (
-          <div className="mt-6"><SeasonWeekList cohortNumber={cohortNumber} startsAt={cohortSchedule?.starts_at ?? null} /></div>
+          <div className="mt-6"><SeasonWeekList cohortNumber={cohortNumber} schedule={schedule} readOnly={Boolean(cohortSchedule?.ends_at && Date.parse(cohortSchedule.ends_at) <= Date.now())} /></div>
         )}
       </section>
     </main>

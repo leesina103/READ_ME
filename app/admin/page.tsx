@@ -31,6 +31,7 @@ export default async function AdminPage() {
   }
 
   const sections = [
+    { href: "/admin/activities", icon: CalendarRange, title: "북토의·소모임 관리", description: "모임 등록과 신청자 입금 확인, 환불 처리, 회원 제안을 관리합니다.", badge: null },
     { href: "/admin/applications", icon: UsersRound, title: "가입 신청 관리", description: "접수된 신청을 확인하고 승인하거나 거절합니다.", badge: pendingApplications === null ? null : `검토 대기 ${pendingApplications}건` },
     { href: "/admin/members", icon: ClipboardList, title: "기수 회원 명단", description: "기수별 승인 명단과 가입 상태를 확인합니다.", badge: null },
     { href: "/admin/interviews", icon: CalendarClock, title: "인터뷰 예약", description: "예약된 인터뷰 일정과 신청자 연락처를 확인합니다.", badge: upcomingInterviews === null ? null : `다가오는 인터뷰 ${upcomingInterviews}건` },

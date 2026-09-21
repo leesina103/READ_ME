@@ -4,6 +4,8 @@ import { ArrowLeft, CalendarRange } from "lucide-react";
 import { CohortScheduleList } from "@/components/CohortScheduleList";
 import { requireAdmin, supabaseNotConfiguredMessage } from "@/lib/admin/access";
 import { cohortPhase, type CohortSchedule } from "@/lib/admin/cohorts";
+import { TalkGroupManager } from "@/components/TalkGroupManager";
+import type { TalkGroup, TalkMeeting, TalkMember } from "@/lib/membership/talkDeadlines";
 
 export const metadata: Metadata = {
   title: "기수 일정 관리",
@@ -25,6 +27,15 @@ export default async function AdminCohortsPage() {
 
   const now = Date.now();
   const ongoingCount = cohorts.filter((cohort) => cohortPhase(cohort, now).label === "진행 중").length;
+  const groupData = await Promise.all(cohorts.map(async (cohort) => {
+    if (!supabase) return null;
+    const [groups, meetings, members] = await Promise.all([
+      supabase.from("talk_groups").select("id, cohort, name").eq("cohort", cohort.name).order("name"),
+      supabase.from("talk_meetings").select("group_id, week_number, starts_at"),
+      supabase.rpc("admin_talk_members", { p_cohort: cohort.name })
+    ]);
+    return { cohort, error: Boolean(groups.error || meetings.error || members.error), groups: (groups.data ?? []) as TalkGroup[], meetings: (meetings.data ?? []) as TalkMeeting[], members: (members.data ?? []) as TalkMember[] };
+  }));
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-16 md:py-24">
@@ -48,6 +59,13 @@ export default async function AdminCohortsPage() {
         ) : (
           <CohortScheduleList cohorts={cohorts} now={now} />
         )}
+      </section>
+      <section className="mt-12" aria-label="그룹과 작성 일정 관리">
+        <h2 className="text-2xl font-semibold">그룹과 작성 일정 관리</h2>
+        <p className="mt-3 text-sm leading-7 text-[var(--muted)]">작성 안내는 멤버십 홈과 온라인 대화 목록에 표시됩니다. 작성일 당일 오전 9시부터 미작성자에게 보이며 답변을 저장하면 사라집니다.</p>
+        {groupData.map((item) => item && (item.error
+          ? <p key={item.cohort.name} role="alert" className="mt-5 rounded-2xl border border-[var(--line)] p-5 text-sm">{item.cohort.name} 그룹 정보를 불러오지 못했습니다. 그룹 일정 마이그레이션 적용 여부를 확인해주세요.</p>
+          : <TalkGroupManager key={item.cohort.name} cohort={item.cohort.name} ended={Boolean(item.cohort.ends_at && Date.parse(item.cohort.ends_at) <= now)} groups={item.groups} meetings={item.meetings} members={item.members} />))}
       </section>
     </main>
   );

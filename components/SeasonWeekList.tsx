@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { ArrowRight, Lock } from "lucide-react";
 import { seasonWeeksForCohort, type SeasonWeek } from "@/data/seasonWeeks";
-import { formatTalkWeekOpenDate, talkWeekOpensAt } from "@/lib/membership/talkSchedule";
+import { formatTalkWeekOpenDate } from "@/lib/membership/talkSchedule";
+import { deadlineText, type TalkSchedule } from "@/lib/membership/talkDeadlines";
 
 type SeasonWeekListProps = {
   cohortNumber: number;
-  // 기수 시작 시각(cohorts.starts_at). 있으면 1주차부터 매주 같은 요일·시각에 순차 공개하고, 없으면 전부 연다.
-  startsAt?: string | null;
+  readOnly?: boolean;
   showIntroduction?: boolean;
+  schedule?: TalkSchedule[];
 };
 
 function WeekSummary({ weekItem, locked }: { weekItem: SeasonWeek; locked: boolean }) {
@@ -36,7 +37,7 @@ function WeekSummary({ weekItem, locked }: { weekItem: SeasonWeek; locked: boole
   );
 }
 
-export function SeasonWeekList({ cohortNumber, startsAt = null, showIntroduction = true }: SeasonWeekListProps) {
+export function SeasonWeekList({ cohortNumber, readOnly = false, showIntroduction = true, schedule = [] }: SeasonWeekListProps) {
   const seasonWeeks = seasonWeeksForCohort(cohortNumber);
   const now = Date.now();
 
@@ -50,8 +51,9 @@ export function SeasonWeekList({ cohortNumber, startsAt = null, showIntroduction
         </Link>
       </li>}
       {seasonWeeks.map((weekItem) => {
-        const opensAt = talkWeekOpensAt(startsAt, weekItem.week);
-        const locked = opensAt !== null && opensAt.getTime() > now;
+        const timing = schedule.find((item) => item.week_number === weekItem.week);
+        const opensAt = timing?.opens_at ? new Date(timing.opens_at) : null;
+        const locked = !readOnly && (opensAt === null || opensAt.getTime() > now);
 
         return (
           <li key={weekItem.week} className="border-b border-[var(--line)] last:border-b-0">
@@ -59,7 +61,7 @@ export function SeasonWeekList({ cohortNumber, startsAt = null, showIntroduction
               <div className="flex min-h-14 items-center justify-between gap-4 py-4 text-[var(--muted)]">
                 <WeekSummary weekItem={weekItem} locked />
                 <span className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold">
-                  <Lock size={13} aria-hidden="true" /> {formatTalkWeekOpenDate(opensAt)} 열림
+                  <Lock size={13} aria-hidden="true" /> {opensAt ? `${formatTalkWeekOpenDate(opensAt)} 열림` : "일정 준비 중"}
                 </span>
               </div>
             ) : (
@@ -71,6 +73,7 @@ export function SeasonWeekList({ cohortNumber, startsAt = null, showIntroduction
                 <ArrowRight size={16} className="shrink-0 text-[var(--muted)]" />
               </Link>
             )}
+            {timing && !readOnly && <p className="pb-4 text-xs leading-6 text-[var(--muted)]">{timing.answered ? "작성 완료 · " : ""}{timing.due_at ? deadlineText(timing.due_at) : "모임 일정이 정해지면 작성 날짜를 알려드려요."}</p>}
           </li>
         );
       })}

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BookOpenText, CalendarHeart, MessagesSquare, UsersRound } from "lucide-react";
-import { requireActiveMembership } from "@/lib/membership/access";
+import { getMemberCohortHistory } from "@/lib/membership/access";
+import { getTalkSchedule } from "@/lib/membership/talkData";
+import { TalkReminders } from "@/components/TalkReminders";
 
 export const metadata: Metadata = {
   title: "멤버십 홈",
@@ -9,7 +11,8 @@ export const metadata: Metadata = {
 };
 
 export default async function MembershipPage() {
-  const member = await requireActiveMembership();
+  const { member, currentCohortEnded } = await getMemberCohortHistory();
+  const { schedule } = member.cohort ? await getTalkSchedule(member.cohort) : { schedule: [] };
   const talkHref = member.cohortNumber ? "/membership/talk" : "/membership";
   const sections = [
     { href: talkHref, icon: MessagesSquare, eyebrow: "ONLINE TALK", title: "온라인 대화", description: `${member.cohort ?? "참여 기수"}의 질문에 답하고 같은 기수 멤버의 생각을 만나보세요.` },
@@ -23,6 +26,7 @@ export default async function MembershipPage() {
       <p className="eyebrow">READ ME MEMBERSHIP</p>
       <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">함께 읽은 다음의 이야기</h1>
       <p className="mt-5 max-w-2xl leading-8 text-[var(--muted)]">{member.displayName}님, 기수의 대화부터 멤버들이 만드는 새로운 만남까지 이곳에서 이어가세요.</p>
+      {member.cohortNumber && <TalkReminders schedule={schedule} cohortNumber={member.cohortNumber} ended={currentCohortEnded} />}
       <div className="mt-10 grid gap-5 sm:grid-cols-2">
         {sections.map(({ href, icon: Icon, eyebrow, title, description }) => (
           <Link key={href} href={href} className="group rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 transition-transform hover:-translate-y-1">

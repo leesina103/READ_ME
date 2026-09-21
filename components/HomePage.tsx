@@ -74,7 +74,7 @@ export function HomePage() {
         <article className="season-current">
           <div className="season-current__label"><p className="eyebrow">CURRENT SEASON</p>{currentMeeting.recruiting && <span className="season-current__badge">{currentMeeting.recruitingLabel}</span>}</div>
           <h3>{currentMeeting.cohort} — {currentTheme.name}, {currentTheme.subtitle}</h3>
-          <ol className="season-current__questions">{currentTheme.sessions.map((session, index) => <li key={session.title}><span className="season-current__num">{String(index + 1).padStart(2, "0")}</span><span className="season-current__topic">{session.title}</span><span className="season-current__q">{session.question}</span><span className="season-current__book">『{session.book}』</span></li>)}</ol>
+          <ol className="season-current__questions">{currentTheme.sessions.map((session, index) => <li key={session.title}><span className="season-current__num">{String(index + 1).padStart(2, "0")}</span><span className="season-current__topic">{session.title}</span><span className="season-current__q">{session.question}</span><span className="season-current__book"><strong>『{session.book}』</strong><small>{session.author}</small></span></li>)}</ol>
           <div className="season-current__actions"><Link href={`/themes/${currentTheme.slug}`} className="button button--primary">{currentTheme.name} 주제 자세히 보기 <ArrowRight size={15} /></Link><Link href="/meeting" className="button button--ghost">{currentMeeting.cohort} 상세 안내 보기</Link></div>
           <p className="season-current__next">READ ME는 매 기수 새로운 주제와 질문으로 진행합니다.</p>
           <Link href="/themes#themes" className="button button--ghost season-current__themes">전체 주제 보기 <ArrowRight size={15} /></Link>
@@ -99,7 +99,7 @@ export function HomePage() {
 
       <section className="section people-section"><div className="section-shell people-layout"><div><p className="eyebrow">RECOMMENDED FOR</p><h2>이런 사람에게<br />READ ME를 추천해요.</h2><blockquote>정답을 가진 사람보다,<br />질문을 가진 사람을 위한 모임입니다.</blockquote></div><ul>{people.map((person) => <li key={person}><Check size={17} /> {person}</li>)}</ul></div></section>
 
-      <section className="section story-section"><div className="section-shell"><SectionTitle eyebrow="STORY" title="실제 사람들이 느낀 것" description={storySourceNote} /><StoryCarousel /><p className="story-closing">{storyClosing}</p><Link href="/story" className="button button--ghost story-link">전체 후기 보기 <ArrowRight size={16} /></Link></div></section>
+      <section className="section story-section"><div className="section-shell"><SectionTitle eyebrow="STORY" title="실제 사람들이 느낀 것" description={storySourceNote} /><StoryCarousel /><p className="story-closing">{storyClosing}</p><Link href="/story" className="button button--ghost story-link">전체 이야기 보기 <ArrowRight size={16} /></Link></div></section>
 
       <section className="section detail-links-section"><div className="section-shell"><SectionTitle eyebrow="EXPLORE READ ME" title="궁금한 이야기부터 살펴보세요." /><div className="detail-link-grid">{detailLinks.map(({ icon: Icon, ...item }) => <Link key={item.href} href={item.href}><Icon size={22} strokeWidth={1.5} /><small>{item.eyebrow}</small><h3>{item.title}</h3><p>{item.text}</p><span>자세히 보기 <ArrowRight size={14} /></span></Link>)}</div></div></section>
 
