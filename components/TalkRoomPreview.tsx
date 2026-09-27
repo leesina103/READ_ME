@@ -2,9 +2,11 @@ import { currentMeeting } from "@/data/currentMeeting";
 
 type Props = {
   variant?: "question" | "output";
+  cohortLabel?: string;
+  caption?: string;
 };
 
-export function TalkRoomPreview({ variant = "question" }: Props) {
+export function TalkRoomPreview({ variant = "question", cohortLabel = currentMeeting.cohort, caption = "READ ME 실제 토크방 화면" }: Props) {
   const isOutput = variant === "output";
 
   return (
@@ -12,7 +14,7 @@ export function TalkRoomPreview({ variant = "question" }: Props) {
       <div className="season-cycle__frame">
         <svg viewBox="0 0 320 200" role="img" aria-label={isOutput ? "READ ME 토크방 실천 기록 화면" : "READ ME 토크방 사전 질문 화면"}>
           <rect width="320" height="200" fill="var(--paper)" />
-          <text x="16" y="20" className="shot-eyebrow">READ ME {currentMeeting.cohort} · {isOutput ? "2주차 · 실천 & OUTPUT" : "1주차 · 토의"}</text>
+          <text x="16" y="20" className="shot-eyebrow">READ ME {cohortLabel} · {isOutput ? "2주차 · 실천 & OUTPUT" : "1주차 · 토의"}</text>
           <text x="16" y="38" className="shot-title">{isOutput ? "존중 실천 기록" : "존중 토의"}</text>
           <text x="16" y="52" className="shot-meta">『관계의 언어』 문요한</text>
           <path d="M0 62h320" stroke="var(--line)" />
@@ -47,7 +49,7 @@ export function TalkRoomPreview({ variant = "question" }: Props) {
           <text x="279" y="182" className="shot-btn" textAnchor="middle">{isOutput ? "수정하기" : "보내기"}</text>
         </svg>
       </div>
-      <figcaption>READ ME 실제 토크방 화면</figcaption>
+      <figcaption>{caption}</figcaption>
     </figure>
   );
 }

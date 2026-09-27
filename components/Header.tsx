@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { currentMeeting } from "@/data/currentMeeting";
 import { communityCategories, communityCategoryKeys } from "@/data/communityCategories";
 import { currentTheme } from "@/data/themes";
+import { isInvitationPath } from "@/lib/invitationPath";
 
 const publicMenuItems = [
   { href: "/about", label: "READ ME 소개", description: "우리가 책을 읽고 대화하는 방식", live: false },
@@ -78,6 +79,10 @@ export function Header({ isAuthenticated = false, isMember = false, isAdmin = fa
   const closeMobileMenu = () => {
     if (mainMenuRef.current) mainMenuRef.current.open = false;
   };
+
+  if (isInvitationPath(pathname)) {
+    return <header className="site-header"><div className="site-header__inner"><Link href="/" className="brand-mark" aria-label="READ ME 홈"><span className="brand-mark__icon"><BookOpen size={19} strokeWidth={1.8} /></span><span>READ ME</span></Link></div></header>;
+  }
 
   return (
     <header className="site-header">
