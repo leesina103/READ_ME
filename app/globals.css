@@ -799,6 +799,10 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 .theme-session-heading h2 { margin: 18px 0 0; font-family: Georgia, var(--font-serif), serif; font-size: clamp(39px,4.8vw,64px); line-height: 1.2; font-weight: 500; letter-spacing: -.04em; }
 .theme-session-section { padding-block: 124px; }
 .theme-session-heading { max-width: 690px; }
+.theme-session-preview { position: relative; display: flow-root; overflow: clip; }
+.theme-session-preview > .theme-session-list { filter: blur(18px); opacity: .45; pointer-events: none; user-select: none; }
+.theme-session-preview__overlay { position: absolute; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding: 120px 24px 80px; }
+.theme-session-preview__overlay p { position: sticky; top: 120px; margin: 0; padding: 24px 32px; max-width: 100%; border: 1px solid var(--line); border-radius: 20px; background: var(--paper); color: var(--forest); font-size: 20px; font-weight: 600; line-height: 1.7; text-align: center; word-break: keep-all; }
 .theme-session-list { margin: 72px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .theme-session-list > li { padding-block: 74px; display: grid; grid-template-columns: 170px 1fr; gap: 70px; border-bottom: 1px solid var(--line); }
 .theme-session-number { padding-top: 8px; }
@@ -835,6 +839,8 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .theme-detail-hero__grid { margin-top: 30px; grid-template-columns: 1fr; grid-template-areas: "title" "cover" "copy"; align-items: start; gap: 44px; }
   .theme-detail-hero__copy { max-width: 620px; }
   .theme-session-section { padding-block: 92px; }
+  .theme-session-preview__overlay { padding: 100px 20px 64px; }
+  .theme-session-preview__overlay p { padding: 22px 26px; font-size: 18px; }
   .theme-session-list > li { grid-template-columns: 110px 1fr; gap: 36px; }
   .theme-session-book-row { align-items: stretch; flex-direction: column; gap: 18px; }
   .theme-session-book { min-height: 154px; width: 100%; padding: 28px 30px; }
@@ -860,6 +866,8 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .theme-detail-hero__copy > p { font-size: 14px; }
   .theme-session-heading h2 { font-size: 36px; }
   .theme-session-section { padding-block: 68px; }
+  .theme-session-preview__overlay { padding: 80px 12px 48px; }
+  .theme-session-preview__overlay p { top: 96px; padding: 20px; font-size: 16px; border-radius: 16px; }
   .theme-session-list { margin-top: 48px; }
   .theme-session-list > li { padding-block: 52px; grid-template-columns: 1fr; gap: 28px; }
   .theme-session-number { display: flex; align-items: baseline; gap: 9px; }

@@ -71,7 +71,8 @@ export default async function ThemePage({ params }: ThemePageProps) {
             <p className="eyebrow">SESSION 01—04</p>
             <h2>네 번의 질문,<br />네 권의 책</h2>
           </div>
-          <ol className="theme-session-list">
+          <div className={isCurrentTheme ? undefined : "theme-session-preview"}>
+          <ol className="theme-session-list" aria-hidden={!isCurrentTheme || undefined}>
             {theme.sessions.map((session, index) => (
               <li key={session.question}>
                 <div className="theme-session-number">
@@ -89,6 +90,12 @@ export default async function ThemePage({ params }: ThemePageProps) {
               </li>
             ))}
           </ol>
+          {!isCurrentTheme && (
+            <div className="theme-session-preview__overlay">
+              <p>주제별 선정 도서는 해당 기수 모집 시 안내합니다</p>
+            </div>
+          )}
+          </div>
         </div>
       </section>
 
