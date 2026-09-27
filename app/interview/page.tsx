@@ -27,9 +27,18 @@ const benefits = [
 const [featuredStory] = homeStories;
 
 const questions = [
-  "최근 읽은 문장 중 오래 마음에 남은 것은 무엇이며, 왜 그런가요?",
-  "나와 다른 생각을 만났을 때, 어떤 태도로 대화하려 하나요?",
-  "요즘 조금 어렵더라도 계속 시도해보고 있는 일이 있나요?"
+  {
+    question: "최근 읽은 문장 중 오래 마음에 남은 것은 무엇이며, 왜 그런가요?",
+    description: "책뿐 아니라 글이나 인터뷰에서 만난 문장도 괜찮습니다."
+  },
+  {
+    question: "제일 나다운 순간은 언제인가요?",
+    description: "무언가에 몰두할 때, 누군가와 함께 있을 때, 혼자 보내는 시간 등 편하게 떠오르는 장면을 생각해 주세요."
+  },
+  {
+    question: "요즘 마음을 많이 쓰고 있는 일은 무엇인가요?",
+    description: "일이나 관계에 대한 고민, 좋아하는 일이나 새롭게 관심이 생긴 것 등 무엇이든 괜찮습니다."
+  }
 ];
 
 const preparations = [
@@ -66,7 +75,7 @@ const membershipBenefits = [
 const faqs = [
   ["인터뷰는 합격자를 가리는 시험인가요?", "아니요. READ ME가 지향하는 대화 방식과 참여자가 기대하는 경험이 서로 맞는지 확인하는 시간입니다."],
   ["책을 많이 읽어야 하나요?", "독서량은 기준이 아닙니다. 한 문장을 오래 생각하고 자신의 언어로 나눌 마음이 있다면 충분합니다."],
-  ["무엇을 준비해야 하나요?", "따로 준비할 자료는 없습니다. 카메라와 마이크가 되는 조용한 곳에서 접속해 주시고, 위의 ‘가볍게 떠올려볼 대화 주제’ 세 가지만 한 번 읽고 생각해보시면 충분합니다."],
+  ["무엇을 준비해야 하나요?", "따로 준비할 자료는 없습니다. 카메라와 마이크가 되는 조용한 곳에서 접속해 주시고, 위의 ‘이야기 나누기 전, 가볍게 떠올려볼 질문’ 세 가지만 한 번 읽고 생각해보시면 충분합니다."],
   ["긴장해서 말을 잘 못하면 어떡하나요?", "운영진이 질문을 천천히 건넵니다. 잠시 생각한 뒤 답해도 되고, 답하기 어려운 질문은 건너뛸 수 있습니다."],
   ["인터뷰 결과는 언제 알 수 있나요?", `운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 개별적으로 전달합니다.`]
 ] as const;
@@ -116,9 +125,9 @@ export default function InterviewPage() {
       <section id="questions" className="section">
         <div className="section-shell">
           <p className="eyebrow">A FEW QUESTIONS</p>
-          <h2 className="interview-section-title">가볍게 떠올려볼 대화 주제</h2>
+          <h2 className="interview-section-title">이야기 나누기 전, 가볍게 떠올려볼 질문</h2>
           <p className="interview-section-copy">미리 답을 정리하거나 외울 필요는 없습니다.<br />인터뷰 전에 지금의 생각만 가볍게 떠올려보세요.</p>
-          <div className="interview-question-grid">{questions.map((question, index) => <article key={question}><span>Q{index + 1}</span><p>{question}</p></article>)}</div>
+          <div className="interview-question-grid">{questions.map(({ question, description }, index) => <article key={question}><span>Q{index + 1}</span><p>{question}</p><small>{description}</small></article>)}</div>
         </div>
       </section>
 
