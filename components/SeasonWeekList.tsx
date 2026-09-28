@@ -7,6 +7,7 @@ import { deadlineText, type TalkSchedule } from "@/lib/membership/talkDeadlines"
 type SeasonWeekListProps = {
   cohortNumber: number;
   readOnly?: boolean;
+  canPreviewAllWeeks?: boolean;
   showIntroduction?: boolean;
   schedule?: TalkSchedule[];
 };
@@ -37,7 +38,7 @@ function WeekSummary({ weekItem, locked }: { weekItem: SeasonWeek; locked: boole
   );
 }
 
-export function SeasonWeekList({ cohortNumber, readOnly = false, showIntroduction = true, schedule = [] }: SeasonWeekListProps) {
+export function SeasonWeekList({ cohortNumber, readOnly = false, canPreviewAllWeeks = false, showIntroduction = true, schedule = [] }: SeasonWeekListProps) {
   const seasonWeeks = seasonWeeksForCohort(cohortNumber);
   const now = Date.now();
 
@@ -53,7 +54,7 @@ export function SeasonWeekList({ cohortNumber, readOnly = false, showIntroductio
       {seasonWeeks.map((weekItem) => {
         const timing = schedule.find((item) => item.week_number === weekItem.week);
         const opensAt = timing?.opens_at ? new Date(timing.opens_at) : null;
-        const locked = !readOnly && (opensAt === null || opensAt.getTime() > now);
+        const locked = !readOnly && !canPreviewAllWeeks && (opensAt === null || opensAt.getTime() > now);
 
         return (
           <li key={weekItem.week} className="border-b border-[var(--line)] last:border-b-0">

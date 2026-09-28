@@ -46,9 +46,10 @@ export default async function TalkPage({ params }: TalkPageProps) {
   const isCurrentCohort = member.cohort === cohortName;
   const { schedule } = await getTalkSchedule(cohortName);
   const timing = schedule.find((item) => item.week_number === week);
-  // 현재 기수의 아직 열리지 않은 주차는 목록으로 돌려보낸다. 지난 기수는 읽기 전용이라 모두 연다.
-  if (isCurrentCohort && !currentCohortEnded && (!timing?.opens_at || Date.parse(timing.opens_at) > Date.now())) redirect("/membership/talk");
-  const readOnly = !isCurrentCohort || currentCohortEnded;
+  // 운영자는 공개 전 질문도 미리 읽을 수 있다. 회원의 공개 일정과 답변 작성 조건은 유지한다.
+  const isPendingWeek = isCurrentCohort && !currentCohortEnded && (!timing?.opens_at || Date.parse(timing.opens_at) > Date.now());
+  if (isPendingWeek && member.user.app_metadata?.role !== "admin") redirect("/membership/talk");
+  const readOnly = !isCurrentCohort || currentCohortEnded || isPendingWeek;
   const user = member.user;
 
   const supabase = await createClient();
@@ -111,7 +112,9 @@ export default async function TalkPage({ params }: TalkPageProps) {
         {readOnly ? (
           <div className="flex items-start gap-2 border-t border-[var(--line)] bg-[var(--paper)] p-4 text-sm leading-6 text-[var(--muted)] sm:p-5">
             <Lock size={14} className="mt-1 shrink-0" aria-hidden="true" />
-            {isCurrentCohort ? (
+            {isPendingWeek ? (
+              <p>운영자 미리보기입니다. 질문은 미리 볼 수 있고, 답변은 주차가 열린 뒤 작성할 수 있어요.</p>
+            ) : isCurrentCohort ? (
               <p>{cohortName}가 마무리되어 대화방은 읽기만 가능해요.</p>
             ) : (
               <p>지난 기수 대화방은 읽기만 가능해요.{member.cohort && !currentCohortEnded && <> 새 답변은 <Link href="/membership/talk" className="font-semibold text-[var(--forest)] underline underline-offset-4">{member.cohort} 대화방</Link>에서 남겨주세요.</>}</p>

@@ -38,7 +38,7 @@ export default async function TalkIndexPage() {
               <ReadOnlyBadge />
             </div>
           )}
-          <SeasonWeekList cohortNumber={member.cohortNumber} readOnly={currentCohortEnded} schedule={schedule} />
+          <SeasonWeekList cohortNumber={member.cohortNumber} readOnly={currentCohortEnded} canPreviewAllWeeks={member.user.app_metadata?.role === "admin"} schedule={schedule} />
         </section>
       ) : (
         <p className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 text-[var(--muted)]">참여 중인 기수가 확인되면 대화 목록이 열립니다.</p>

@@ -117,7 +117,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       <section className="mt-5 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
         <div className="flex items-start gap-4"><CalendarDays className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">나의 현재 기수</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">{cohortTheme ? <>READ ME <strong className="text-[var(--ink)]">{cohort}</strong> · {cohortTheme.name}, {cohortTheme.subtitle}</> : "아직 참여 중인 기수가 없어요."}</p></div></div>
         {cohortNumber && (
-          <div className="mt-6"><SeasonWeekList cohortNumber={cohortNumber} schedule={schedule} readOnly={Boolean(cohortSchedule?.ends_at && Date.parse(cohortSchedule.ends_at) <= Date.now())} /></div>
+          <div className="mt-6"><SeasonWeekList cohortNumber={cohortNumber} schedule={schedule} canPreviewAllWeeks={user.app_metadata?.role === "admin"} readOnly={Boolean(cohortSchedule?.ends_at && Date.parse(cohortSchedule.ends_at) <= Date.now())} /></div>
         )}
       </section>
     </main>
