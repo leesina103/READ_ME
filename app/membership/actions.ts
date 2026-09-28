@@ -35,7 +35,12 @@ export async function submitMembershipApplicationAction(
   const birthYear = parseBirthYear(textValue(formData, "birthYear"));
   const cohort = textValue(formData, "cohort");
   const message = textValue(formData, "message");
+  const groupId = textValue(formData, "groupId");
   const privacyConsent = formData.get("privacyConsent") === "on";
+
+  if (formData.getAll("groupId").length !== 1 || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(groupId)) {
+    return { status: "error", message: "참여할 모임 하나를 선택해 주세요." };
+  }
 
   if (name.length < 2 || name.length > 30) {
     return { status: "error", message: "이름은 2자 이상 30자 이하로 입력해 주세요." };
@@ -75,10 +80,13 @@ export async function submitMembershipApplicationAction(
     p_email: email,
     p_cohort: cohort,
     p_birth_year: birthYear,
+    p_group_id: groupId,
     p_message: message
   });
 
   if (error) {
+    if (error.message.includes("application_group_unavailable")) return { status: "error", message: "선택한 모임의 신청이 마감되었습니다. 새로고침 후 신청 가능한 모임을 확인해 주세요." };
+    if (error.message.includes("application_already_submitted")) return { status: "error", message: "이미 접수된 신청이 있습니다. 모임 변경이 필요하면 운영자에게 문의해 주세요." };
     return { status: "error", message: "신청서를 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
   }
 

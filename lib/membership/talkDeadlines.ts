@@ -7,7 +7,7 @@ export type TalkSchedule = {
   answered: boolean;
 };
 
-export type TalkGroup = { id: string; cohort: string; name: string };
+export type TalkGroup = { id: string; cohort: string; name: string; host_name: string; host_style: string; venue: string; duration_minutes: number; application_open: boolean; reserved_count: number };
 export type TalkFormState = { status: "idle" | "success" | "error"; message: string };
 export type TalkMeeting = { group_id: string; week_number: number; starts_at: string };
 export type TalkMember = { user_id: string; display_name: string; weekday: number | null; group_id: string | null };

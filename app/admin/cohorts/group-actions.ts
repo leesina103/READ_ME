@@ -45,7 +45,14 @@ export async function manageTalkGroup(_previous: TalkFormState, form: FormData):
     if (!userId) return failure("회원을 선택해주세요.");
     if (groupId) ({ error } = await supabase.from("talk_group_members").upsert({ user_id: userId, cohort, group_id: groupId }));
     else ({ error } = await supabase.from("talk_group_members").delete().eq("user_id", userId).eq("cohort", cohort));
-  } else if (operation === "schedule") {
+  } else if (operation === "save") {
+    const hostName = value(form, "hostName");
+    const hostStyle = value(form, "hostStyle");
+    const venue = value(form, "venue");
+    const durationMinutes = Number(value(form, "durationMinutes"));
+    const applicationOpen = form.get("applicationOpen") === "on";
+    if (!hostName || hostName.length > 80 || !hostStyle || hostStyle.length > 600 || !venue || venue.length > 200 || !Number.isInteger(durationMinutes) || durationMinutes < 30 || durationMinutes > 480) return failure("가이드 이름·소개·장소와 소요 시간을 확인해주세요.");
+
     const { data: group } = await supabase.from("talk_groups").select("id").eq("id", groupId).eq("cohort", cohort).maybeSingle();
     if (!group) return failure("그룹 정보를 확인해주세요.");
     const meetings = [1, 3, 5, 7].map((week) => ({ group_id: groupId, week_number: week, starts_at: parseSeoulInput(value(form, `week${week}`)) }));
@@ -58,10 +65,13 @@ export async function manageTalkGroup(_previous: TalkFormState, form: FormData):
     if (meetings.some((item) => Date.parse(item.starts_at!) <= now && !savedMeetings?.some((saved) => saved.week_number === item.week_number && Date.parse(saved.starts_at) === Date.parse(item.starts_at!)))) return failure("새로 입력하거나 변경하는 모임 시각은 현재 시각 이후로 정해주세요.");
     if (meetings.some((item, index) => index > 0 && Date.parse(item.starts_at!) <= Date.parse(meetings[index - 1].starts_at!))) return failure("모임은 주차 순서대로 뒤의 날짜를 선택해주세요.");
     if (selected.ends_at && meetings.some((item) => Date.parse(item.starts_at!) > Date.parse(selected.ends_at!))) return failure("모임 날짜는 기수 종료일 안으로 정해주세요.");
-    ({ error } = await supabase.from("talk_meetings").upsert(meetings));
+    if (applicationOpen && meetings.some((item) => Date.parse(item.starts_at!) <= now)) return failure("신청 접수를 열려면 네 번의 모임 모두 앞으로의 일정이어야 해요.");
+    ({ error } = await supabase.rpc("admin_save_talk_group", { p_group_id: groupId, p_cohort: cohort, p_host_name: hostName, p_host_style: hostStyle, p_venue: venue, p_duration_minutes: durationMinutes, p_application_open: applicationOpen, p_meetings: meetings.map(({ week_number, starts_at }) => ({ week_number, starts_at })) }));
   } else return failure("요청을 확인해주세요.");
-  if (error) return failure(error.message.includes("talk_group_full") ? "한 그룹에는 최대 6명까지 배정할 수 있어요." : error.message.includes("duplicate") ? "같은 이름의 그룹이 이미 있어요." : "저장하지 못했어요. 기수와 회원 정보를 확인해주세요.");
+  if (error) return failure(error.message.includes("talk_group_full") ? "가입을 기다리는 승인자를 포함해 한 그룹에는 최대 6명까지 확정할 수 있어요." : error.message.includes("duplicate") ? "같은 이름의 그룹이 이미 있어요." : error.message.includes("foreign key") ? "신청 또는 승인 내역이 연결된 그룹은 삭제할 수 없어요. 신청 접수를 꺼주세요." : "저장하지 못했어요. 기수와 회원 정보를 확인해주세요.");
   revalidatePath("/admin/cohorts");
   revalidatePath("/membership", "layout");
+  revalidatePath("/my");
+  revalidatePath("/admin/applications");
   return { status: "success", message: operation === "delete" ? "그룹과 모임 일정을 삭제했습니다." : "저장했습니다." };
 }

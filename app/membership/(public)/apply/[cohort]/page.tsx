@@ -6,6 +6,8 @@ import { MembershipApplicationForm } from "@/components/MembershipApplicationFor
 import { currentMeeting } from "@/data/currentMeeting";
 import { cohortNumberFromName } from "@/data/seasonWeeks";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
+import type { MembershipGroupOption } from "@/lib/membership/groupSelection";
 
 const currentCohortNumber = cohortNumberFromName(currentMeeting.cohort);
 
@@ -28,6 +30,10 @@ export default async function MembershipApplyPage({ params }: MembershipApplyPag
   const cohort = `${cohortNumber}기`;
   const closed = cohortNumber < currentCohortNumber;
   const open = !closed && currentMeeting.recruiting;
+  const configured = isSupabaseConfigured();
+  const groupResult = open && configured
+    ? await (await createClient()).rpc("membership_group_options", { p_cohort: cohort })
+    : { data: [], error: null };
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-16 md:py-24">
@@ -39,7 +45,7 @@ export default async function MembershipApplyPage({ params }: MembershipApplyPag
           <>
             <p className="mt-6 max-w-xl text-base leading-8 text-[var(--muted)]">인터뷰를 마친 분의 가입 정보를 한 번에 받아 운영자가 확인합니다. 승인 후 같은 이름과 이메일로 회원가입할 수 있어요.</p>
             <div className="mt-7 flex items-start gap-3 rounded-2xl bg-[var(--sage)] px-5 py-4 text-sm leading-6"><LockKeyhole className="mt-0.5 shrink-0 text-[var(--forest)]" size={18} /><p className="m-0">이 페이지는 공개 메뉴에 노출하지 않습니다. 신청 내용은 운영자만 확인할 수 있습니다.</p></div>
-            <MembershipApplicationForm cohort={cohort} configured={isSupabaseConfigured()} />
+            <MembershipApplicationForm cohort={cohort} configured={configured} groups={(groupResult.data ?? []) as MembershipGroupOption[]} groupsError={Boolean(groupResult.error)} />
           </>
         ) : (
           <>

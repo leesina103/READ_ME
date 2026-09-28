@@ -29,12 +29,14 @@ export default async function AdminCohortsPage() {
   const ongoingCount = cohorts.filter((cohort) => cohortPhase(cohort, now).label === "진행 중").length;
   const groupData = await Promise.all(cohorts.map(async (cohort) => {
     if (!supabase) return null;
-    const [groups, meetings, members] = await Promise.all([
-      supabase.from("talk_groups").select("id, cohort, name").eq("cohort", cohort.name).order("name"),
+    const [groups, meetings, members, capacity] = await Promise.all([
+      supabase.from("talk_groups").select("id, cohort, name, host_name, host_style, venue, duration_minutes, application_open").eq("cohort", cohort.name).order("name"),
       supabase.from("talk_meetings").select("group_id, week_number, starts_at"),
-      supabase.rpc("admin_talk_members", { p_cohort: cohort.name })
+      supabase.rpc("admin_talk_members", { p_cohort: cohort.name }),
+      supabase.rpc("admin_talk_group_capacity", { p_cohort: cohort.name })
     ]);
-    return { cohort, error: Boolean(groups.error || meetings.error || members.error), groups: (groups.data ?? []) as TalkGroup[], meetings: (meetings.data ?? []) as TalkMeeting[], members: (members.data ?? []) as TalkMember[] };
+    const reserved = new Map<string, number>((capacity.data ?? []).map((item: { group_id: string; reserved_count: number }) => [item.group_id, item.reserved_count]));
+    return { cohort, error: Boolean(groups.error || meetings.error || members.error || capacity.error), groups: (groups.data ?? []).map((group) => ({ ...group, reserved_count: reserved.get(group.id) ?? 0 })) as TalkGroup[], meetings: (meetings.data ?? []) as TalkMeeting[], members: (members.data ?? []) as TalkMember[] };
   }));
 
   return (

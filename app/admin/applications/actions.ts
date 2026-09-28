@@ -48,6 +48,8 @@ export async function reviewMembershipApplicationAction(
   });
 
   if (error) {
+    if (error.message.includes("talk_group_full")) return { status: "error", message: "선택한 모임의 정원 6명이 찼습니다. 신청자와 일정을 상의해 주세요." };
+    if (error.message.includes("application_group_unavailable")) return { status: "error", message: "선택한 모임이 종료되었거나 더 이상 존재하지 않습니다." };
     const message = error.message.includes("application_already_reviewed")
       ? "이미 검토가 끝난 신청입니다."
       : error.message.includes("member_profile_not_found")
@@ -60,9 +62,12 @@ export async function reviewMembershipApplicationAction(
 
   revalidatePath("/admin");
   revalidatePath("/admin/applications");
+  revalidatePath("/admin/cohorts");
+  revalidatePath("/my");
+  revalidatePath("/membership", "layout");
   return {
     status: "success",
-    message: decision === "approved" ? "승인했습니다. 신청자에게 회원가입 안내를 보내 주세요." : "신청을 거절 처리했습니다."
+    message: decision === "approved" ? "승인했습니다. 선택한 모임이 있으면 회원 계정에 연결됩니다. 신청자에게 다음 단계를 안내해 주세요." : "신청을 거절 처리했습니다."
   };
 }
 

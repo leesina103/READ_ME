@@ -11,6 +11,8 @@ import { themeForCohort } from "@/data/cohortThemes";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { getTalkSchedule } from "@/lib/membership/talkData";
+import { MembershipGroupDetails } from "@/components/MembershipGroupDetails";
+import type { GroupMeeting, MembershipGroupOption } from "@/lib/membership/groupSelection";
 
 export const metadata: Metadata = {
   title: "나의 서재",
@@ -57,6 +59,13 @@ export default async function MyPage({ searchParams }: MyPageProps) {
   const cohortNumber = profile?.cohort ? cohortNumberFromName(profile.cohort) : null;
   const cohortTheme = cohortNumber ? themeForCohort(cohortNumber) : null;
   const { schedule } = profile?.cohort ? await getTalkSchedule(profile.cohort) : { schedule: [] };
+  const { data: assignment, error: assignmentError } = profile?.cohort
+    ? await supabase.from("talk_group_members").select("group_id").eq("user_id", user.id).eq("cohort", profile.cohort).maybeSingle()
+    : { data: null, error: null };
+  const groupResult = assignment
+    ? await supabase.from("talk_groups").select("id, host_name, host_style, venue, duration_minutes, talk_meetings(week_number, starts_at)").eq("id", assignment.group_id).maybeSingle()
+    : { data: null, error: null };
+  const confirmedGroup = groupResult.data as (Omit<MembershipGroupOption, "meetings"> & { talk_meetings: GroupMeeting[] }) | null;
   const nicknameLocked = Boolean(
     cohortSchedule?.starts_at && new Date(cohortSchedule.starts_at).getTime() <= Date.now()
   );
@@ -83,6 +92,14 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       </div>
 
       {membershipRequired && <p className="mt-8 rounded-2xl border border-[var(--line)] bg-[var(--sand)] px-5 py-4 text-sm leading-6">멤버십이 필요한 공간이에요. 멤버십이 만료되었거나 아직 승인 전이라면 운영진에게 문의해 주세요.</p>}
+
+      {profile?.cohort && <section className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 max-[430px]:p-5" aria-labelledby="my-confirmed-group">
+        <h2 id="my-confirmed-group" className="text-xl font-semibold">내 모임</h2>
+        <p className="mt-2 text-sm text-[var(--muted)]">READ ME {cohort}</p>
+        {assignmentError || groupResult.error ? <p role="alert" className="mt-4 text-sm leading-7">모임 정보를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.</p>
+          : confirmedGroup ? <div className="mt-4"><MembershipGroupDetails hostName={confirmedGroup.host_name} hostStyle={confirmedGroup.host_style} venue={confirmedGroup.venue} durationMinutes={confirmedGroup.duration_minutes} meetings={[...confirmedGroup.talk_meetings].sort((a, b) => a.week_number - b.week_number)} /></div>
+          : <p className="mt-4 text-sm leading-7 text-[var(--muted)]">모임이 확정되면 가이드와 전체 일정을 이곳에서 확인할 수 있어요.</p>}
+      </section>}
 
       <section className="mt-12 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
         <div className="flex items-start gap-4"><UserRound className="mt-1 shrink-0 text-[var(--forest)]"/><div><h2 className="text-xl font-semibold">회원 정보</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">현재 기수는 <strong className="text-[var(--ink)]">{cohort}</strong>입니다. 모임에서 사용하는 닉네임을 관리할 수 있어요.</p></div></div>

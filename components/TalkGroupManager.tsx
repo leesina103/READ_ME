@@ -25,7 +25,7 @@ function GroupForm({ cohort, operation, groupId = "", children, label, compact =
   </form>;
 }
 
-function GroupSchedule({ group, meetings }: { group: TalkGroup; meetings: TalkMeeting[] }) {
+function GroupEditor({ group, meetings }: { group: TalkGroup; meetings: TalkMeeting[] }) {
   const [dates, setDates] = useState(() => weeks.map((week) => {
     const meeting = meetings.find((item) => item.group_id === group.id && item.week_number === week);
     return meeting ? seoulInput(meeting.starts_at) : "";
@@ -35,7 +35,15 @@ function GroupSchedule({ group, meetings }: { group: TalkGroup; meetings: TalkMe
     if (!first) return;
     setDates(weeks.map((_, index) => seoulInput(new Date(Date.parse(first) + index * 14 * 86_400_000).toISOString())));
   }
-  return <GroupForm cohort={group.cohort} operation="schedule" groupId={group.id} label="모임 일정 저장">
+  return <GroupForm cohort={group.cohort} operation="save" groupId={group.id} label="모임 정보 저장">
+    <h4 className="font-semibold">신청자에게 보여줄 모임 안내</h4>
+    <label className="text-sm">가이드 이름<input name="hostName" defaultValue={group.host_name} required maxLength={80} className={inputClassName()} /></label>
+    <label className="text-sm">가이드 소개<textarea name="hostStyle" defaultValue={group.host_style} required maxLength={600} className={`${inputClassName()} min-h-28`} placeholder="가이드가 어떤 사람인지 소개해 주세요." /></label>
+    <div className="grid grid-cols-2 gap-4 max-[820px]:grid-cols-1">
+      <label className="text-sm">모임 장소<input name="venue" defaultValue={group.venue} required maxLength={200} className={inputClassName()} /></label>
+      <label className="text-sm">회차별 소요 시간 · 분<input type="number" name="durationMinutes" defaultValue={group.duration_minutes} required min={30} max={480} className={inputClassName()} /></label>
+    </div>
+    <h4 className="mt-3 font-semibold">모임 일정</h4>
     <div className="grid grid-cols-2 gap-4 max-[820px]:grid-cols-1">
       {weeks.map((week, index) => {
         const meeting = parseSeoulInput(dates[index]);
@@ -51,6 +59,8 @@ function GroupSchedule({ group, meetings }: { group: TalkGroup; meetings: TalkMe
     </div>
     <button type="button" className="min-h-11 justify-self-start text-sm font-semibold text-[var(--forest)] underline underline-offset-4" onClick={repeatFirst} disabled={!parseSeoulInput(dates[0])}>1주차 기준으로 2주 간격 채우기</button>
     <p className="text-xs leading-6 text-[var(--muted)]">자동으로 채운 뒤 특정 주차만 바꿀 수 있어요. 1주차 사전 질문은 기수 시작일, 3·5·7주차는 모임 7일 전에 열립니다. 실천 기록은 모임 다음 날 0시에 열립니다.</p>
+    <label className="flex items-start gap-3 text-sm leading-6"><input type="checkbox" name="applicationOpen" defaultChecked={group.application_open} className="mt-1 accent-[var(--forest)]" />가입 신청서에서 이 모임 선택 허용</label>
+    <p className="text-xs leading-6 text-[var(--muted)]">안내와 일정을 함께 저장합니다. 확정 정원은 가입 대기자를 포함해 6명입니다. 신청 후 일정이나 가이드가 바뀌면 신청자에게 별도로 안내해주세요.</p>
   </GroupForm>;
 }
 
@@ -60,7 +70,7 @@ export function TalkGroupManager({ cohort, groups, meetings, members, ended }: {
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   return <section className="mt-6 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-6 max-[430px]:p-4">
     <h3 className="text-xl font-semibold">{cohort} 그룹과 작성 일정</h3>
-    <p className="mt-2 text-sm leading-7 text-[var(--muted)]">신청한 일정에 맞춰 4~6명씩 배정해주세요. 사전 질문은 모임 2일 전, 실천 기록은 모임 다음 주 일요일 밤 11:59까지 안내합니다. 그룹 이름은 운영자 화면에서만 표시합니다.</p>
+    <p className="mt-2 text-sm leading-7 text-[var(--muted)]">가이드 소개와 네 번의 일정을 등록한 뒤 신청 접수를 켜주세요. 가입 신청을 승인하면 신청자가 고른 모임으로 연결됩니다. 같은 시간에도 여러 그룹을 열 수 있고, 그룹 이름은 운영자에게만 표시합니다.</p>
     {ended ? <p className="mt-5 text-sm text-[var(--muted)]">종료된 기수의 그룹 배정과 일정은 변경할 수 없어요.</p> : <>
       <details className="mt-6 border-t border-[var(--line)] pt-5">
         <summary className="min-h-11 cursor-pointer font-semibold">+ 그룹 추가</summary>
@@ -77,7 +87,7 @@ export function TalkGroupManager({ cohort, groups, meetings, members, ended }: {
             <p className="font-semibold">{member.display_name}</p>
             <label className="text-sm">배정 그룹<select name="groupId" className={inputClassName()} defaultValue={member.group_id ?? ""} key={member.group_id ?? "unassigned"}>
               <option value="">미배정</option>
-              {groups.map((group) => <option value={group.id} key={group.id}>{group.name} ({members.filter((item) => item.group_id === group.id).length}/6명)</option>)}
+              {groups.map((group) => <option value={group.id} key={group.id}>{group.name} ({group.reserved_count}/6명 확정)</option>)}
             </select></label>
           </GroupForm>
         </div>)}</div>
@@ -89,16 +99,16 @@ export function TalkGroupManager({ cohort, groups, meetings, members, ended }: {
       return <div key={group.id} className="mt-5 border-t border-[var(--line)] pt-5">
         <div className="flex items-start justify-between gap-3">
           <button type="button" aria-expanded={expanded} aria-controls={`group-panel-${group.id}`} className="min-h-11 min-w-0 flex-1 break-words text-left font-semibold" onClick={() => setExpandedGroups((previous) => ({ ...previous, [group.id]: !previous[group.id] }))}>
-            <span aria-hidden="true">{expanded ? "▾" : "▸"} </span>{group.name} · {memberCount}/6명
+            <span aria-hidden="true">{expanded ? "▾" : "▸"} </span>{group.name} · {group.reserved_count}/6명 확정{group.reserved_count > memberCount ? ` · 가입 대기 ${group.reserved_count - memberCount}명` : ""}
           </button>
-          {!ended && <div className="max-w-[45%] shrink-0"><GroupForm cohort={cohort} operation="delete" groupId={group.id} label="삭제" compact disabled={memberCount > 0} /></div>}
+          {!ended && <div className="max-w-[45%] shrink-0"><GroupForm cohort={cohort} operation="delete" groupId={group.id} label="삭제" compact disabled={group.reserved_count > 0} /></div>}
         </div>
         <div id={`group-panel-${group.id}`} hidden={!expanded}>
         {!ended && <div className="mt-4 grid gap-6">
           <GroupForm cohort={cohort} operation="rename" groupId={group.id} label="그룹 이름 저장">
             <label className="text-sm">그룹 이름<input key={group.name} name="name" defaultValue={group.name} required maxLength={40} className={inputClassName()} /></label>
           </GroupForm>
-          <GroupSchedule key={JSON.stringify(meetings.filter((item) => item.group_id === group.id))} group={group} meetings={meetings} />
+          <GroupEditor key={JSON.stringify([group, meetings.filter((item) => item.group_id === group.id)])} group={group} meetings={meetings} />
           {memberCount > 0 && <p className="text-sm leading-6 text-[var(--muted)]">그룹을 삭제하려면 회원 배정에서 모든 회원을 다른 그룹으로 옮겨주세요.</p>}
         </div>}
         </div>

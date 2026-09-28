@@ -8,6 +8,8 @@ import {
   type ApplicationReviewState
 } from "@/app/admin/applications/actions";
 import { formatSeoulDateTime } from "@/lib/admin/format";
+import { MembershipGroupDetails } from "@/components/MembershipGroupDetails";
+import type { GroupMeeting } from "@/lib/membership/groupSelection";
 
 export type MembershipApplication = {
   id: number;
@@ -20,6 +22,11 @@ export type MembershipApplication = {
   admin_note: string;
   created_at: string;
   reviewed_at: string | null;
+  group_id: string | null;
+  host_name: string | null;
+  venue: string | null;
+  duration_minutes: number | null;
+  meetings: GroupMeeting[] | null;
 };
 
 const initialState: ApplicationReviewState = { status: "idle", message: "" };
@@ -75,6 +82,10 @@ function ApplicationReviewCard({ application }: { application: MembershipApplica
           )}
         </div>
       </div>
+      {application.group_id && <div className="mt-5 rounded-2xl border border-[var(--line)] px-5 py-4">
+        <p className="mb-3 text-xs font-semibold text-[var(--forest)]">{application.status === "approved" ? "확정한 모임" : "선택한 모임"}</p>
+        <MembershipGroupDetails hostName={application.host_name ?? ""} venue={application.venue ?? ""} durationMinutes={application.duration_minutes ?? 180} meetings={application.meetings ?? []} />
+      </div>}
       <div className="mt-5 rounded-2xl bg-[var(--cream)] px-5 py-4">
         <span className="text-xs font-semibold text-[var(--forest)]">신청자가 남긴 말</span>
         <p className="mt-2 whitespace-pre-line text-sm leading-7 text-[var(--muted)]">
@@ -108,7 +119,7 @@ function ApplicationReviewCard({ application }: { application: MembershipApplica
               disabled={pending}
               className="button button--primary disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <Check size={16} /> {pending ? "처리 중..." : "승인하고 가입 허용"}
+              <Check size={16} /> {pending ? "처리 중..." : application.group_id ? "승인하고 모임 확정" : "승인하고 가입 허용"}
             </button>
             <button
               type="submit"
