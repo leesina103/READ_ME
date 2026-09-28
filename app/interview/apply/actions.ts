@@ -7,12 +7,14 @@ import {
 } from "@/lib/interview/confirmation";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
+import { bookingManagementPath } from "@/lib/interview/booking";
 
 export type InterviewApplicationState = {
   status: "idle" | "error" | "success";
   message: string;
   startsAt?: string;
   notificationStatus?: InterviewNotificationStatus;
+  managementPath?: string;
 };
 
 function textValue(formData: FormData, key: string) {
@@ -50,7 +52,7 @@ export async function submitInterviewApplicationAction(
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("submit_interview_application", {
+  const { data, error } = await supabase.rpc("book_interview_with_management", {
     p_slot_id: slotId,
     p_name: name,
     p_phone: phone
@@ -75,13 +77,14 @@ export async function submitInterviewApplicationAction(
     return { status: "error", message: "예약 시간을 확인하지 못했습니다. 운영진에게 문의해 주세요." };
   }
 
-  const notificationStatus = await sendInterviewConfirmation({ name, phone, startsAt });
+  const notificationStatus = await sendInterviewConfirmation({ name, phone, startsAt, managementToken: booking.management_token, applicationId: booking.application_id });
   revalidatePath("/interview/apply");
 
   return {
     status: "success",
     message: "인터뷰 예약이 완료되었습니다.",
     startsAt,
-    notificationStatus
+    notificationStatus,
+    managementPath: bookingManagementPath(booking.management_token)
   };
 }

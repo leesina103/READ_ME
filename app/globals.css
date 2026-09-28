@@ -287,6 +287,11 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 .interview-apply-success .eyebrow { margin-top: 28px; }
 .interview-apply-success__time { margin-top: 26px; padding: 18px; display: flex; align-items: center; gap: 11px; border-radius: 18px; color: var(--cream); background: var(--forest); }
 .interview-apply-success .cta-actions { margin-top: 28px; justify-content: flex-start; }
+.interview-booking-change { min-width: 0; }
+.interview-booking-change h2 { margin: 0 0 12px; font-size: 20px; }
+.interview-booking-change > p { margin: 0 0 20px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+.interview-booking-change > .button { margin-top: 20px; }
+.interview-apply-fieldset > .button { margin-top: 16px; }
 .site-footer { border-top: 1px solid var(--line); } .site-footer__inner { width: min(1160px, calc(100% - 48px)); min-height: 210px; margin: auto; display: grid; grid-template-columns: 1fr auto; align-content: center; gap: 14px 60px; color: var(--muted); font-size: 12px; }
 .site-footer__brand { margin: 0 0 7px; color: var(--ink); font-weight: 800; letter-spacing: .14em; } .site-footer__inner p { margin-block: 0; } .site-footer nav { display: flex; gap: 20px; } .site-footer__note { grid-column: 1/-1; }
 .site-footer__contact { grid-column: 1/-1; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 16px; }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, CalendarClock } from "lucide-react";
+import { InterviewManagementLinkButton } from "@/components/InterviewManagementLinkButton";
 import { requireAdmin, supabaseNotConfiguredMessage } from "@/lib/admin/access";
 import { formatPhone, formatSeoulDate, formatSeoulDayHeading, formatSeoulTime, seoulDateKey } from "@/lib/admin/format";
 
@@ -30,6 +31,7 @@ function InterviewTable({ rows, showDate = false }: { rows: InterviewRow[]; show
             <th className="px-4 py-3 font-semibold">연락처</th>
             <th className="px-4 py-3 font-semibold">예약한 날</th>
             <th className="px-6 py-3 font-semibold">상태</th>
+            <th className="px-4 py-3 font-semibold">예약 관리</th>
           </tr>
         </thead>
         <tbody>
@@ -46,6 +48,7 @@ function InterviewTable({ rows, showDate = false }: { rows: InterviewRow[]; show
                     {cancelled ? "취소" : "예약"}
                   </span>
                 </td>
+                <td className="px-4 py-4"><InterviewManagementLinkButton applicationId={row.id} name={row.name} /></td>
               </tr>
             );
           })}
@@ -91,6 +94,7 @@ export default async function AdminInterviewsPage() {
           <p className="eyebrow">INTERVIEW BOOKINGS</p>
           <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">인터뷰 예약</h1>
           <p className="mt-4 max-w-2xl text-[var(--muted)]">예약된 인터뷰를 날짜별로 보여줍니다. 취소된 예약은 흐리게 표시되고, 끝난 인터뷰는 다음 날부터 아래 지난 목록으로 이동합니다. 시간은 모두 한국 시간입니다.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--muted)]">‘관리 링크 복사’를 눌러 예약자에게 카카오톡으로 보내 주세요. 예약자는 해당 링크에서 인터뷰 시작 전까지 일정을 변경·취소할 수 있습니다.</p>
         </div>
         <div className="flex items-center gap-3 rounded-2xl bg-[var(--sage)] px-5 py-4">
           <CalendarClock className="text-[var(--forest)]" size={20} />

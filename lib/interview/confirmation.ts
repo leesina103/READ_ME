@@ -1,4 +1,5 @@
 import "server-only";
+import { bookingManagementPath, formatInterviewTime } from "@/lib/interview/booking";
 
 export type InterviewNotificationStatus = "sent" | "not_configured" | "failed";
 
@@ -6,6 +7,8 @@ type SendInterviewConfirmationOptions = {
   name: string;
   phone: string;
   startsAt: string;
+  managementToken: string;
+  applicationId: string;
 };
 
 function siteUrl() {
@@ -20,19 +23,7 @@ function siteUrl() {
   return "http://localhost:3000";
 }
 
-function formatInterviewTime(startsAt: string) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    weekday: "short",
-    hour: "numeric",
-    minute: "2-digit"
-  }).format(new Date(startsAt));
-}
-
-export function buildInterviewConfirmationMessage({ name, startsAt }: Omit<SendInterviewConfirmationOptions, "phone">) {
+export function buildInterviewConfirmationMessage({ name, startsAt, managementToken }: Omit<SendInterviewConfirmationOptions, "phone">) {
   const baseUrl = siteUrl();
   const interviewUrl = `${baseUrl}/interview`;
 
@@ -46,7 +37,8 @@ export function buildInterviewConfirmationMessage({ name, startsAt }: Omit<SendI
     `- READ ME 인터뷰 안내: ${interviewUrl}`,
     `- READ ME 홈페이지: ${baseUrl}`,
     "",
-    "일정 변경이 필요하면 READ ME 카카오톡 채널로 알려주세요."
+    "인터뷰 시작 전까지 아래 링크에서 일정을 변경하거나 취소할 수 있어요.",
+    `- 예약 변경·취소: ${baseUrl}${bookingManagementPath(managementToken)}`
   ].join("\n");
 }
 
@@ -70,11 +62,12 @@ export async function sendInterviewConfirmation(
         type: "interview.confirmed",
         channel: "kakao_alimtalk",
         recipient: { name: options.name, phone: options.phone },
-        interview: { startsAt: options.startsAt, timezone: "Asia/Seoul" },
+        interview: { applicationId: options.applicationId, startsAt: options.startsAt, timezone: "Asia/Seoul", status: "booked" },
         message: {
           text: buildInterviewConfirmationMessage(options),
           links: [
             { label: "READ ME 인터뷰 안내", url: `${baseUrl}/interview` },
+            { label: "예약 변경·취소", url: `${baseUrl}${bookingManagementPath(options.managementToken)}` },
             { label: "READ ME 홈페이지", url: baseUrl }
           ]
         }
@@ -82,6 +75,38 @@ export async function sendInterviewConfirmation(
       signal: AbortSignal.timeout(5000)
     });
 
+    return response.ok ? "sent" : "failed";
+  } catch {
+    return "failed";
+  }
+}
+
+export async function sendInterviewUpdate(options: SendInterviewConfirmationOptions & {
+  event: "rescheduled" | "cancelled";
+  updatedAt: string;
+}): Promise<InterviewNotificationStatus> {
+  const webhookUrl = process.env.INTERVIEW_CONFIRMATION_WEBHOOK_URL;
+  if (!webhookUrl) return "not_configured";
+  const token = process.env.INTERVIEW_CONFIRMATION_WEBHOOK_TOKEN;
+  const cancelled = options.event === "cancelled";
+  const managementUrl = `${siteUrl()}${bookingManagementPath(options.managementToken)}`;
+  try {
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify({
+        type: `interview.${options.event}`, channel: "kakao_alimtalk",
+        recipient: { name: options.name, phone: options.phone },
+        interview: { applicationId: options.applicationId, startsAt: options.startsAt, updatedAt: options.updatedAt, timezone: "Asia/Seoul", status: cancelled ? "cancelled" : "booked" },
+        // 발송 서비스는 같은 예약의 이전 리마인드를 제거하고 최신 상태를 기준으로 처리합니다.
+        reminder: { operation: cancelled ? "cancel" : "replace", bookingId: options.applicationId, startsAt: cancelled ? null : options.startsAt },
+        message: {
+          text: `${options.name}님, 인터뷰 예약을 ${cancelled ? "취소" : "변경"}했어요.\n${cancelled ? "취소한 일정" : "변경된 일정"}: ${formatInterviewTime(options.startsAt)}\n\n예약 확인: ${managementUrl}`,
+          links: [{ label: "예약 확인", url: managementUrl }]
+        }
+      }),
+      signal: AbortSignal.timeout(5000)
+    });
     return response.ok ? "sent" : "failed";
   } catch {
     return "failed";

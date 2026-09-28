@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
 import { ArrowLeft, MessageCircleMore } from "lucide-react";
 import Link from "next/link";
-import {
-  InterviewApplicationForm,
-  type InterviewSlot
-} from "@/components/InterviewApplicationForm";
+import { InterviewApplicationForm } from "@/components/InterviewApplicationForm";
 import { currentMeeting } from "@/data/currentMeeting";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { createClient } from "@/lib/supabase/server";
+import { loadInterviewSlots } from "@/lib/interview/slots";
 
 export const metadata: Metadata = {
   title: "인터뷰 예약",
@@ -15,42 +11,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/interview/apply" }
 };
 
-type InterviewSlotRow = {
-  slot_id: number | string;
-  starts_at: string;
-  is_available: boolean;
-};
-
-type AvailableInterviewSlotRow = Omit<InterviewSlotRow, "is_available">;
-
 export default async function InterviewApplyPage() {
-  let slots: InterviewSlot[] = [];
-  // 일정이 아직 열리지 않은 것과, 조회 자체가 실패한 것을 구분해서 안내한다.
-  let loadFailed = !isSupabaseConfigured();
-
-  if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    const { data, error } = await supabase.rpc("list_interview_calendar_slots");
-
-    let calendarRows: InterviewSlotRow[] = (data ?? []) as InterviewSlotRow[];
-
-    if (error) {
-      const { data: availableData, error: fallbackError } = await supabase.rpc("list_available_interview_slots");
-      loadFailed = Boolean(fallbackError);
-      calendarRows = ((availableData ?? []) as AvailableInterviewSlotRow[]).map((slot) => ({
-        ...slot,
-        is_available: true
-      }));
-    }
-
-    slots = calendarRows.flatMap((slot) => {
-      const id = Number(slot.slot_id);
-      const startsAt = typeof slot.starts_at === "string" ? slot.starts_at : "";
-      return Number.isInteger(id) && id > 0 && startsAt
-        ? [{ id, startsAt, available: slot.is_available === true }]
-        : [];
-    });
-  }
+  const { slots, loadFailed } = await loadInterviewSlots();
 
   return (
     <main className="interview-apply-page">
@@ -74,6 +36,7 @@ export default async function InterviewApplyPage() {
             <p className="eyebrow">BEFORE YOU BOOK</p>
             <h2>답을 준비하지 않아도<br />괜찮습니다.</h2>
             <p>인터뷰는 1:1 온라인 대화로 진행하며 약 {currentMeeting.interview.duration}이 걸립니다. 서로의 대화 방식이 편안할지 가볍게 알아보는 시간이에요.</p>
+            <p>이미 예약하셨나요? 예약 완료 화면이나 카카오톡에서 받은 ‘예약 변경·취소’ 링크로 접속해 주세요.</p>
           </aside>
           <InterviewApplicationForm slots={slots} loadFailed={loadFailed} />
         </div>
