@@ -64,7 +64,7 @@ export async function submitInterviewApplicationAction(
     }
 
     if (error.message.includes("already_applied")) {
-      return { status: "error", message: "이미 예약한 전화번호입니다. 일정 변경은 카카오톡 채널로 문의해 주세요." };
+      return { status: "error", message: "이미 예약한 전화번호입니다. 일정 변경은 인스타그램 DM으로 문의해 주세요." };
     }
 
     return { status: "error", message: "예약을 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };

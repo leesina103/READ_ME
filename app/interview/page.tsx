@@ -58,10 +58,10 @@ const notices = [
   {
     title: "일정 변경 및 참여 매너",
     items: [
-      "인터뷰 시작 전까지 예약 완료 화면이나 카카오톡으로 받은 전용 링크에서 일정을 변경·취소할 수 있어요. 링크를 찾기 어렵거나 시작 시간이 지났다면 카카오톡 채널로 문의해 주세요.",
+      "인터뷰 시작 전까지 예약 완료 화면이나 문자로 받은 전용 링크에서 일정을 변경·취소할 수 있어요. 링크를 찾기 어렵거나 시작 시간이 지났다면 인스타그램 DM으로 문의해 주세요.",
       "별도 연락 없이 인터뷰에 불참한 경우, 다른 신청자의 기회를 보호하기 위해 불참일로부터 3개월간 READ ME 참여 신청이 제한됩니다.",
-      "인터뷰 전에 카카오톡으로 예약 시간과 접속 링크를 다시 안내합니다.",
-      `인터뷰 결과는 운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 개별적으로 전달합니다.`
+      "인터뷰 전에 문자로 예약 시간과 접속 링크를 다시 안내합니다.",
+      `인터뷰 결과는 운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 문자로 안내합니다.`
     ]
   }
 ] as const;
@@ -77,7 +77,7 @@ const faqs = [
   ["책을 많이 읽어야 하나요?", "독서량은 기준이 아닙니다. 한 문장을 오래 생각하고 자신의 언어로 나눌 마음이 있다면 충분합니다."],
   ["무엇을 준비해야 하나요?", "따로 준비할 자료는 없습니다. 카메라와 마이크가 되는 조용한 곳에서 접속해 주시고, 위의 ‘이야기 나누기 전, 가볍게 떠올려볼 질문’ 세 가지만 한 번 읽고 생각해보시면 충분합니다."],
   ["긴장해서 말을 잘 못하면 어떡하나요?", "운영진이 질문을 천천히 건넵니다. 잠시 생각한 뒤 답해도 되고, 답하기 어려운 질문은 건너뛸 수 있습니다."],
-  ["인터뷰 결과는 언제 알 수 있나요?", `운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 개별적으로 전달합니다.`]
+  ["인터뷰 결과는 언제 알 수 있나요?", `운영진 논의 후 ${currentMeeting.interview.resultTiming} 안으로 문자로 안내합니다.`]
 ] as const;
 
 export default function InterviewPage() {
@@ -186,7 +186,7 @@ export default function InterviewPage() {
 
       <section className="section faq-section">
         <div className="section-shell faq-layout">
-          <div><p className="eyebrow">FAQ</p><h2>인터뷰 전에<br />궁금한 것들</h2><p>정답을 준비하지 않아도 괜찮습니다.<br />궁금한 점이 남으면 문의 채널로 편하게 알려주세요.</p><a href="#contact" className="text-link">문의하기 <ArrowRight size={14}/></a></div>
+          <div><p className="eyebrow">FAQ</p><h2>인터뷰 전에<br />궁금한 것들</h2><p>정답을 준비하지 않아도 괜찮습니다.<br />궁금한 점이 남으면 인스타그램 DM으로 편하게 알려주세요.</p><a href="#contact" className="text-link">문의하기 <ArrowRight size={14}/></a></div>
           <div className="faq-list">{faqs.map(([question, answer], index) => <details key={question}><summary><span>{String(index + 1).padStart(2, "0")}</span>{question}<i>+</i></summary><p>{answer}</p></details>)}</div>
         </div>
       </section>

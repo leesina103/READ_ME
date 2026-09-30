@@ -92,6 +92,6 @@ export async function submitMembershipApplicationAction(
 
   return {
     status: "success",
-    message: "가입 신청을 받았습니다. 검토가 끝나면 입력한 이메일로 다음 단계를 안내드릴게요."
+    message: "가입 신청을 받았습니다. 검토가 끝나면 문자로 다음 단계를 안내드릴게요."
   };
 }

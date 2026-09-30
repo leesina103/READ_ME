@@ -31,9 +31,7 @@ export function InterviewApplicationForm({ slots, loadFailed = false }: Intervie
           <CalendarCheck2 size={20} aria-hidden="true" />
           <strong>{formatInterviewTime(state.startsAt)}</strong>
         </div>
-        {state.notificationStatus === "sent" && <p>선택한 일정과 안내 페이지를 카카오톡으로 보내드렸어요.</p>}
-        {state.notificationStatus === "not_configured" && <p>예약은 저장됐습니다. 카카오 알림 연동 전이라 이 화면에서 일정을 확인해 주세요.</p>}
-        {state.notificationStatus === "failed" && <p>예약은 저장됐지만 카카오톡 안내 전송이 지연되고 있습니다. 운영진이 다시 확인할게요.</p>}
+        <p>예약이 완료됐어요. 운영자가 문자로 일정과 안내 페이지를 보내드릴게요.</p>
         <div className="cta-actions">
           {state.managementPath && <Link href={state.managementPath} className="button button--primary">예약 변경·취소</Link>}
           <Link href="/interview" className="button button--primary">인터뷰 안내 다시 보기</Link>
@@ -99,7 +97,7 @@ export function InterviewApplicationForm({ slots, loadFailed = false }: Intervie
 
       <label className="interview-privacy-consent">
         <input type="checkbox" name="privacyConsent" required />
-        <span>입력한 이름과 전화번호를 인터뷰 예약 확인 및 카카오톡 안내에 사용하는 것에 동의합니다.</span>
+        <span>입력한 이름과 전화번호를 인터뷰 예약 확인 및 문자 안내에 사용하는 것에 동의합니다.</span>
       </label>
 
       {state.message && state.status === "error" && (

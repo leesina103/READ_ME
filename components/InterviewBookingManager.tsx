@@ -16,7 +16,7 @@ export function InterviewBookingManager({ token, slots, loadFailed }: { token: s
         <p>새 일정으로 변경을 마칠 때까지 기존 예약은 유지돼요.</p>
         {loadFailed ? <p role="alert">가능한 일정을 불러오지 못했어요. 새로고침 후 다시 확인해 주세요.</p> : slots.some((slot) => slot.available) ? (
           <InterviewSchedulePicker slots={slots} disabled={pending} />
-        ) : <p>현재 변경 가능한 시간이 없어요. 일정 조정이 필요하면 카카오톡으로 문의해 주세요.</p>}
+        ) : <p>현재 변경 가능한 시간이 없어요. 일정 조정이 필요하면 인스타그램 DM으로 문의해 주세요.</p>}
         <button className="button button--primary" type="submit" name="operation" value="reschedule" disabled={pending || loadFailed || !slots.some((slot) => slot.available)}>선택한 일정으로 변경</button>
       </section>
       <fieldset className="interview-apply-fieldset" disabled={pending}>
@@ -27,7 +27,7 @@ export function InterviewBookingManager({ token, slots, loadFailed }: { token: s
       </fieldset>
       {pending && <p role="status">예약을 처리하고 있어요.</p>}
       {state.message && <p role={state.status === "error" ? "alert" : "status"}>{state.message}</p>}
-      {state.status === "success" && state.notificationStatus !== "sent" && <p>카카오톡 안내와 관계없이 예약 변경은 반영됐어요. 위의 현재 일정을 확인해 주세요.</p>}
+      {state.status === "success" && !state.cancelled && <p>변경된 일정은 위에서 확인할 수 있어요. 운영자가 문자로 다시 안내드릴게요.</p>}
     </form>
   );
 }

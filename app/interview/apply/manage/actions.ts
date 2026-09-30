@@ -32,7 +32,7 @@ export async function manageInterviewAction(token: string, _previous: ManageBook
     revalidatePath(bookingManagementPath(token));
     const messages: Record<string, string> = {
       slot_unavailable: "선택한 시간이 마감됐어요. 기존 예약은 유지됩니다. 다른 시간을 선택해 주세요.",
-      booking_started: "인터뷰 시작 시간이 지나 직접 변경·취소할 수 없어요. 카카오톡으로 문의해 주세요.",
+      booking_started: "인터뷰 시작 시간이 지나 직접 변경·취소할 수 없어요. 인스타그램 DM으로 문의해 주세요.",
       booking_cancelled: "이미 취소된 예약이에요.",
       booking_not_found: "예약을 찾을 수 없어요. 전달받은 링크를 확인해 주세요.",
       same_slot: "현재 예약과 다른 시간을 선택해 주세요."

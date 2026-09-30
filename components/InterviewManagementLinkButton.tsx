@@ -22,7 +22,7 @@ export function InterviewManagementLinkButton({ applicationId, name }: { applica
       try {
         await navigator.clipboard.writeText(managementUrl);
         setManualCopy(false);
-        setMessage("복사했어요. 예약자에게 카톡으로 보내주세요.");
+        setMessage("복사했어요. 예약자에게 문자로 보내주세요.");
       } catch {
         setManualCopy(true);
         setMessage("아래 주소를 선택해 직접 복사해 주세요.");
