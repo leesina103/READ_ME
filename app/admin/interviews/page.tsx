@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { AdminLinkCopyButton } from "@/components/AdminLinkCopyButton";
+import { currentMeeting } from "@/data/currentMeeting";
+import { cohortNumberFromName } from "@/data/seasonWeeks";
 import Link from "next/link";
 import { ArrowLeft, CalendarClock } from "lucide-react";
 import { InterviewManagementLinkButton } from "@/components/InterviewManagementLinkButton";
@@ -95,6 +98,7 @@ export default async function AdminInterviewsPage() {
           <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">인터뷰 예약</h1>
           <p className="mt-4 max-w-2xl text-[var(--muted)]">예약된 인터뷰를 날짜별로 보여줍니다. 취소된 예약은 흐리게 표시되고, 끝난 인터뷰는 다음 날부터 아래 지난 목록으로 이동합니다. 시간은 모두 한국 시간입니다.</p>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--muted)]">‘관리 링크 복사’를 눌러 예약자에게 문자로 보내 주세요. 예약자는 해당 링크에서 인터뷰 시작 전까지 일정을 변경·취소할 수 있습니다.</p>
+          {currentMeeting.recruiting && <div className="mt-4"><AdminLinkCopyButton path={`/membership/apply/${cohortNumberFromName(currentMeeting.cohort)}`} label={`${currentMeeting.cohort} 가입 신청서 링크 복사`} /></div>}
         </div>
         <div className="flex items-center gap-3 rounded-2xl bg-[var(--sage)] px-5 py-4">
           <CalendarClock className="text-[var(--forest)]" size={20} />

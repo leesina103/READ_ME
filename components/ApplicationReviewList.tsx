@@ -7,7 +7,8 @@ import {
   reviewMembershipApplicationAction,
   type ApplicationReviewState
 } from "@/app/admin/applications/actions";
-import { formatSeoulDateTime } from "@/lib/admin/format";
+import { formatPhone, formatSeoulDateTime } from "@/lib/admin/format";
+import { AdminLinkCopyButton } from "@/components/AdminLinkCopyButton";
 import { MembershipGroupDetails } from "@/components/MembershipGroupDetails";
 import type { GroupMeeting } from "@/lib/membership/groupSelection";
 
@@ -15,6 +16,7 @@ export type MembershipApplication = {
   id: number;
   name: string;
   email: string;
+  phone: string | null;
   cohort: string;
   birth_year: number | null;
   message: string;
@@ -62,7 +64,8 @@ function ApplicationReviewCard({ application }: { application: MembershipApplica
               <StatusIcon size={13} strokeWidth={2.5} aria-hidden="true" /> {statusLabel[application.status]}
             </span>
           </div>
-          <p className="mt-2 text-sm text-[var(--muted)]">{details}</p>
+          <p className="mt-2 break-all text-sm text-[var(--muted)]">{details}</p>
+          <p className="mt-2 text-sm text-[var(--muted)]">전화번호: {application.phone ? <a href={`tel:${application.phone}`} className="text-[var(--forest)] underline underline-offset-4">{formatPhone(application.phone)}</a> : "미수집 (기존 신청)"}</p>
         </div>
         <div className="flex items-center gap-3">
           <time className="text-xs text-[var(--muted)]" dateTime={application.created_at}>{formatSeoulDateTime(application.created_at)}</time>
@@ -95,6 +98,7 @@ function ApplicationReviewCard({ application }: { application: MembershipApplica
       {reviewed ? (
         <div className="mt-5 border-t border-[var(--line)] pt-5 text-sm leading-6 text-[var(--muted)]">
           <p>{application.admin_note || state.message || "관리자 메모가 없습니다."}</p>
+          {application.status === "approved" && <div className="mt-3"><AdminLinkCopyButton path="/signup" label="회원가입 링크 복사" /><p className="mt-2 text-xs">입금을 확인한 뒤 보내 주세요. 이미 가입한 회원은 기존 계정으로 로그인하면 됩니다.</p></div>}
           {application.reviewed_at && <time className="mt-2 block text-xs" dateTime={application.reviewed_at}>처리: {formatSeoulDateTime(application.reviewed_at)}</time>}
           {archiveState.status === "error" && <p role="status" className={`mt-3 ${errorTextClassName}`}>{archiveState.message}</p>}
         </div>

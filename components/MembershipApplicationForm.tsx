@@ -55,8 +55,22 @@ export function MembershipApplicationForm({ cohort, configured, groups, groupsEr
           autoComplete="email"
           maxLength={320}
           required
-          placeholder="승인 안내를 받을 이메일"
+          placeholder="회원가입에 사용할 이메일"
         />
+      </label>
+      <label className="block text-sm font-medium">
+        전화번호
+        <input
+          className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]"
+          type="tel"
+          name="phone"
+          autoComplete="tel"
+          maxLength={20}
+          required
+          placeholder="010-1234-5678"
+          aria-describedby="application-phone-help"
+        />
+        <span id="application-phone-help" className="mt-2 block text-sm font-normal text-[var(--muted)]">참여 안내를 문자로 보내드려요.</span>
       </label>
       <label className="block text-sm font-medium">
         출생연도
@@ -91,7 +105,7 @@ export function MembershipApplicationForm({ cohort, configured, groups, groupsEr
       </label>
       <label className="flex items-start gap-3 rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-4 text-sm leading-6">
         <input className="mt-1 accent-[var(--forest)]" type="checkbox" name="privacyConsent" required />
-        <span>입력한 이름, 이메일, 출생연도를 가입 신청 검토와 참여 안내에 사용하는 것에 동의합니다.</span>
+        <span>입력한 이름, 이메일, 전화번호, 출생연도를 가입 신청 검토와 참여 안내에 사용하는 것에 동의합니다.</span>
       </label>
       {(state.message || !configured) && (
         <p role="status" className="rounded-2xl border border-[var(--line)] px-4 py-3 text-sm leading-6 text-[var(--ink)]">

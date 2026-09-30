@@ -32,6 +32,7 @@ export async function submitMembershipApplicationAction(
 ): Promise<MembershipApplicationState> {
   const name = textValue(formData, "name");
   const email = textValue(formData, "email");
+  const phone = textValue(formData, "phone").replace(/[^0-9]/g, "");
   const birthYear = parseBirthYear(textValue(formData, "birthYear"));
   const cohort = textValue(formData, "cohort");
   const message = textValue(formData, "message");
@@ -52,6 +53,10 @@ export async function submitMembershipApplicationAction(
 
   if (birthYear === null) {
     return { status: "error", message: "출생연도를 네 자리 숫자로 확인해 주세요." };
+  }
+
+  if (!/^01(0|1|6|7|8|9)[0-9]{7,8}$/.test(phone)) {
+    return { status: "error", message: "참여 안내를 받을 전화번호를 확인해 주세요." };
   }
 
   if (cohort !== currentMeeting.cohort) {
@@ -78,6 +83,7 @@ export async function submitMembershipApplicationAction(
   const { error } = await supabase.rpc("submit_membership_application", {
     p_name: name,
     p_email: email,
+    p_phone: phone,
     p_cohort: cohort,
     p_birth_year: birthYear,
     p_group_id: groupId,

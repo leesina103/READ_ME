@@ -14,7 +14,7 @@ async function fails(sql, pattern) { await assert.rejects(() => db.query(sql), p
 async function login(n) {
   await db.exec(`reset role; set role ${n ? "authenticated" : "anon"}; select set_config('request.jwt.claims','${JSON.stringify(n ? { sub: uid(n), app_metadata: n === 1 ? { role: "admin" } : {} } : {})}',false);`);
 }
-const submit = (email, group = gid(1), cohort = "1기") => `select public.submit_membership_application('검증 회원','${email}','${cohort}',1990,${group ? `'${group}'` : "null"},'검증 신청')`;
+const submit = (email, group = gid(1), cohort = "1기", phone = "010-1234-5678") => `select public.submit_membership_application('검증 회원','${email}','${cohort}',1990,${group ? `'${group}'` : "null"},${phone === null ? "null" : `'${phone}'`},'검증 신청')`;
 async function approve(email) {
   await login(1);
   const id = await one(`select id from public.admin_list_membership_applications() where email='${email}'`);
@@ -50,6 +50,9 @@ try {
   await db.exec(await source("20260920065112_guard_talk_group_deletion.sql"));
   await db.exec(await source("20260928014821_membership_group_selection.sql"));
   await db.exec(await source("20260928021430_save_talk_group_details_and_schedule.sql"));
+  await db.exec(`insert into public.membership_applications(name,email,cohort,birth_year) values('기존 신청','legacy@example.test','1기',1990);`);
+  await db.exec(await source("20260930123533_membership_application_phone.sql"));
+  equal(await one("select phone from public.membership_applications where email='legacy@example.test'"), null);
   await db.exec(invitationSource.slice(invitationSource.indexOf("create or replace function public.handle_new_user()")));
   await db.exec(`create trigger handle_signup after insert on auth.users for each row execute function public.handle_new_user();`);
   await login(1);
@@ -71,7 +74,13 @@ try {
   await fails(submit("missing@example.test", null), /application_group_unavailable/);
   await fails(submit("wrong@example.test", gid(3)), /application_group_unavailable/);
   await fails(submit("closed@example.test", gid(4)), /application_group_unavailable/);
+  await fails(submit("invalid@example.test", gid(1), "1기", "123"), /invalid_application_phone/);
+  await fails(submit("empty@example.test", gid(1), "1기", ""), /invalid_application_phone/);
+  await fails(submit("null@example.test", gid(1), "1기", null), /invalid_application_phone/);
   await db.exec(submit("new@example.test"));
+  await login(1);
+  equal(await one("select phone from public.admin_list_membership_applications() where email='new@example.test'"), "01012345678");
+  await login(null);
   await fails(submit("new@example.test", gid(2)), /application_already_submitted/);
   await approve("new@example.test");
   // 승인 직후에는 초대장에 자리가 보관되고, 실제 가입 트리거가 회원 배정을 만듭니다.
