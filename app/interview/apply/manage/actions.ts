@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { bookingManagementPath, bookingTokenPattern } from "@/lib/interview/booking";
 import { sendInterviewUpdate, type InterviewNotificationStatus } from "@/lib/interview/confirmation";
+import { sendInterviewAdminNotification } from "@/lib/interview/admin-notification";
 
 export type ManageBookingState = {
   status: "idle" | "error" | "success";
@@ -41,11 +42,17 @@ export async function manageInterviewAction(token: string, _previous: ManageBook
   }
   const booking = data?.[0];
   if (!booking) return { status: "error", message: "예약 상태를 확인하지 못했어요. 페이지를 새로고침해 주세요." };
-  const notificationStatus = await sendInterviewUpdate({
+  const event = action === "cancel" ? "cancelled" : "rescheduled";
+  const [notificationStatus] = await Promise.all([sendInterviewUpdate({
     name: booking.name, phone: booking.phone, startsAt: booking.starts_at,
     applicationId: booking.application_id, managementToken: token, updatedAt: booking.updated_at,
-    event: action === "cancel" ? "cancelled" : "rescheduled"
-  });
+    event
+  }), sendInterviewAdminNotification({
+    applicationId: booking.application_id,
+    startsAt: booking.starts_at,
+    updatedAt: booking.updated_at,
+    event
+  })]);
   revalidatePath("/interview/apply");
   revalidatePath(bookingManagementPath(token));
   revalidatePath("/admin/interviews");
