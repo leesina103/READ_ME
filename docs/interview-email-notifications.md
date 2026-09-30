@@ -1,0 +1,39 @@
+# 인터뷰 예약 운영자 이메일 알림
+
+새 인터뷰 예약의 DB 저장이 성공하면 Resend로 운영자 이메일 발송을 요청합니다.
+예약 시간과 관리자 링크만 전송하며 이름·전화번호·예약 관리 토큰은 포함하지 않습니다.
+메일 요청 실패나 5초 타임아웃이 발생해도 예약은 유지됩니다.
+현재 변경·취소 알림과 자동 재시도는 포함하지 않습니다.
+
+## 설정
+
+로컬은 `.env.local`, 배포 환경은 Vercel 프로젝트 환경변수에 아래 값을 등록합니다.
+
+| 이름 | 값 |
+| --- | --- |
+| `RESEND_API_KEY` | 새로 발급한 Sending access 키 |
+| `INTERVIEW_ADMIN_EMAIL` | `readmebook.team@gmail.com` |
+| `INTERVIEW_ADMIN_EMAIL_FROM` | `READ ME <onboarding@resend.dev>` |
+| `INTERVIEW_ADMIN_SITE_URL` | `https://read-me-two-black.vercel.app` |
+
+키를 소스나 채팅에 넣지 않습니다. 이전에 스크린샷에 노출된 키는 폐기합니다.
+Vercel 환경변수 화면에서는 값에 따옴표를 붙이지 않습니다.
+설정 후 변경 코드를 배포해야 적용됩니다. 로컬 설정 변경 후에는 개발 서버 재시작이 필요합니다.
+
+`onboarding@resend.dev`는 테스트 발신 주소입니다. 수신 주소는 Resend 계정에 연결된 이메일과 일치해야 합니다.
+`vercel.app` 주소는 관리자 링크에만 사용하며 발신 도메인으로 인증하지 않습니다.
+운영용 발신 도메인을 확보하면 Resend에서 DNS 인증 후 `INTERVIEW_ADMIN_EMAIL_FROM`을 변경합니다.
+
+## 확인
+
+1. 테스트 예약 한 건을 생성하고 `/admin/interviews`에 저장됐는지 확인합니다.
+2. Resend Emails에서 접수뿐 아니라 배달 상태를 확인합니다.
+3. 실제 Gmail 수신과 휴대폰 메일 앱 알림을 확인합니다. 스팸함도 확인합니다.
+4. 메일의 관리자 링크가 배포 사이트로 연결되고 로그인 권한 검사를 거치는지 확인합니다.
+5. 필요하면 테스트 예약을 관리 링크에서 취소합니다.
+
+메일 실패 로그에는 HTTP 상태만 남습니다. 401/403은 키·권한·발신 도메인·테스트 수신 주소,
+429는 발송 한도 등을 Resend에서 확인합니다. 알림 실패 시 예약을 다시 제출하지 말고 관리자 화면에서 확인합니다.
+동일 예약 ID의 중복 요청은 Resend의 24시간 멱등성 키로 중복 발송을 방지합니다.
+
+공식 문서: https://resend.com/docs/knowledge-base/403-error-resend-dev-domain

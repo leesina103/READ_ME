@@ -8,6 +8,7 @@ import {
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { bookingManagementPath } from "@/lib/interview/booking";
+import { sendInterviewAdminNotification } from "@/lib/interview/admin-notification";
 
 export type InterviewApplicationState = {
   status: "idle" | "error" | "success";
@@ -77,7 +78,10 @@ export async function submitInterviewApplicationAction(
     return { status: "error", message: "예약 시간을 확인하지 못했습니다. 운영진에게 문의해 주세요." };
   }
 
-  const notificationStatus = await sendInterviewConfirmation({ name, phone, startsAt, managementToken: booking.management_token, applicationId: booking.application_id });
+  const [notificationStatus] = await Promise.all([
+    sendInterviewConfirmation({ name, phone, startsAt, managementToken: booking.management_token, applicationId: booking.application_id }),
+    sendInterviewAdminNotification({ applicationId: booking.application_id, startsAt })
+  ]);
   revalidatePath("/interview/apply");
 
   return {
