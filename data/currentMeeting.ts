@@ -5,7 +5,7 @@ const recruiting: boolean = true;
 
 const schedule = {
   duration: "8주",
-  start: "2026년 10월부터",
+  start: "2026년 11월 말부터",
   cadence: "격주",
   offlineSessions: "4회",
   onlineSessions: "4회",
