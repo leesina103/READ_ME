@@ -25,13 +25,13 @@ export function MembershipApplicationForm({ cohort, configured, groups, groupsEr
     <form action={formAction} className="mt-10 space-y-5">
       <input type="hidden" name="cohort" value={cohort} />
       <fieldset disabled={pending || state.status === "success"} className="min-w-0 space-y-3">
-        <legend className="text-lg font-semibold">참여할 모임 선택</legend>
-        <p className="text-sm leading-7 text-[var(--muted)]">가이드 소개와 모임 요일·시간을 확인하고 모임 하나를 선택해 주세요. 운영자가 확인한 뒤 참여가 확정됩니다.</p>
+        <legend className="text-lg font-semibold">참여할 일정 선택</legend>
+        <p className="text-sm leading-7 text-[var(--muted)]">참여 가능한 일정을 하나 선택해 주세요. 운영자가 확인한 뒤 참여가 확정됩니다.</p>
         {groupsError ? <p role="alert" className="text-sm leading-7">모임 정보를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.</p>
           : groups.length === 0 && <p className="text-sm leading-7">현재 신청할 수 있는 모임이 없습니다. 운영자의 다음 안내를 기다려 주세요.</p>}
         {groups.map((group) => <label key={group.id} className={`flex min-w-0 cursor-pointer items-start gap-3 rounded-2xl border p-5 max-[430px]:p-4 ${groupId === group.id ? "border-[var(--forest)] bg-[var(--cream)]" : "border-[var(--line)] bg-[var(--paper)]"}`}>
-          <input type="radio" name="groupId" value={group.id} required checked={groupId === group.id} onChange={() => setGroupId(group.id)} className="mt-1 size-4 shrink-0 accent-[var(--forest)]" aria-label={`${group.host_name} 가이드 모임 선택`} />
-          <MembershipGroupDetails hostName={group.host_name} hostStyle={group.host_style} venue={group.venue} durationMinutes={group.duration_minutes} meetings={group.meetings} compact />
+          <input type="radio" name="groupId" value={group.id} required checked={groupId === group.id} onChange={() => setGroupId(group.id)} className="mt-1 size-4 shrink-0 accent-[var(--forest)]"  />
+          <MembershipGroupDetails hostName={group.host_name} hostStyle={group.host_style} venue={group.venue} durationMinutes={group.duration_minutes} meetings={group.meetings} scheduleOnly />
         </label>)}
       </fieldset>
       <label className="block text-sm font-medium">

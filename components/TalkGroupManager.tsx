@@ -37,8 +37,8 @@ function GroupEditor({ group, meetings }: { group: TalkGroup; meetings: TalkMeet
   }
   return <GroupForm cohort={group.cohort} operation="save" groupId={group.id} label="모임 정보 저장">
     <h4 className="font-semibold">신청자에게 보여줄 모임 안내</h4>
-    <label className="text-sm">가이드 이름<input name="hostName" defaultValue={group.host_name} required maxLength={80} className={inputClassName()} /></label>
-    <label className="text-sm">가이드 소개<textarea name="hostStyle" defaultValue={group.host_style} required maxLength={600} className={`${inputClassName()} min-h-28`} placeholder="가이드가 어떤 사람인지 소개해 주세요." /></label>
+    <label className="text-sm">가이드 이름 (선택)<input name="hostName" defaultValue={group.host_name} maxLength={80} className={inputClassName()} /></label>
+    <label className="text-sm">가이드 소개 (선택)<textarea name="hostStyle" defaultValue={group.host_style} maxLength={600} className={`${inputClassName()} min-h-28`} placeholder="가이드가 어떤 사람인지 소개해 주세요." /></label>
     <div className="grid grid-cols-2 gap-4 max-[820px]:grid-cols-1">
       <label className="text-sm">모임 장소<input name="venue" defaultValue={group.venue} required maxLength={200} className={inputClassName()} /></label>
       <label className="text-sm">회차별 소요 시간 · 분<input type="number" name="durationMinutes" defaultValue={group.duration_minutes} required min={30} max={480} className={inputClassName()} /></label>
@@ -70,7 +70,7 @@ export function TalkGroupManager({ cohort, groups, meetings, members, ended }: {
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   return <section className="mt-6 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-6 max-[430px]:p-4">
     <h3 className="text-xl font-semibold">{cohort} 그룹과 작성 일정</h3>
-    <p className="mt-2 text-sm leading-7 text-[var(--muted)]">가이드 소개와 네 번의 일정을 등록한 뒤 신청 접수를 켜주세요. 가입 신청을 승인하면 신청자가 고른 모임으로 연결됩니다. 같은 시간에도 여러 그룹을 열 수 있고, 그룹 이름은 운영자에게만 표시합니다.</p>
+    <p className="mt-2 text-sm leading-7 text-[var(--muted)]">장소와 네 번의 일정을 등록한 뒤 신청 접수를 켜주세요. 가이드 이름과 소개는 나중에 입력할 수 있으며, 현재 신청서에는 일정만 표시됩니다. 가입 신청을 승인하면 신청자가 고른 모임으로 연결됩니다. 같은 시간에도 여러 그룹을 열 수 있고, 그룹 이름은 운영자에게만 표시합니다.</p>
     {ended ? <p className="mt-5 text-sm text-[var(--muted)]">종료된 기수의 그룹 배정과 일정은 변경할 수 없어요.</p> : <>
       <details className="mt-6 border-t border-[var(--line)] pt-5">
         <summary className="min-h-11 cursor-pointer font-semibold">+ 그룹 추가</summary>

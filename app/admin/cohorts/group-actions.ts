@@ -51,7 +51,7 @@ export async function manageTalkGroup(_previous: TalkFormState, form: FormData):
     const venue = value(form, "venue");
     const durationMinutes = Number(value(form, "durationMinutes"));
     const applicationOpen = form.get("applicationOpen") === "on";
-    if (!hostName || hostName.length > 80 || !hostStyle || hostStyle.length > 600 || !venue || venue.length > 200 || !Number.isInteger(durationMinutes) || durationMinutes < 30 || durationMinutes > 480) return failure("가이드 이름·소개·장소와 소요 시간을 확인해주세요.");
+    if (hostName.length > 80 || hostStyle.length > 600 || !venue || venue.length > 200 || !Number.isInteger(durationMinutes) || durationMinutes < 30 || durationMinutes > 480) return failure("가이드 이름·소개·장소와 소요 시간을 확인해주세요.");
 
     const { data: group } = await supabase.from("talk_groups").select("id").eq("id", groupId).eq("cohort", cohort).maybeSingle();
     if (!group) return failure("그룹 정보를 확인해주세요.");
