@@ -180,7 +180,7 @@ export default function InterviewPage() {
           <p className="eyebrow">STORY</p>
           <blockquote>“{featuredStory.quote}”</blockquote>
           <p className="interview-story__source">{featuredStory.name} · {featuredStory.source}</p>
-          <Link href="/story" className="text-link">전체 후기 보기 <ArrowRight size={14} /></Link>
+          <Link href="/story" className="text-link">전체 이야기 보기 <ArrowRight size={14} /></Link>
         </div>
       </section>
 

@@ -13,7 +13,7 @@ const publicMenuItems = [
   { href: "/about", label: "READ ME 소개", description: "우리가 책을 읽고 대화하는 방식", live: false },
   { href: "/themes", label: "주제별 소개", description: `현재 ${currentMeeting.cohort} · ${currentTheme.name}, 여섯 기수의 질문`, live: false },
   { href: "/meeting", label: currentMeeting.meetingTitle, description: "이번 기수 일정과 신청 안내", live: currentMeeting.recruiting },
-  { href: "/story", label: "READ ME 후기", description: "함께 읽고 나눈 멤버들의 경험", live: false }
+  { href: "/story", label: "독서모임을 해보고 느낀 것", description: "독서모임을 해본 사람들이 느낀 것", live: false }
 ] as const;
 
 const membershipGroups = [

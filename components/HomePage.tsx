@@ -99,7 +99,7 @@ export function HomePage() {
 
       <section className="section people-section"><div className="section-shell people-layout"><div><p className="eyebrow">RECOMMENDED FOR</p><h2>이런 사람에게<br />READ ME를 추천해요.</h2><blockquote>정답을 가진 사람보다,<br />질문을 가진 사람을 위한 모임입니다.</blockquote></div><ul>{people.map((person) => <li key={person}><Check size={17} /> {person}</li>)}</ul></div></section>
 
-      <section className="section story-section"><div className="section-shell"><SectionTitle eyebrow="STORY" title="실제 사람들이 느낀 것" description={storySourceNote} /><StoryCarousel /><p className="story-closing">{storyClosing}</p><Link href="/story" className="button button--ghost story-link">전체 이야기 보기 <ArrowRight size={16} /></Link></div></section>
+      <section className="section story-section"><div className="section-shell"><SectionTitle eyebrow="STORY" title="독서모임을 해보고 느낀 것" description={storySourceNote} /><StoryCarousel /><p className="story-closing">{storyClosing}</p><Link href="/story" className="button button--ghost story-link">전체 이야기 보기 <ArrowRight size={16} /></Link></div></section>
 
       <section className="section detail-links-section"><div className="section-shell"><SectionTitle eyebrow="EXPLORE READ ME" title="궁금한 이야기부터 살펴보세요." /><div className="detail-link-grid">{detailLinks.map(({ icon: Icon, ...item }) => <Link key={item.href} href={item.href}><Icon size={22} strokeWidth={1.5} /><small>{item.eyebrow}</small><h3>{item.title}</h3><p>{item.text}</p><span>자세히 보기 <ArrowRight size={14} /></span></Link>)}</div></div></section>
 

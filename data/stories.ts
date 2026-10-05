@@ -1,4 +1,19 @@
-export const readingGroupStories = [
+export type ReadingGroupStory = {
+  name: string;
+  source: string;
+  // 공개할 후기에만 실제 참여 기수를 지정합니다. 기존 독서모임 이야기는 기수 없이 유지합니다.
+  cohort?: number;
+  quote: string;
+  text: string | null;
+  longform: {
+    title: string;
+    topics: readonly string[];
+    intro: readonly string[];
+    points: readonly { number: string; title: string; paragraphs: readonly string[] }[];
+  } | null;
+};
+
+export const readingGroupStories: readonly ReadingGroupStory[] = [
   {
     name: "나*",
     source: "독서모임 경험자",
@@ -84,6 +99,6 @@ export const readingGroupStories = [
 export const HOME_STORY_COUNT = 5;
 export const homeStories = readingGroupStories.slice(0, HOME_STORY_COUNT);
 
-export const storySourceNote = "READ ME가 시작되기 전, 독서모임을 경험해본 사람들이 말하는 독서모임의 가치입니다.";
+export const storySourceNote = "READ ME가 시작되기 전, 독서모임을 경험한 사람들의 이야기예요.";
 
 export const storyClosing = "혼자 읽으면 한 사람의 생각으로 끝나지만, 함께 읽으면 여러 사람의 삶을 만날 수 있습니다.";

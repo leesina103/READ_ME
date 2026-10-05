@@ -12,12 +12,12 @@ export function StoryCarousel() {
       <div className="story-carousel__controls">
         <p aria-live="polite"><strong>{String(activeIndex + 1).padStart(2, "0")}</strong> / {String(homeStories.length).padStart(2, "0")}</p>
         <div>
-          <button type="button" onClick={() => moveTo(activeIndex - 1)} disabled={!canMovePrevious} aria-label="이전 후기 보기"><ArrowLeft size={18} /></button>
-          <button type="button" onClick={() => moveTo(activeIndex + 1)} disabled={!canMoveNext} aria-label="다음 후기 보기"><ArrowRight size={18} /></button>
+          <button type="button" onClick={() => moveTo(activeIndex - 1)} disabled={!canMovePrevious} aria-label="이전 이야기 보기"><ArrowLeft size={18} /></button>
+          <button type="button" onClick={() => moveTo(activeIndex + 1)} disabled={!canMoveNext} aria-label="다음 이야기 보기"><ArrowRight size={18} /></button>
         </div>
       </div>
 
-      <ul ref={trackRef} className="story-carousel__track" onScroll={handleScroll} tabIndex={0} aria-label="독서모임 후기">
+      <ul ref={trackRef} className="story-carousel__track" onScroll={handleScroll} tabIndex={0} aria-label="독서모임을 해보고 느낀 것">
         {homeStories.map((story, index) => (
           <li key={story.name}>
             <div className="story-carousel__meta"><span>{String(index + 1).padStart(2, "0")}</span><strong>{story.name}</strong><small>{story.source}</small></div>
