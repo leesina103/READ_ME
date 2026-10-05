@@ -589,6 +589,14 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 .stories-filter h2 span { padding: 5px 10px; border-radius: 999px; background: var(--cream); color: var(--forest); font-family: var(--font-sans), sans-serif; font-size: 12px; font-weight: 600; }
 .stories-filter-note { max-width: 680px; margin: 16px 0 0; color: var(--muted); font-size: 13px; line-height: 1.9; }
 .stories-empty { margin-top: 24px; padding: 32px; border: 1px solid var(--line); border-radius: 24px; background: var(--paper); color: var(--muted); line-height: 1.8; }
+.my-library-section { margin-top: 20px; padding: 32px; border: 1px solid var(--line); border-radius: 28px; background: var(--paper); }
+.my-library-section h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.my-library-section > p { margin: 12px 0 0; font-size: 14px; color: var(--muted); line-height: 1.8; }
+.my-library-actions { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; }
+.my-cohort-history { margin: 24px 0 0; padding: 0; list-style: none; }
+.my-cohort-history li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 0; border-top: 1px solid var(--line); }
+.my-cohort-history li > div { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.my-cohort-history span { font-size: 12px; color: var(--muted); }
 .stories-list { display: grid; border-bottom: 1px solid var(--line); }
 .stories-list article { padding: 44px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 64px; row-gap: 28px; border-top: 1px solid var(--line); }
 .stories-list__meta { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; color: var(--forest); }
@@ -629,6 +637,8 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .stories-hero { padding-block: 60px 72px; }
   .stories-filter-heading { gap: 16px; }
   .stories-filter h2 { font-size: 24px; }
+  .my-library-section { padding: 28px; }
+  .my-cohort-history li { align-items: flex-start; flex-direction: column; }
   .stories-list-section { padding-block: 88px; }
   .stories-list article { padding: 36px 0; grid-template-columns: 1fr; row-gap: 22px; }
   .stories-list__meta,.stories-list__item--short blockquote { grid-column: auto; }
@@ -642,7 +652,9 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .stories-hero { padding-block: 48px 68px; }
   .stories-filter-heading { align-items: flex-start; flex-direction: column; }
   .stories-filter-control, .stories-filter-control select { width: 100%; }
-  .stories-empty { padding: 24px 20px; }
+  .stories-empty, .my-library-section { padding: 24px 20px; }
+  .my-library-actions { flex-direction: column; }
+  .my-library-actions .button { width: 100%; }
   .stories-hero > .eyebrow { margin-top: 36px; }
   .stories-list-section { padding-block: 68px; }
   .stories-list article { padding: 32px 0; }

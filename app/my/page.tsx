@@ -13,6 +13,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getTalkSchedule } from "@/lib/membership/talkData";
 import { MembershipGroupDetails } from "@/components/MembershipGroupDetails";
 import type { GroupMeeting, MembershipGroupOption } from "@/lib/membership/groupSelection";
+import { MyCohortHistory } from "@/components/MyCohortHistory";
 
 export const metadata: Metadata = {
   title: "나의 서재",
@@ -49,9 +50,12 @@ export default async function MyPage({ searchParams }: MyPageProps) {
 
   if (profile && !profile.onboarding_completed_at) redirect("/onboarding");
 
-  const { data: cohortSchedule } = profile?.cohort
-    ? await supabase.from("cohorts").select("starts_at,ends_at").eq("name", profile.cohort).maybeSingle()
-    : { data: null };
+  const [{ data: cohortHistory, error: cohortHistoryError }, { data: cohortSchedule }] = await Promise.all([
+    supabase.from("member_cohorts").select("cohort").eq("user_id", user.id),
+    profile?.cohort
+      ? supabase.from("cohorts").select("starts_at,ends_at").eq("name", profile.cohort).maybeSingle()
+      : Promise.resolve({ data: null })
+  ]);
 
   const displayName = profile?.display_name
     ?? (typeof user.user_metadata?.display_name === "string" ? user.user_metadata.display_name : "READ ME 회원");
@@ -120,6 +124,22 @@ export default async function MyPage({ searchParams }: MyPageProps) {
           <div className="mt-6"><SeasonWeekList cohortNumber={cohortNumber} schedule={schedule} canPreviewAllWeeks={user.app_metadata?.role === "admin"} readOnly={Boolean(cohortSchedule?.ends_at && Date.parse(cohortSchedule.ends_at) <= Date.now())} /></div>
         )}
       </section>
+
+      <section className="my-library-section" aria-labelledby="my-favorite-book">
+        <h2 id="my-favorite-book">나의 인생책</h2>
+        <p>오래 마음에 남은 책과 그 이유를 멤버들에게 소개해 주세요.</p>
+        <div className="my-library-actions">
+          <Link href="/membership/community/new?category=books" className="button button--primary">인생책 소개하기</Link>
+          <Link href="/membership/community?tab=books" className="button button--ghost">인생책 이야기 보기</Link>
+        </div>
+      </section>
+
+      <MyCohortHistory
+        cohorts={(cohortHistory ?? []).map((row: { cohort: string }) => row.cohort)}
+        currentCohort={profile?.cohort ?? null}
+        currentCohortEnded={Boolean(cohortSchedule?.ends_at && Date.parse(cohortSchedule.ends_at) <= Date.now())}
+        hasError={Boolean(cohortHistoryError)}
+      />
     </main>
   );
 }

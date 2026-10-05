@@ -31,7 +31,7 @@ export default async function TalkIndexPage() {
       {member.cohortNumber && <TalkReminders schedule={schedule} cohortNumber={member.cohortNumber} ended={currentCohortEnded} />}
       {scheduleError && <p role="status" className="mt-5 text-sm text-[var(--muted)]">작성 일정을 불러오지 못했어요. 기존 대화방은 아래에서 이용할 수 있어요.</p>}
       {member.cohortNumber ? (
-        <section className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
+        <section id={`cohort-${member.cohortNumber}`} className="scroll-mt-28 mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
           {currentCohortEnded && (
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-xl font-semibold">{member.cohort} 온라인 대화</h2>
@@ -50,7 +50,7 @@ export default async function TalkIndexPage() {
           <h2 id="past-cohort-talks" className="mt-3 text-2xl font-semibold">지난 기수 대화방</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">지난 기수 대화방은 읽기만 가능해요. 답변을 남겼던 주차의 이야기를 다시 볼 수 있어요.</p>
           {pastCohorts.map((cohort) => (
-            <div key={cohort.name} className="mt-6 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
+            <div key={cohort.name} id={`cohort-${cohort.number}`} className="scroll-mt-28 mt-6 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 md:p-8">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 className="text-xl font-semibold">{cohort.name} 온라인 대화</h3>
                 <ReadOnlyBadge />
