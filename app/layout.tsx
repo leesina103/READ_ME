@@ -3,9 +3,7 @@ import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { createClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { canUseLegacyMembershipFallback } from "@/lib/membership/access";
+import { getHeaderState } from "@/lib/supabase/header-state";
 
 const notoSansKr = Noto_Sans_KR({
   variable: "--font-sans",
@@ -48,36 +46,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  let isAuthenticated = false;
-  let isMember = false;
-  let isAdmin = false;
-  let accountLabel = "로그인";
+  const headerState = await getHeaderState();
 
-  if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    isAuthenticated = Boolean(user);
-
-    if (user) {
-      isAdmin = user.app_metadata?.role === "admin";
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("display_name, cohort, onboarding_completed_at")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      accountLabel = profile?.onboarding_completed_at && profile.display_name
-        ? profile.display_name
-        : "설정하기";
-
-      if (profile?.onboarding_completed_at && profile.cohort) {
-        const { data: hasActiveMembership, error } = await supabase.rpc("has_active_membership");
-        isMember = error
-          ? canUseLegacyMembershipFallback(error.code)
-          : hasActiveMembership === true;
-      }
-    }
-  }
-
-  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header isAuthenticated={isAuthenticated} isMember={isMember} isAdmin={isAdmin} accountLabel={accountLabel} />{children}<Footer /></body></html>;
+  return <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable}`}><body><Header {...headerState} />{children}<Footer /></body></html>;
 }

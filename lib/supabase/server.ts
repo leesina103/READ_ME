@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 
-export async function createClient() {
+export async function createClient(options?: { fetch: typeof fetch }) {
   const config = getSupabaseConfig();
 
   if (!config) {
@@ -14,6 +14,7 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(config.url, config.key, {
+    global: options ? { fetch: options.fetch } : undefined,
     cookies: {
       getAll() {
         return cookieStore.getAll();
