@@ -19,7 +19,7 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 .site-header__inner { position: relative; width: min(1160px, calc(100% - 48px)); height: 72px; margin: auto; display: flex; align-items: center; justify-content: center; }
 .brand-mark { position: absolute; left: 50%; min-height: 44px; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; letter-spacing: .08em; transform: translateX(-50%); }
 .brand-mark__icon { display: grid; place-items: center; width: 34px; height: 34px; color: var(--forest); border: 1px solid rgba(91,107,87,.25); border-radius: 50%; background: var(--paper); }
-.desktop-nav { display: none; align-items: center; gap: 26px; font-size: 14px; color: var(--muted); }
+.desktop-nav { display: none; align-items: center; gap: 16px; font-size: 14px; color: var(--muted); white-space: nowrap; }
 .desktop-nav a { display: inline-flex; align-items: center; transition: color .2s; } .desktop-nav a:hover { color: var(--ink); }
 .nav-divider { width: 1px; height: 16px; background: var(--line); }
 .desktop-account-link { min-height: 44px; padding: 0 8px; display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 700; }
@@ -91,7 +91,7 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .mobile-menu--main[open] .main-menu__panel { animation: none; }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .site-header__inner { position: static; justify-content: space-between; }
   .brand-mark { position: static; transform: none; }
   .desktop-nav { display: flex; }
@@ -233,11 +233,16 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 .interview-notice-grid li { position: relative; padding-left: 20px; color: var(--muted); font-size: 14px; line-height: 1.75; }
 .interview-notice-grid li::before { content: ""; position: absolute; top: .7em; left: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
 .interview-membership .button-row { margin-top: 34px; }
-.interview-apply-hero { padding-block: 72px 76px; }
-.interview-apply-heading { margin-top: 54px; display: grid; grid-template-columns: 1.1fr .9fr; align-items: end; gap: 70px; }
-.interview-apply-heading h1 { margin: 18px 0 0; font-family: Georgia, var(--font-serif), serif; font-size: clamp(46px,6vw,78px); line-height: 1.08; font-weight: 500; letter-spacing: -.05em; }
-.interview-apply-heading > p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.85; }
-.interview-apply-layout { display: grid; grid-template-columns: .72fr 1.28fr; align-items: start; gap: 80px; }
+.interview-apply-hero { padding-block: 32px; }
+.interview-apply-heading { margin-top: 24px; }
+.interview-apply-heading h1 { margin: 12px 0 0; font-family: Georgia, var(--font-serif), serif; font-size: 40px; line-height: 1.2; font-weight: 500; letter-spacing: -.05em; }
+.interview-apply-cohort { color: var(--ink); font-size: 15px; font-weight: 800; letter-spacing: 0; }
+.interview-apply-note { margin-top: 24px; padding: 22px 24px; border-radius: 24px; background: var(--forest); color: var(--cream); }
+.interview-apply-note h2 { margin: 0; font-size: 16px; line-height: 1.5; font-weight: 700; }
+.interview-apply-note p { margin: 8px 0 0; font-size: 14px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere; }
+.interview-apply-note .interview-apply-note__manage { margin-top: 16px; color: var(--sand); font-size: 13px; }
+.interview-apply-layout { display: grid; grid-template-columns: minmax(0,1fr); max-width: 880px; gap: 24px; }
+.interview-apply-section { padding-block: 32px 56px; }
 .interview-apply-layout > aside { position: sticky; top: 110px; padding: 30px; border-radius: 28px; color: var(--cream); background: var(--forest); }
 .interview-apply-layout > aside > svg { color: var(--sand); }
 .interview-apply-layout > aside .eyebrow { margin-top: 34px; color: var(--sand); }
@@ -313,7 +318,6 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .interview-hero { padding-block: 72px 80px; } .interview-hero__grid { grid-template-columns: 1fr; gap: 48px; } .interview-brief { min-height: 350px; }
   .interview-question-grid,.interview-preparation-grid,.interview-notice-grid { grid-template-columns: 1fr; }
   .interview-preparation-grid article { min-height: auto; }
-  .interview-apply-heading { grid-template-columns: 1fr; align-items: start; gap: 22px; }
   .interview-apply-layout { grid-template-columns: 1fr; gap: 34px; }
   .interview-apply-layout > aside { position: static; }
   .season-cycle li { display: grid; grid-template-columns: 42px minmax(0,1fr); align-items: flex-start; gap: 20px 16px; }
@@ -348,8 +352,9 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .interview-brief { min-height: 310px; padding: 26px; border-radius: 28px; } .interview-brief > p { margin-bottom: 30px; }
   .interview-question-grid,.interview-notice-grid { margin-top: 36px; } .interview-question-grid article { padding: 20px; gap: 14px; } .interview-question-grid p { font-size: 15px; }
   .interview-notice-grid article { padding: 24px; }
-  .interview-apply-hero { padding-block: 48px 58px; }
-  .interview-apply-heading { margin-top: 38px; }
+  .interview-apply-hero { padding-block: 24px; }
+  .interview-apply-heading { margin-top: 20px; }
+  .interview-apply-note { margin-top: 20px; padding: 16px 18px; }
   .interview-apply-heading h1 { font-size: 12.5vw; }
   .interview-apply-fieldset { padding: 24px 20px; }
   .interview-schedule-picker .interview-apply-fieldset { padding: 22px 18px; }
@@ -924,8 +929,9 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 .meeting-hero .button { margin-top: 36px; }
 .meeting-recruiting-facts { margin: 36px 0 0; display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid var(--line); border-radius: 24px; overflow: hidden; }
 .meeting-recruiting-facts > div { padding: 26px 28px; background: var(--cream); }
-.meeting-recruiting-facts > div:nth-child(n+4) { border-top: 1px solid var(--line); }
-.meeting-recruiting-facts > div:not(:nth-child(3n+1)) { border-left: 1px solid var(--line); }
+.meeting-recruiting-facts > div:first-child { grid-column: 1 / -1; }
+.meeting-recruiting-facts > div:nth-child(n+2) { border-top: 1px solid var(--line); }
+.meeting-recruiting-facts > div:nth-child(3n),.meeting-recruiting-facts > div:nth-child(3n+1):not(:first-child) { border-left: 1px solid var(--line); }
 .meeting-recruiting-facts dt { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .1em; }
 .meeting-recruiting-facts dd { margin: 10px 0 0; font-size: 22px; font-weight: 650; letter-spacing: -.02em; }
 .meeting-facts__note { margin: 20px 0 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
@@ -955,8 +961,8 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .meeting-hero { padding-block: 72px 76px; }
   .meeting-recruiting-facts { grid-template-columns: repeat(2,1fr); }
   .meeting-recruiting-facts > div:nth-child(n) { border-top: 0; border-left: 0; }
-  .meeting-recruiting-facts > div:nth-child(n+3) { border-top: 1px solid var(--line); }
-  .meeting-recruiting-facts > div:nth-child(even) { border-left: 1px solid var(--line); }
+  .meeting-recruiting-facts > div:nth-child(n+2) { border-top: 1px solid var(--line); }
+  .meeting-recruiting-facts > div:nth-child(odd):not(:first-child) { border-left: 1px solid var(--line); }
   .meeting-after-note { grid-template-columns: 1fr; gap: 12px; }
   .meeting-curriculum__theme { align-items: flex-start; }
   .meeting-curriculum { margin-top: 20px; }
@@ -970,9 +976,8 @@ section[id], footer[id] { scroll-margin-top: 84px; }
   .meeting-hero__question { font-size: 26px; }
   .meeting-hero__summary { font-size: 15px; }
   .meeting-hero .button { width: 100%; }
-  .meeting-recruiting-facts { grid-template-columns: 1fr; }
-  .meeting-recruiting-facts > div:nth-child(n) { padding: 22px 24px; border-top: 0; border-left: 0; }
-  .meeting-recruiting-facts > div:nth-child(n+2) { border-top: 1px solid var(--line); }
+  .meeting-recruiting-facts > div:nth-child(n) { padding: 18px 16px; }
+  .meeting-recruiting-facts dd { font-size: 20px; }
   .meeting-after-section { padding-block: 28px; }
   .meeting-after-note { padding: 24px; }
   .meeting-curriculum li { padding: 26px 24px; }

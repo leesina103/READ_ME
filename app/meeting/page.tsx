@@ -21,8 +21,8 @@ const sessionFocus = [
 
 const faqs = [
   {
-    question: "한 기수에는 몇 명이 함께하나요?",
-    answer: `한 기수에는 약 ${currentMeeting.schedule.cohortSize}이 함께합니다. 오프라인 토의는 ${currentMeeting.schedule.groupSize}씩 소규모 그룹으로 진행합니다.`
+    question: "한 그룹에는 몇 명이 함께하나요?",
+    answer: `오프라인 토의는 ${currentMeeting.schedule.groupSize}씩 소규모 그룹으로 진행합니다.`
   },
   {
     question: "한 기수 동안 같은 사람들과 토의하나요?",
@@ -65,7 +65,7 @@ export default function MeetingPage() {
               <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>
             ))}
           </dl>
-          <p className="meeting-facts__note">한 기수에는 약 {currentMeeting.schedule.cohortSize}이 함께합니다.<br />인터뷰 후 안내드리는 후보 요일과 시간 중 참여하기 편한 일정을 선택하고, 기수 동안 같은 요일과 시간에 격주로 만납니다.<br />인터뷰는 {currentMeeting.interview.duration} 동안 진행되며, 결과는 {currentMeeting.interview.resultTiming} 안에 개별 안내합니다.</p>
+          <p className="meeting-facts__note">유료 모임이며, 회비는 인터뷰 후 안내합니다.<br />인터뷰 후 안내드리는 후보 요일과 시간 중 참여하기 편한 일정을 선택하고, 기수 동안 같은 요일과 시간에 격주로 만납니다.<br />인터뷰는 {currentMeeting.interview.duration} 동안 진행되며, 결과는 {currentMeeting.interview.resultTiming} 안에 개별 안내합니다.</p>
         </div>
       </section>
 

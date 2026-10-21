@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { StoryFilter } from "@/components/StoryFilter";
+import { currentMeeting } from "@/data/currentMeeting";
 import { cohortThemeSlugs } from "@/data/cohortThemes";
 import { readingGroupStories, storyClosing, storySourceNote } from "@/data/stories";
 
@@ -96,7 +97,10 @@ export default async function StoryPage({ searchParams }: { searchParams: Promis
       <section className="stories-closing">
         <div className="section-shell">
           <p>{storyClosing}</p>
-          <Link href="/" className="button button--light">홈으로 돌아가기</Link>
+          <div className="cta-actions">
+            <Link href="/meeting" className="button button--light">{currentMeeting.meetingLabel}</Link>
+            <Link href="/" className="button button--outline-light">홈으로 돌아가기</Link>
+          </div>
         </div>
       </section>
     </main>
