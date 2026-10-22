@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState, type ReactNode } from "react";
+import { CircleAlert } from "lucide-react";
 import { manageTalkGroup } from "@/app/admin/cohorts/group-actions";
 import type { TalkFormState } from "@/lib/membership/talkDeadlines";
 import { inputClassName } from "@/components/FormField";
@@ -21,7 +22,10 @@ function GroupForm({ cohort, operation, groupId = "", children, label, compact =
     {operation !== "assign" && <input type="hidden" name="groupId" value={groupId} />}
     {children}
     <button className={compact ? "min-h-11 rounded-full border border-[var(--line)] px-4 text-sm font-semibold text-[var(--muted)] disabled:cursor-not-allowed disabled:opacity-40" : "button button--primary justify-self-start disabled:opacity-50 max-[430px]:w-full"} disabled={pending || disabled} title={disabled ? "회원을 다른 그룹으로 옮긴 뒤 삭제해주세요." : undefined}>{pending ? "처리 중..." : label}</button>
-    {state.message && <p role={state.status === "error" ? "alert" : "status"} className="text-sm leading-6">{state.message}</p>}
+    {state.message && (state.status === "error" ? <div role="alert" className="admin-form-error">
+      <CircleAlert size={20} aria-hidden="true" />
+      <div><p className="admin-form-error__title">{operation === "save" ? "저장하지 못했어요" : "처리하지 못했어요"}</p><p>{state.message}</p></div>
+    </div> : <p role="status" className="text-sm leading-6">{state.message}</p>)}
   </form>;
 }
 
