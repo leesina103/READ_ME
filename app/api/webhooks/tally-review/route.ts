@@ -21,7 +21,9 @@ export async function POST(request: Request) {
   const expected = Buffer.from(createHmac("sha256", secret).update(JSON.stringify(payload)).digest("base64"));
   const signature = Buffer.from(request.headers.get("tally-signature") ?? "");
   if (signature.length !== expected.length || !timingSafeEqual(signature, expected)) return new Response(null, { status: 401 });
-  if (!record(payload) || payload.eventType !== "FORM_RESPONSE" || !record(payload.data)) return new Response(null, { status: 400 });
+  // Tally 테스트 이벤트는 eventType 없이 전달되기도 합니다.
+  if (!record(payload) || (payload.eventType !== undefined && payload.eventType !== "FORM_RESPONSE")
+    || !record(payload.data)) return new Response(null, { status: 400 });
   const data = payload.data;
   if (data.formId !== FORM_ID) return new Response(null, { status: 403 });
   if (typeof data.submissionId !== "string" || !data.submissionId || typeof data.createdAt !== "string"
