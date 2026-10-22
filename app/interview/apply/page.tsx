@@ -1,3 +1,4 @@
+import { CohortLabel } from "@/components/CohortLabel";
 import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -21,7 +22,7 @@ export default async function InterviewApplyPage() {
           <Link href="/interview" className="text-link"><ArrowLeft size={15} /> 인터뷰 안내</Link>
           <div className="interview-apply-heading">
             <div>
-              <p className="eyebrow">BOOK AN INTERVIEW · <strong className="interview-apply-cohort">{currentMeeting.cohort}</strong></p>
+              <p className="eyebrow">BOOK AN INTERVIEW · <CohortLabel>{currentMeeting.cohort}</CohortLabel></p>
               <h1>인터뷰 예약</h1>
             </div>
           </div>

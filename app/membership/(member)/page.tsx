@@ -16,6 +16,7 @@ export default async function MembershipPage() {
   const talkHref = member.cohortNumber ? "/membership/talk" : "/membership";
   const sections = [
     { href: talkHref, icon: MessagesSquare, eyebrow: "ONLINE TALK", title: "온라인 대화", description: `${member.cohort ?? "참여 기수"}의 질문에 답하고 같은 기수 멤버의 생각을 만나보세요.` },
+    { href: "/membership/guides", icon: UsersRound, eyebrow: "GUIDES", title: "함께하는 가이드", description: "책과 질문으로 만남을 이어가는 가이드들을 만나보세요." },
     { href: "/membership/community", icon: BookOpenText, eyebrow: "COMMUNITY", title: "멤버십 커뮤니티", description: "인생책을 소개하고 직접 쓴 글을 멤버들과 나눠보세요." },
     { href: "/membership/members", icon: UsersRound, eyebrow: "MEMBERS", title: "멤버 소개", description: "같은 기수 동료들이 남긴 소개와 인사를 읽어보세요." },
     { href: "/membership/activities", icon: CalendarHeart, eyebrow: "ACTIVITIES", title: "멤버 활동", description: "북토의와 산책, 영화, 전시 같은 소모임을 함께해요." }

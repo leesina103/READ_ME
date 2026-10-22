@@ -1,3 +1,4 @@
+import { CohortLabel } from "@/components/CohortLabel";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,7 +47,7 @@ export default async function PartyInvitationPage({ params }: PartyInvitationPag
         <div className="mx-auto max-w-5xl px-6 pb-16 pt-12 md:pb-24 md:pt-16">
           <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
             <div>
-              <p className="text-xs font-bold tracking-[.2em] text-[var(--sage)]">EPILOGUE · READ ME {cohortName}</p>
+              <p className="text-xs font-bold tracking-[.2em] text-[var(--sage)]">EPILOGUE · READ ME <CohortLabel light>{cohortName}</CohortLabel></p>
               <h1 className="mt-5 font-serif text-5xl font-medium leading-[1.02] tracking-[-0.05em] sm:text-6xl md:text-7xl"><Lines lines={invitation.title} /></h1>
             </div>
             <p className="m-0 max-w-sm leading-8 text-[var(--cream)]/70">{invitation.tagline}</p>

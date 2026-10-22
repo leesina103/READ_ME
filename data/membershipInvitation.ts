@@ -43,8 +43,8 @@ export const membershipInvitations: Readonly<Record<string, MembershipInvitation
   feeDescription: "READ ME의 첫 시작을 함께하는 1기에게 24만 원에서 8만 원 할인한 금액으로 안내드려요.",
   regularFee: "240,000원",
   fee: "160,000원",
-  bank: "우리은행",
-  account: "1002260010295",
+  bank: "카카오뱅크",
+  account: "3333157130826",
   accountHolder: "이신아",
   paymentDeadline: null,
   refundPolicy: "기수 시작 8일 전까지: 전액 환불\n기수 시작 7일 전부터 1일 전까지: 참가비의 50% 환불\n기수 시작일부터: 환불 불가"

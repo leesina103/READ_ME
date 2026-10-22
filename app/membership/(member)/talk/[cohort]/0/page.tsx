@@ -1,3 +1,4 @@
+import { CohortLabel } from "@/components/CohortLabel";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -33,7 +34,7 @@ export default async function FirstMeetingPage({ params }: { params: Promise<{ c
       <Link href="/membership/talk" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)]"><ArrowLeft size={15} aria-hidden="true" /> 온라인 대화 목록으로</Link>
       <article className="first-meeting-room">
         <header className="first-meeting-room__header">
-          <p className="eyebrow">READ ME {cohortName} · FIRST MEETING</p>
+          <p className="eyebrow">READ ME <CohortLabel>{cohortName}</CohortLabel> · FIRST MEETING</p>
           <h1>첫 만남 · 나를 소개해요</h1>
           <p>이름, 나이, 직업, MBTI 대신 지금의 나를 보여주는 이야기로 인사해요.</p>
         </header>

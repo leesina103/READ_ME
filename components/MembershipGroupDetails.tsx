@@ -1,12 +1,13 @@
+import Link from "next/link";
 import { groupMeetingTime, type GroupMeeting } from "@/lib/membership/groupSelection";
 
-export function MembershipGroupDetails({ hostName, hostStyle, venue, durationMinutes, meetings, compact = false, scheduleOnly = false }: {
-  hostName: string; hostStyle?: string; venue: string; durationMinutes: number; meetings: GroupMeeting[]; compact?: boolean; scheduleOnly?: boolean;
+export function MembershipGroupDetails({ hostName, hostStyle, guideHref, venue, durationMinutes, meetings, compact = false, scheduleOnly = false }: {
+  hostName: string; hostStyle?: string; guideHref?: string; venue: string; durationMinutes: number; meetings: GroupMeeting[]; compact?: boolean; scheduleOnly?: boolean;
 }) {
   const times = [...new Set(meetings.map((meeting) => groupMeetingTime(meeting.starts_at, durationMinutes, true)))];
   return <div className="min-w-0 break-words">
-    {!scheduleOnly && <p className="font-semibold text-[var(--ink)]">가이드 {hostName || "안내 준비 중"}</p>}
-    {!scheduleOnly && hostStyle && <div className="mt-3 border-l-2 border-[var(--line)] pl-3">
+    {!scheduleOnly && <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2"><p className="m-0 leading-5 font-semibold text-[var(--ink)]">가이드 {hostName || "안내 준비 중"}</p>{guideHref && hostName && <Link href={guideHref} className="button button--subtle" aria-label={`가이드 ${hostName} 소개 보기`}>소개 보기 <span aria-hidden="true">→</span></Link>}</div>}
+    {!scheduleOnly && !guideHref && hostStyle && <div className="mt-3 border-l-2 border-[var(--line)] pl-3">
       <p className="text-xs font-semibold text-[var(--forest)]">가이드 소개</p>
       <p className="mt-1 whitespace-pre-line text-sm leading-7 text-[var(--muted)]">{hostStyle}</p>
     </div>}

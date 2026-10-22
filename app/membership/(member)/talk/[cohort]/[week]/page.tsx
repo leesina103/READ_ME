@@ -1,3 +1,4 @@
+import { CohortLabel } from "@/components/CohortLabel";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, BookOpen, Lock } from "lucide-react";
@@ -76,7 +77,7 @@ export default async function TalkPage({ params }: TalkPageProps) {
       <Link href="/membership/talk" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)]"><ArrowLeft size={15} /> 온라인 대화 목록으로</Link>
       <div className="mt-6 overflow-hidden rounded-[28px] border border-[var(--line)]">
         <header className="border-b border-[var(--line)] bg-[var(--paper)] px-6 py-5">
-          <p className="text-xs font-bold tracking-[.14em] text-[var(--forest)]">READ ME {cohortName} · {week}주차 · {weekInfo.type === "input" ? "토의" : "실천 & OUTPUT"}{readOnly && " · 읽기 전용"}</p>
+          <p className="text-xs font-bold tracking-[.14em] text-[var(--forest)]">READ ME <CohortLabel>{cohortName}</CohortLabel> · {week}주차 · {weekInfo.type === "input" ? "토의" : "실천 & OUTPUT"}{readOnly && " · 읽기 전용"}</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-[-0.02em]">{weekInfo.roomTitle}</h1>
           <p className="mt-2 inline-flex items-center gap-2 text-sm text-[var(--muted)]"><BookOpen size={15} /> 『{weekInfo.book}』 {weekInfo.author}</p>
           {!readOnly && <div className="mt-4 rounded-2xl bg-[var(--sage)]/35 p-4 text-sm leading-7">

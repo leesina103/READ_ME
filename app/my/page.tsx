@@ -13,6 +13,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getTalkSchedule } from "@/lib/membership/talkData";
 import { MembershipGroupDetails } from "@/components/MembershipGroupDetails";
 import type { GroupMeeting, MembershipGroupOption } from "@/lib/membership/groupSelection";
+import { guideHref } from "@/lib/membership/guides";
 import { MyCohortHistory } from "@/components/MyCohortHistory";
 
 export const metadata: Metadata = {
@@ -101,7 +102,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
         <h2 id="my-confirmed-group" className="text-xl font-semibold">내 모임</h2>
         <p className="mt-2 text-sm text-[var(--muted)]">READ ME {cohort}</p>
         {assignmentError || groupResult.error ? <p role="alert" className="mt-4 text-sm leading-7">모임 정보를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.</p>
-          : confirmedGroup ? <div className="mt-4"><MembershipGroupDetails hostName={confirmedGroup.host_name} hostStyle={confirmedGroup.host_style} venue={confirmedGroup.venue} durationMinutes={confirmedGroup.duration_minutes} meetings={[...confirmedGroup.talk_meetings].sort((a, b) => a.week_number - b.week_number)} /></div>
+          : confirmedGroup ? <div className="mt-4"><MembershipGroupDetails hostName={confirmedGroup.host_name} guideHref={guideHref(confirmedGroup.host_name)} venue={confirmedGroup.venue} durationMinutes={confirmedGroup.duration_minutes} meetings={[...confirmedGroup.talk_meetings].sort((a, b) => a.week_number - b.week_number)} /></div>
           : <p className="mt-4 text-sm leading-7 text-[var(--muted)]">모임이 확정되면 가이드와 전체 일정을 이곳에서 확인할 수 있어요.</p>}
       </section>}
 
@@ -112,7 +113,17 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       </section>
 
       <section id="introduction" className="my-introduction-section">
-        <div className="first-meeting-room__section-heading"><h2>나의 소개</h2>{cohortNumber && <Link href={`/membership/talk/${cohortNumber}/0`} className="text-sm font-semibold text-[var(--forest)]">첫 만남으로 가기</Link>}</div>
+        <div className="first-meeting-room__section-heading">
+          <h2>나의 소개</h2>
+          {cohortNumber && (
+            <Link
+              href={`/membership/talk/${cohortNumber}/0`}
+              className="button button--subtle"
+            >
+              {cohortNumber}기 소개 보러 가기 <span aria-hidden="true">→</span>
+            </Link>
+          )}
+        </div>
         <p className="introduction-sharing-note">첫 모임 전에 나를 소개해 주세요. 현재 기수 동료들에게만 보여요. 첫 만남과 멤버 소개에도 같은 내용이 반영됩니다.</p>
         {profile ? <MemberIntroductionForm introduction={{ introduction_word: profile.introduction_word, bio: profile.bio, cohort_message: profile.cohort_message }} />
           : <p role="alert" className="mt-5 text-sm leading-7 text-[var(--muted)]">소개를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>}

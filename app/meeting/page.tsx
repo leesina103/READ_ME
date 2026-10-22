@@ -1,3 +1,4 @@
+import { CohortLabel } from "@/components/CohortLabel";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -30,7 +31,7 @@ const faqs = [
   },
   {
     question: "모임 요일과 시간은 어떻게 정하나요? 매주 신청해야 하나요?",
-    answer: "인터뷰 후 안내드리는 후보 요일과 시간 중 참여하기 편한 일정을 선택합니다. 한 번 정한 요일과 시간으로 기수 동안 격주로 만나므로, 매주 다시 신청하지 않아도 됩니다."
+    answer: "입금 확인 후 받은 가입 신청서에서 참여하기 편한 요일과 시간을 선택합니다. 운영자가 확인한 뒤 모임이 확정됩니다. 한 번 정한 요일과 시간으로 기수 동안 격주로 만나므로, 매주 다시 신청하지 않아도 됩니다."
   },
   {
     question: "온라인 프로그램은 어떻게 진행되나요?",
@@ -65,7 +66,7 @@ export default function MeetingPage() {
               <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>
             ))}
           </dl>
-          <p className="meeting-facts__note">유료 모임이며, 회비는 인터뷰 후 안내합니다.<br />인터뷰 후 안내드리는 후보 요일과 시간 중 참여하기 편한 일정을 선택하고, 기수 동안 같은 요일과 시간에 격주로 만납니다.<br />인터뷰는 {currentMeeting.interview.duration} 동안 진행되며, 결과는 {currentMeeting.interview.resultTiming} 안에 개별 안내합니다.</p>
+          <p className="meeting-facts__note">유료 모임이며, 회비는 인터뷰 후 안내합니다.<br />입금 확인 후 받은 가입 신청서에서 참여할 일정을 선택합니다. 운영자 승인으로 모임이 확정되면 기수 동안 같은 요일과 시간에 격주로 만납니다.<br />인터뷰는 {currentMeeting.interview.duration} 동안 진행되며, 결과는 {currentMeeting.interview.resultTiming} 안에 개별 안내합니다.</p>
         </div>
       </section>
 
@@ -130,7 +131,7 @@ export default function MeetingPage() {
         <div className="section-shell">
           <div className="meeting-cta">
             <div>
-              <span>JOIN READ ME {currentMeeting.cohort}</span>
+              <span>JOIN READ ME <CohortLabel>{currentMeeting.cohort}</CohortLabel></span>
               <strong>함께 읽고 이야기하고 싶다면<br />인터뷰에서 먼저 만나요.</strong>
               <p>서로를 존중하며 깊이 대화할 수 있는지 가볍게 이야기를 나눕니다.</p>
             </div>
