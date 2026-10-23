@@ -148,7 +148,10 @@ export async function signupAction(
   }
 
   const supabase = await createClient();
-  const { data: isInvited, error: invitationError } = await supabase.rpc("is_member_invited", {
+  const guideToken = textValue(formData, "guideToken");
+  const { data: isInvited, error: invitationError } = guideToken
+    ? await supabase.rpc("guide_invitation_valid", { p_token: guideToken })
+    : await supabase.rpc("is_member_invited", {
     p_email: email,
     p_name: displayName
   });
@@ -158,14 +161,14 @@ export async function signupAction(
   }
 
   if (!isInvited) {
-    return { status: "error", message: invitationRequiredMessage, values };
+    return { status: "error", message: guideToken ? "사용할 수 없는 가이드 초대입니다. 운영자에게 새 링크를 요청해 주세요." : invitationRequiredMessage, values };
   }
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { display_name: displayName },
+      data: { display_name: displayName, ...(guideToken ? { guide_token: guideToken } : {}) },
       emailRedirectTo: authCallbackUrl("/onboarding")
     }
   });

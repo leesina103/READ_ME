@@ -17,16 +17,18 @@ export default async function FirstMeetingPage({ params }: { params: Promise<{ c
   const cohortNumber = Number(cohortParam);
   if (!Number.isInteger(cohortNumber) || cohortNumber < 1 || cohortNumber > 99) notFound();
 
-  const { member, cohortNames, currentCohortEnded } = await getMemberCohortHistory();
+  const { member, cohortNames } = await getMemberCohortHistory();
   const cohortName = cohortNameFromNumber(cohortNumber);
   if (!cohortNames.has(cohortName)) redirect("/membership");
-  if (member.cohort !== cohortName) redirect("/membership/talk");
-  const readOnly = currentCohortEnded;
+  const staffView = member.staffCohorts.includes(cohortName);
+  if (member.cohort !== cohortName && !staffView) redirect("/membership/talk");
   const supabase = await createClient();
-  const [profileResult, directoryResult] = await Promise.all([
+  const [profileResult, directoryResult, cohortResult] = await Promise.all([
     supabase.from("profiles").select("introduction_word, bio, cohort_message").eq("id", member.user.id).single(),
-    supabase.rpc("list_member_directory")
+    staffView ? supabase.rpc("staff_member_directory", { p_cohort: cohortName }) : supabase.rpc("list_member_directory"),
+    supabase.from("cohorts").select("ends_at").eq("name", cohortName).maybeSingle()
   ]);
+  const readOnly = member.ownCohort !== cohortName || Boolean(cohortResult.data?.ends_at && Date.parse(cohortResult.data.ends_at) <= Date.now());
   const peers = ((directoryResult.data ?? []) as MemberDirectoryRow[]).filter((row) => row.cohort === cohortName && row.user_id !== member.user.id);
 
   return (
@@ -44,7 +46,7 @@ export default async function FirstMeetingPage({ params }: { params: Promise<{ c
         </div>
         <section className="first-meeting-room__mine" aria-labelledby="my-introduction-title">
           <div className="first-meeting-room__section-heading"><h2 id="my-introduction-title">나의 소개</h2><span>{member.displayName}</span></div>
-          <p id="first-meeting-sharing-note" className="introduction-sharing-note">현재 기수 동료들에게만 보여요.</p>
+          <p id="first-meeting-sharing-note" className="introduction-sharing-note">현재 기수 동료와 이 기수 담당 가이드·운영자에게 보여요.</p>
           {profileResult.error || !profileResult.data ? <p role="alert" className="mt-5 text-sm leading-7">내 소개를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>
             : readOnly ? <>
               <MemberIntroductionContent introduction={profileResult.data as MemberIntroduction} />

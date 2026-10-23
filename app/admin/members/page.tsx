@@ -80,6 +80,7 @@ function MemberTable({ rows, lastColumn }: { rows: MemberRow[]; lastColumn: "sta
             <th className={head}>닉네임</th>
             <th className={head}>{lastColumn === "state" ? "상태" : "소속 기수"}</th>
             <th className={`${head} pr-6`}>가입일</th>
+            <th className={head}>관리</th>
           </tr>
         </thead>
         <tbody>
@@ -96,6 +97,7 @@ function MemberTable({ rows, lastColumn }: { rows: MemberRow[]; lastColumn: "sta
                     : <span className="text-[var(--muted)]">{currentCohortOf(member)}</span>}
                 </td>
                 <td className={`${cell} pr-6 text-[var(--muted)]`}>{member.claimed_at ? formatSeoulDate(member.claimed_at) : "미가입"}</td>
+                <td className={cell}>{!member.is_admin && member.onboarding_completed_at && <Link className="button whitespace-nowrap" href={`/admin/roles?member=${member.id}`}>가이드 지정·관리</Link>}</td>
               </tr>
             );
           })}

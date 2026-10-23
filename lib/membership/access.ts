@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { cohortNumberFromName } from "@/data/seasonWeeks";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -26,7 +27,15 @@ export const requireActiveMembership = cache(async function requireActiveMembers
 
   if (!profile?.onboarding_completed_at) redirect("/onboarding");
 
-  const { data: hasActiveMembership, error: membershipError } = await supabase.rpc("has_active_membership");
+  const [membershipResult, staffResult] = await Promise.all([
+    supabase.rpc("has_active_membership"), supabase.rpc("membership_staff_context")
+  ]);
+  const { data: hasActiveMembership, error: membershipError } = membershipResult;
+  const staff = staffResult.error ? null : staffResult.data as { role: "admin" | "guide" | "member"; cohorts: string[] } | null;
+  const staffCohorts = staff?.cohorts ?? [];
+  const selectableCohorts = [...new Set([...(profile.cohort ? [profile.cohort as string] : []), ...staffCohorts])];
+  const requestedCohort = (await cookies()).get("membership-cohort")?.value;
+  const cohort = requestedCohort && selectableCohorts.includes(requestedCohort) ? requestedCohort : profile.cohort ?? staffCohorts[0] ?? null;
   const migrationPending = membershipError ? canUseLegacyMembershipFallback(membershipError.code) : false;
   const active = membershipError
     ? migrationPending && Boolean(profile.cohort)
@@ -37,8 +46,12 @@ export const requireActiveMembership = cache(async function requireActiveMembers
   return {
     user,
     displayName: profile.display_name,
-    cohort: profile.cohort,
-    cohortNumber: profile.cohort ? cohortNumberFromName(profile.cohort) : null
+    cohort,
+    ownCohort: profile.cohort as string | null,
+    role: staff?.role ?? "member",
+    staffCohorts,
+    selectableCohorts,
+    cohortNumber: cohort ? cohortNumberFromName(cohort) : null
   };
 });
 
@@ -59,6 +72,7 @@ export const getMemberCohortHistory = cache(async function getMemberCohortHistor
 
   const cohortNames = new Set<string>(error ? [] : (rows ?? []).map((row: { cohort: string }) => row.cohort));
   if (member.cohort) cohortNames.add(member.cohort);
+  member.staffCohorts.forEach(name => cohortNames.add(name));
 
   const pastCohorts = [...cohortNames]
     .filter((name) => name !== member.cohort)
