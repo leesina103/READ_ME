@@ -1210,9 +1210,22 @@ textarea.introduction-form__input { resize: vertical; min-height: 120px; }
 .guide-person .guide-options label { min-height: 30px; font-size: 12px; }
 .guide-person legend { font-size: 12px; }
 .guide-person .button { padding: 8px 14px; font-size: 12px; min-height: 36px; }
-.membership-scope { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; max-width: 1024px; margin: 12px auto; padding: 0 24px; font-size: 13px; }
-.membership-scope select { border: 1px solid var(--line); border-radius: 8px; padding: 8px; background: var(--paper); }
-.membership-scope button { border-radius: 8px; padding: 8px 12px; background: var(--forest); color: var(--paper); }
+.membership-scope { display: flex; align-items: stretch; flex-wrap: wrap; gap: 8px; width: calc(100% - 48px); max-width: 976px; margin: 16px auto; font-size: 13px; }
+.membership-scope__header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+.membership-scope__role { padding: 5px 12px; border-radius: 999px; background: var(--sage); color: var(--forest); font-weight: 700; }
+.membership-scope__links { display: flex; flex-wrap: wrap; gap: 8px; }
+.membership-scope .button { min-height: 36px; padding: 0 14px; gap: 8px; font-size: 13px; }
+.membership-scope__form { display: flex; align-items: center; gap: 8px; max-width: 100%; margin: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+.membership-scope__form label { flex-shrink: 0; font-weight: 600; }
+.membership-scope__controls { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.membership-scope select { width: auto; min-width: 0; min-height: 40px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--cream); color: var(--ink); }
+.membership-scope__controls .button { min-height: 40px; flex-shrink: 0; }
+@media (max-width: 820px) { .membership-scope { gap: 8px; } }
+@media (max-width: 430px) {
+  .membership-scope { width: calc(100% - 32px); }
+  .membership-scope__controls { flex: 1; }
+  .membership-scope__controls select { flex: 1; width: auto; max-width: 100%; }
+}
 @media (max-width: 820px) { .guide-grid { grid-template-columns: 1fr; } }
 @media (max-width: 430px) { .guide-card { padding: 18px; } .guide-tabs { gap: 8px; } .guide-tabs button { padding: 10px 12px; } .guide-shell .button { max-width: 100%; } }
 @media (max-width: 430px) { .guide-person { padding: 14px; } .guide-person .guide-options label { min-height: 34px; } }

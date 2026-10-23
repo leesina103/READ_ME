@@ -4,9 +4,11 @@ import { GuideShell } from "@/components/GuideShell";
 import { logoutAction } from "@/app/auth/actions";
 import type { GuideGroup } from "@/lib/guide/types";
 import { formatSeoulDateTime } from "@/lib/admin/format";
+import { sendGuideApprovalNotification } from "@/lib/guide/admin-notification";
 export const metadata = { title: "가이드 모임 관리", robots: { index: false, follow: false } };
 export default async function GuidePage() {
   const { supabase, status, isMember, isAdmin } = await guideSession(false);
+  if (status === "pending") await sendGuideApprovalNotification(supabase);
   const allowed = isAdmin || status === "active";
   const result = allowed ? await supabase.rpc("guide_groups") : null;
   return <GuideShell title={isAdmin ? "가이드 모임 관리 · 운영자" : "가이드 모임 관리"} back={isAdmin ? "/admin" : isMember ? "/my" : "/"} backLabel={isAdmin ? "운영자 공간" : isMember ? "나의 서재" : "READ ME 홈"}>

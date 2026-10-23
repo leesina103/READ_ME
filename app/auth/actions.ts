@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { cohortNumberFromName, findSeasonWeek } from "@/data/seasonWeeks";
 import { authCallbackUrl } from "@/lib/auth/site-url";
+import { sendGuideApprovalNotification } from "@/lib/guide/admin-notification";
 
 export type FormActionState = {
   status: "idle" | "error" | "success";
@@ -220,6 +221,7 @@ export async function completeOnboardingAction(
     return { status: "error", message: "회원 정보를 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
   }
 
+  await sendGuideApprovalNotification(supabase);
   revalidatePath("/my");
   redirect("/my");
 }
