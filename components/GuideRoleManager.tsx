@@ -63,6 +63,7 @@ export function GuideRoleManager({ data, selectedMember, origin, initialTab }: {
   const [tab, setTab] = useState(selected?.status === "active" ? "active" : selectedMember ? "members" : initialTab ?? "pending");
   const [query, setQuery] = useState("");
   const invitations = data.invitations.filter(inv => !inv.claimed && !inv.revoked && Date.parse(inv.expires_at) > Date.now());
+  const completedInvitations = data.invitations.filter(inv => inv.claimed);
   const tabs = [["pending", "승인 대기"], ["active", "가이드 목록·배정"], ["members", "회원에서 지정"], ["invite", "가입 초대"]];
   const people = data.people.filter(p => tab === "members" ? p.status !== "pending" && p.status !== "active" : p.status === tab)
     .filter(p => `${p.name} ${p.email} ${p.nickname}`.includes(query))
@@ -74,6 +75,17 @@ export function GuideRoleManager({ data, selectedMember, origin, initialTab }: {
         <form action={action}><button className="button" name="action" value="invite" disabled={pending}>초대 링크 만들기</button></form>
         <p role="status">{state.message}</p>
         <h3>사용 가능한 초대</h3>{invitations.length ? invitations.map(inv => <Invitation key={inv.id} invitation={inv} origin={origin} />) : <p>현재 사용 가능한 초대가 없어요.</p>}
+        <section className="guide-divider" aria-label="사용 완료 초대">
+          <h3>사용 완료 · {completedInvitations.length}개</h3>
+          <p>초대 링크로 회원가입을 마친 기록입니다. 이메일 인증·닉네임 설정·운영자 승인은 별도로 진행됩니다.</p>
+          {completedInvitations.length ? completedInvitations.map(inv => <article key={inv.id} className="guide-divider">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <strong>{inv.claimed_name || "가입자"}{inv.claimed_nickname && inv.claimed_nickname !== inv.claimed_name ? ` (${inv.claimed_nickname})` : ""}</strong>
+              <span className="rounded-full bg-[var(--sage)] px-3 py-1 text-xs font-semibold text-[var(--forest)]">사용 완료</span>
+            </div>
+            {inv.created_at && <p>초대 발급: {formatSeoulDateTime(inv.created_at)}</p>}
+          </article>) : <p>아직 사용 완료된 초대가 없어요.</p>}
+        </section>
       </div> : <><label>이름·닉네임·이메일 검색<input value={query} onChange={e => setQuery(e.target.value)} /></label>
         <div className="guide-grid">{people.map(p => <Person key={`${p.id}-${p.status}-${p.groups.join()}`} person={p} groups={data.groups} />)}</div>{!people.length && <p>해당하는 사람이 없습니다.</p>}</>}
     </section><details className="guide-card"><summary>최근 권한·모임 변경 기록</summary>

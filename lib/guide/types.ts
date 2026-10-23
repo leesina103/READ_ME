@@ -6,6 +6,6 @@ export type GuideDetail = GuideGroup & GuideDetails & { members: { name: string;
 export type GuideOverview = {
   people: { id: string; member_id: number | null; name: string; nickname: string; email: string; ready: boolean; status: string | null; groups: string[] }[];
   groups: (GuideGroup & { guide_id: string | null })[];
-  invitations: { id: string; expires_at: string; created_at?: string; claimed: boolean; revoked: boolean; can_reveal?: boolean }[];
+  invitations: { id: string; expires_at: string; created_at?: string; claimed: boolean; revoked: boolean; can_reveal?: boolean; claimed_name?: string | null; claimed_nickname?: string | null }[];
   audit: GuideAudit[];
 };

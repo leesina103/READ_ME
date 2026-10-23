@@ -96,6 +96,36 @@ try {
   await login(1); await db.exec(`select public.admin_manage_guide('revoke','${uid(2)}')`);
   await login(2); equal(await one("select public.has_active_membership()"),true);
   await fails(`select public.guide_group_detail('${gid(3)}')`,/guide_required/);
-  console.log(`가이드 회원 자동 연결 ${checks}개 검증 통과`);
+  // 사용 완료 보관과 미사용 초대 삭제가 회원·배정 상태에 영향을 주지 않는지 검증합니다.
+  await db.exec("reset role");
+  await db.exec(await source("20261023043536_guide_invitation_completion.sql"));
+  await login(2); await fails("select public.admin_guide_overview()", /admin_required/);
+  await login(null); await fails("select public.admin_guide_overview()", /permission denied/);
+  await login(1);
+  const completed = (await one("select public.admin_guide_overview()" )).invitations.find(i => i.claimed);
+  equal(completed.claimed_name, "새 가이드");
+  equal(completed.can_reveal, false);
+  await fails(`select public.admin_manage_guide('cancel_invite',p_invitation=>'${completed.id}')`, /invitation_unavailable/);
+  const cancelId = await one("select public.admin_manage_guide('invite',p_token=>repeat('b',64))");
+  await db.exec(`select public.admin_manage_guide('cancel_invite',p_invitation=>'${cancelId}')`);
+  await db.exec("reset role");
+  equal(await one(`select count(*)::int from public.guide_invitations where id='${cancelId}'`), 0);
+  await login(1);
+  const expiredId = await one("select public.admin_manage_guide('invite',p_token=>repeat('c',64))");
+  const activeId = await one("select public.admin_manage_guide('invite',p_token=>repeat('d',64))");
+  await db.exec(`reset role; update public.guide_invitations set expires_at=now()-interval '1 day' where id in ('${expiredId}','${completed.id}')`);
+  await login(1);
+  const listed = (await one("select public.admin_guide_overview()")).invitations;
+  equal(listed.some(i => i.id === completed.id && i.claimed), true);
+  equal(listed.some(i => i.id === activeId && !i.claimed), true);
+  equal(listed.some(i => i.id === expiredId), false);
+  await db.exec("reset role");
+  equal(await one(`select count(*)::int from public.guide_invitations where id='${expiredId}'`), 0);
+  equal(await one("select count(*)::int from public.guide_audit where action in ('invite','cancel_invite')"), 0);
+  equal(await one("select public.guide_invitation_valid(repeat('a',64))"), false);
+  equal(await one("select public.guide_invitation_valid(repeat('b',64))"), false);
+  equal(await one("select public.guide_invitation_valid(repeat('c',64))"), false);
+  equal(await one("select public.guide_invitation_valid(repeat('d',64))"), true);
+  console.log(`가이드 회원 연결·초대 관리 ${checks}개 검증 통과`);
 } catch(error) { console.error(error.message,error.where??"",error.query??"",error.position??""); process.exitCode=1; } finally { await db.close(); }
 
