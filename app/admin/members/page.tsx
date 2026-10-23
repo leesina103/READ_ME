@@ -4,6 +4,8 @@ import { ArrowLeft, ShieldCheck, UsersRound } from "lucide-react";
 import { requireAdmin, supabaseNotConfiguredMessage } from "@/lib/admin/access";
 import { formatSeoulDate } from "@/lib/admin/format";
 
+import { PendingMemberDeleteButton } from "@/components/PendingMemberDeleteButton";
+
 export const metadata: Metadata = {
   title: "기수 회원 명단",
   robots: { index: false, follow: false }
@@ -97,7 +99,7 @@ function MemberTable({ rows, lastColumn }: { rows: MemberRow[]; lastColumn: "sta
                     : <span className="text-[var(--muted)]">{currentCohortOf(member)}</span>}
                 </td>
                 <td className={`${cell} pr-6 text-[var(--muted)]`}>{member.claimed_at ? formatSeoulDate(member.claimed_at) : "미가입"}</td>
-                <td className={cell}>{!member.is_admin && member.onboarding_completed_at && <Link className="button whitespace-nowrap" href={`/admin/roles?member=${member.id}`}>가이드 지정·관리</Link>}</td>
+                <td className={cell}>{!member.is_admin && state.kind === "pending" && <PendingMemberDeleteButton id={member.id} name={member.name} email={member.email} cohort={member.cohort} />}{!member.is_admin && member.onboarding_completed_at && <Link className="button whitespace-nowrap" href={`/admin/roles?member=${member.id}`}>가이드 지정·관리</Link>}</td>
               </tr>
             );
           })}
