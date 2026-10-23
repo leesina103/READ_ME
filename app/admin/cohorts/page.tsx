@@ -8,6 +8,7 @@ import { cohortPhase, type CohortSchedule } from "@/lib/admin/cohorts";
 import { TalkGroupManager } from "@/components/TalkGroupManager";
 import { CohortGroupRoster, type CohortRosterMember } from "@/components/CohortGroupRoster";
 import type { TalkGroup, TalkMeeting, TalkMember } from "@/lib/membership/talkDeadlines";
+import type { AdminGuideRow } from "@/components/AdminGuideRoster";
 
 export const metadata: Metadata = {
   title: "기수 일정 관리",
@@ -30,6 +31,7 @@ export default async function AdminCohortsPage({ searchParams }: { searchParams:
   }
 
   const now = Date.now();
+  const guideRequest = activeTab === "roster" && supabase ? supabase.rpc("admin_guide_member_roster") : null;
   const ongoingCount = cohorts.filter((cohort) => cohortPhase(cohort, now).label === "진행 중").length;
   const groupData = await Promise.all((activeTab === "cohorts" ? [] : cohorts).map(async (cohort) => {
     if (!supabase) return null;
@@ -43,6 +45,8 @@ export default async function AdminCohortsPage({ searchParams }: { searchParams:
     const reserved = new Map<string, number>((capacity.data ?? []).map((item: { group_id: string; reserved_count: number }) => [item.group_id, item.reserved_count]));
     return { cohort, rosterError: Boolean(groups.error || meetings.error || roster.error), roster: (roster.data ?? []) as CohortRosterMember[], error: Boolean(groups.error || meetings.error || members.error || capacity.error), groups: (groups.data ?? []).map((group) => ({ ...group, reserved_count: reserved.get(group.id) ?? 0 })) as TalkGroup[], meetings: (meetings.data ?? []) as TalkMeeting[], members: (members.data ?? []) as TalkMember[] };
   }));
+  const guideResult = await guideRequest;
+  const guides = (guideResult?.data ?? []) as AdminGuideRow[];
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-16 md:py-24">
@@ -73,7 +77,7 @@ export default async function AdminCohortsPage({ searchParams }: { searchParams:
         <p className="mt-3 text-sm leading-7 text-[var(--muted)]">모임별 일정과 참여자를 확인하세요. 시간은 한국 기준이며, 가입 대기는 승인 후 아직 계정을 만들지 않은 참여자입니다.</p>
         {groupData.map((item) => item && (item.rosterError
           ? <p key={item.cohort.name} role="alert" className="mt-5 rounded-2xl border border-[var(--line)] p-5 text-sm">{item.cohort.name} 참여 명단을 불러오지 못했습니다. 새로고침 후 다시 확인해 주세요.</p>
-          : <CohortGroupRoster key={item.cohort.name} cohort={item.cohort.name} groups={item.groups} meetings={item.meetings} members={item.roster} />))}
+          : <CohortGroupRoster key={item.cohort.name} cohort={item.cohort.name} groups={item.groups} meetings={item.meetings} members={item.roster} guides={guides} guideError={Boolean(guideResult?.error)} />))}
         {cohorts.length === 0 && <p className="mt-5 text-sm text-[var(--muted)]">등록된 기수가 없습니다.</p>}
       </section>}
       {!loadError && activeTab === "cohorts" && <section className="mt-8" aria-label="기수 관리">

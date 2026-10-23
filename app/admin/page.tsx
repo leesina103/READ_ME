@@ -31,11 +31,13 @@ export default async function AdminPage() {
   }
 
   const sections = [
-    { href: "/admin/activities", icon: CalendarRange, title: "북토의·소모임 관리", description: "모임 등록과 신청자 입금 확인, 환불 처리, 회원 제안을 관리합니다.", badge: null },
-    { href: "/admin/applications", icon: UsersRound, title: "가입 신청 관리", description: "접수된 신청을 확인하고 승인하거나 거절합니다.", badge: pendingApplications === null ? null : `검토 대기 ${pendingApplications}건` },
-    { href: "/admin/members", icon: ClipboardList, title: "기수 회원 명단", description: "기수별 승인 명단과 가입 상태를 확인합니다.", badge: null },
     { href: "/admin/interviews", icon: CalendarClock, title: "인터뷰 예약", description: "예약된 인터뷰 일정과 신청자 연락처를 확인합니다.", badge: upcomingInterviews === null ? null : `다가오는 인터뷰 ${upcomingInterviews}건` },
-    { href: "/admin/cohorts", icon: CalendarRange, title: "기수 일정 관리", description: "기수 시작일·종료일과 가입 신청 접수 여부를 관리합니다.", badge: null }
+    { href: "/admin/applications", icon: UsersRound, title: "가입 신청 관리", description: "접수된 신청을 확인하고 승인하거나 거절합니다.", badge: pendingApplications === null ? null : `검토 대기 ${pendingApplications}건` },
+    { href: "/admin/cohorts", icon: CalendarRange, title: "기수 일정 관리", description: "기수 시작일·종료일과 가입 신청 접수 여부를 관리합니다.", badge: null },
+    { href: "/admin/members", icon: ClipboardList, title: "기수 회원 명단", description: "기수별 승인 명단과 가입 상태를 확인합니다.", badge: null },
+    { href: "/admin/roles", icon: UsersRound, title: "가이드 권한 관리", description: "가이드 초대와 승인, 담당 모임 배정 및 권한 해제를 관리합니다.", badge: null },
+    { href: "/guide", icon: UsersRound, title: "가이드 모임 관리", description: "전체 모임의 가이드 화면과 명단·안내를 확인합니다.", badge: null },
+    { href: "/admin/activities", icon: CalendarRange, title: "북토의·소모임 관리", description: "모임 등록과 신청자 입금 확인, 환불 처리, 회원 제안을 관리합니다.", badge: null }
   ];
 
   return (
@@ -53,14 +55,14 @@ export default async function AdminPage() {
       </div>
       <div className="mt-12 grid gap-4 md:grid-cols-2">
         {sections.map(({ href, icon: Icon, title, description, badge }) => (
-          <Link key={href} href={href} className="group flex flex-col rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 transition-transform hover:-translate-y-1">
+          <Link key={href} href={href} className="group flex flex-col rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-5 transition-transform hover:-translate-y-1">
             <div className="flex items-start justify-between gap-4">
               <Icon className="text-[var(--forest)]" />
               <ArrowRight className="text-[var(--muted)] transition-transform group-hover:translate-x-1" size={19} />
             </div>
-            <h2 className="mt-8 text-xl font-semibold">{title}</h2>
-            <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{description}</p>
-            {badge && <span className="mt-5 inline-flex w-fit rounded-full bg-[var(--sage)]/50 px-3 py-1 text-xs font-semibold text-[var(--forest)]">{badge}</span>}
+            <h2 className="mt-5 text-xl font-semibold">{title}</h2>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{description}</p>
+            {badge && <span className="mt-3 inline-flex w-fit rounded-full bg-[var(--sage)]/50 px-3 py-1 text-xs font-semibold text-[var(--forest)]">{badge}</span>}
           </Link>
         ))}
       </div>

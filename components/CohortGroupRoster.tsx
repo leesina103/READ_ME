@@ -1,5 +1,6 @@
 import { formatSeoulDateTime } from "@/lib/admin/format";
 import type { TalkGroup, TalkMeeting } from "@/lib/membership/talkDeadlines";
+import type { AdminGuideRow } from "@/components/AdminGuideRoster";
 
 export type CohortRosterMember = {
   person_key: string;
@@ -24,14 +25,16 @@ function Participants({ members }: { members: CohortRosterMember[] }) {
   </ul>;
 }
 
-export function CohortGroupRoster({ cohort, groups, meetings, members }: {
+export function CohortGroupRoster({ cohort, groups, meetings, members, guides = [], guideError = false }: {
   cohort: string; groups: TalkGroup[]; meetings: TalkMeeting[]; members: CohortRosterMember[];
+  guides?: AdminGuideRow[]; guideError?: boolean;
 }) {
   const unassigned = members.filter((member) => !member.group_id);
   return <section className="mt-6 min-w-0" aria-label={`${cohort} 모임별 참여 명단`}>
     <h3 className="text-xl font-semibold">READ ME {cohort}</h3>
     <div className="mt-4 grid grid-cols-2 gap-4 max-[820px]:grid-cols-1">
       {groups.map((group) => {
+        const guide = guides.find(item => item.group_id === group.id);
         const participants = members.filter((member) => member.group_id === group.id);
         const joined = participants.filter((member) => member.registration_status === "joined").length;
         const pending = participants.length - joined;
@@ -39,6 +42,7 @@ export function CohortGroupRoster({ cohort, groups, meetings, members }: {
         return <article key={group.id} className="min-w-0 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-6 max-[430px]:p-4">
           <header>
             <h4 className="break-words text-lg font-semibold">{group.name}</h4>
+            <p className="mt-3 break-words text-sm leading-6"><span className="font-semibold">담당 가이드 :</span> {guideError ? "정보를 불러오지 못했습니다" : guide ? `${guide.name}${guide.nickname && guide.nickname !== guide.name ? ` (${guide.nickname})` : ""}` : "미배정"}</p>
             <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
               <strong className="text-[var(--forest)]">총 {joined}명</strong>
               <span className="text-[var(--muted)]">· 가입 대기 {pending}명</span>

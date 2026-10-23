@@ -1210,3 +1210,5 @@ textarea.introduction-form__input { resize: vertical; min-height: 120px; }
 
 .guide-invitation-dates { display: flex; flex-wrap: wrap; gap: 6px 20px; }
 .guide-invitation-dates span { white-space: nowrap; }
+
+.admin-member-table td > .button { min-height: 32px; padding: 0 10px; }
