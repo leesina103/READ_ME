@@ -64,4 +64,30 @@ equal(requests.map((request) => JSON.parse(request.body).subject), ["[READ ME] �
 delete env.RESEND_API_KEY;
 equal(await notify(booking), "not_configured");
 equal(requests.length, 4);
+env.RESEND_API_KEY = 'test-key';
+let claimed = { id: 'notice', lease_id: 'lease', payload: { name: '<가이드>', nickname: '나무', email: 'guide@example.test' } };
+let sendOk = true;
+const finishes = [];
+const guideRequests = [];
+const { sendGuideApprovalNotification: notifyGuide } = load('lib/guide/admin-notification.ts', { 'server-only': {} }, {
+  process: { env }, AbortSignal, console: { error() {} },
+  fetch: async (_url, init) => { guideRequests.push(init); return { ok: sendOk, status: sendOk ? 200 : 500 }; }
+});
+const client = { rpc: async (name, args) => {
+  if (name === 'claim_guide_approval_notification') return { data: claimed, error: null };
+  finishes.push(args); return { error: null };
+} };
+await notifyGuide(client);
+equal(finishes.length, 1);
+const message = JSON.parse(guideRequests[0].body);
+equal(message.to, ['admin@example.test']);
+equal(message.text.includes('guide@example.test'), true);
+equal(message.html.includes('&lt;가이드&gt;'), true);
+equal(message.html.includes('/admin/roles'), true);
+equal(guideRequests[0].headers['Idempotency-Key'], 'guide-approval-notice');
+sendOk = false; await notifyGuide(client);
+equal(finishes.length, 1);
+equal(guideRequests[1].body, guideRequests[0].body);
+claimed = null; await notifyGuide(client); equal(guideRequests.length, 2);
+delete env.RESEND_API_KEY; await notifyGuide(client); equal(guideRequests.length, 2);
 console.log(`인증·알림 검증 ${checks}개 통과`);

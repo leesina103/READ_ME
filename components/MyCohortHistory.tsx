@@ -24,7 +24,7 @@ export function MyCohortHistory({ cohorts, currentCohort, currentCohortEnded, ha
           return (
             <li key={name}>
               <div><strong>{name}</strong><span>{current ? currentCohortEnded ? "현재 기수 · 종료" : "현재 기수" : "지난 참여"}</span></div>
-              {number !== null && <Link className="text-link" href={`/membership/talk#cohort-${number}`}>{name} 대화방 보기</Link>}
+              {number !== null && <Link className="button button--subtle" href={`/membership/talk#cohort-${number}`}>{name} 대화방 보기</Link>}
             </li>
           );
         })}

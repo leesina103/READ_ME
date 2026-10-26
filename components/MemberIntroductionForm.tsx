@@ -58,7 +58,7 @@ export function MemberIntroductionForm({ introduction, cohortNumber }: Props) {
                   ? <input {...props} autoComplete="off" placeholder="예: 유예, 호기심, 산책" />
                   : <textarea {...props} rows={4} placeholder={name === "bio" ? "지금의 마음이나 관심사와 연결해 짧게 적어주세요." : "함께 읽고 이야기할 동료들에게 인사를 남겨주세요."} />}
                 <span className="introduction-form__hint" id={hintId}>
-                  <span role={invalid ? "alert" : undefined}>{invalid ? state.message : isFirstMeeting ? null : "현재 기수 동료들에게만 보여요."}</span>
+                  <span role={invalid ? "alert" : undefined}>{invalid ? state.message : isFirstMeeting ? null : "현재 기수 동료와 이 기수 담당 가이드·운영자에게 보여요."}</span>
                   <span>{values[name].length} / {field.max}</span>
                 </span>
               </label>

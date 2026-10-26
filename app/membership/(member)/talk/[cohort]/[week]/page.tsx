@@ -41,19 +41,22 @@ export default async function TalkPage({ params }: TalkPageProps) {
   if (!weekInfo) notFound();
 
   // 진행 중인 현재 기수만 읽기·쓰기. 지난 기수와 종료일이 지난 기수는 읽기만 허용하고, 그 외 기수는 멤버십 홈으로 보낸다.
-  const { member, cohortNames, currentCohortEnded } = await getMemberCohortHistory();
+  const { member, cohortNames } = await getMemberCohortHistory();
   const cohortName = cohortNameFromNumber(cohortNumber);
   if (!cohortNames.has(cohortName)) redirect("/membership");
-  const isCurrentCohort = member.cohort === cohortName;
+  const isCurrentCohort = member.ownCohort === cohortName;
+  const staffView = member.staffCohorts.includes(cohortName);
+  const supabase = await createClient();
+  const { data: cohortInfo } = await supabase.from("cohorts").select("ends_at").eq("name", cohortName).maybeSingle();
+  const currentCohortEnded = Boolean(cohortInfo?.ends_at && Date.parse(cohortInfo.ends_at) <= Date.now());
   const { schedule } = await getTalkSchedule(cohortName);
   const timing = schedule.find((item) => item.week_number === week);
   // 운영자는 공개 전 질문도 미리 읽을 수 있다. 회원의 공개 일정과 답변 작성 조건은 유지한다.
-  const isPendingWeek = isCurrentCohort && !currentCohortEnded && (!timing?.opens_at || Date.parse(timing.opens_at) > Date.now());
+  const isPendingWeek = (isCurrentCohort || staffView) && (!timing?.opens_at || Date.parse(timing.opens_at) > Date.now());
   if (isPendingWeek && member.user.app_metadata?.role !== "admin") redirect("/membership/talk");
   const readOnly = !isCurrentCohort || currentCohortEnded || isPendingWeek;
   const user = member.user;
 
-  const supabase = await createClient();
   const { data: answers, error: answersError } = await supabase
     .from("session_answers")
     .select("user_id, display_name, content, created_at")
@@ -66,7 +69,7 @@ export default async function TalkPage({ params }: TalkPageProps) {
   const others = (answers ?? []).filter((answer) => answer.user_id !== user.id);
   let hiddenCount = 0;
 
-  if (!mine) {
+  if (!mine && !staffView) {
     const { data: totalCount, error: countError } = await supabase.rpc("session_answer_count", { target_cohort: cohortName, target_week: week });
     if (countError) return <TalkDataError />;
     hiddenCount = typeof totalCount === "number" ? totalCount : 0;
@@ -84,7 +87,7 @@ export default async function TalkPage({ params }: TalkPageProps) {
             {timing?.meeting_at && <p>{formatSeoulDayHeading(timing.meeting_at)} {formatSeoulTime(timing.meeting_at)} 모임</p>}
             <p className="font-semibold">{timing?.due_at ? deadlineText(timing.due_at) : "모임 일정이 정해지면 작성 날짜를 알려드려요."}</p>
             <p className="text-xs text-[var(--muted)]">날짜가 지나도 기수가 끝나기 전까지 작성하거나 수정할 수 있어요.</p>
-            <p className="text-xs text-[var(--muted)]">답변은 같은 기수 동료들과 나눠요. 내 답변을 남기면 동료들의 답변이 열립니다.</p>
+            <p className="text-xs text-[var(--muted)]">답변은 같은 기수 동료들과 나눠요. 이 기수 담당 가이드와 운영자도 모임 준비를 위해 읽을 수 있어요. 내 답변을 남기면 동료들의 답변이 열립니다.</p>
           </div>}
         </header>
 
@@ -106,7 +109,7 @@ export default async function TalkPage({ params }: TalkPageProps) {
             <div className="mx-auto my-2 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--paper)] px-5 py-3 text-center text-sm font-semibold text-[var(--muted)]"><Lock size={14} className="shrink-0" /> {readOnly ? `답변을 남기지 않은 주차라 동료들의 답변 ${hiddenCount}개는 열리지 않아요.` : `내 답변을 남기면 ${hiddenCount}개의 답변이 열려요.`}</div>
           </>}
 
-          {!mine && hiddenCount === 0 && <p className="mx-auto my-2 text-sm text-[var(--muted)]">{readOnly ? "이 주차에는 남겨진 답변이 없어요." : "아직 답변이 없어요. 첫 번째 이야기를 남겨보세요."}</p>}
+          {!mine && hiddenCount === 0 && others.length === 0 && <p className="mx-auto my-2 text-sm text-[var(--muted)]">{readOnly ? "이 주차에는 남겨진 답변이 없어요." : "아직 답변이 없어요. 첫 번째 이야기를 남겨보세요."}</p>}
           {mine && <div className="flex justify-end"><div className="min-w-0 text-right"><span className="text-xs text-[var(--muted)]">나</span><div className="mt-1 max-w-[520px] whitespace-pre-line rounded-2xl rounded-tr-sm bg-[var(--forest)] px-4 py-3 text-left text-[15px] leading-7 text-[var(--cream)]">{mine.content}</div></div></div>}
         </div>
 
@@ -115,6 +118,8 @@ export default async function TalkPage({ params }: TalkPageProps) {
             <Lock size={14} className="mt-1 shrink-0" aria-hidden="true" />
             {isPendingWeek ? (
               <p>운영자 미리보기입니다. 질문은 미리 볼 수 있고, 답변은 주차가 열린 뒤 작성할 수 있어요.</p>
+            ) : staffView && !isCurrentCohort ? (
+              <p>운영·진행을 위한 조회 화면입니다. 참여자로 가입한 현재 기수에서는 내 답변을 작성할 수 있어요.</p>
             ) : isCurrentCohort ? (
               <p>{cohortName}가 마무리되어 대화방은 읽기만 가능해요.</p>
             ) : (

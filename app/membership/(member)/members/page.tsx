@@ -19,7 +19,7 @@ function PageShell({ children }: { children: ReactNode }) {
       <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">함께 읽는 사람들</h1>
       <p className="mt-5 max-w-2xl leading-8 text-[var(--muted)]">
         현재 기수 동료들이 남긴 소개와 인사를 모았습니다. 내 소개는{" "}
-        <Link href="/my#introduction" className="font-semibold text-[var(--forest)] underline underline-offset-4">나의 서재</Link>에서 언제든 고칠 수 있어요. 소개는 현재 기수 동료들에게만 보여요.
+        <Link href="/my#introduction" className="font-semibold text-[var(--forest)] underline underline-offset-4">나의 서재</Link>에서 언제든 고칠 수 있어요. 소개는 현재 기수 동료와 이 기수 담당 가이드·운영자에게 보여요.
       </p>
       {children}
     </main>
@@ -56,7 +56,9 @@ function MemberCard({ row, isMe }: { row: MemberDirectoryRow; isMe: boolean }) {
 export default async function MembersPage() {
   const member = await requireActiveMembership();
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("list_member_directory");
+  const { data, error } = member.cohort && member.staffCohorts.includes(member.cohort)
+    ? await supabase.rpc("staff_member_directory", { p_cohort: member.cohort })
+    : await supabase.rpc("list_member_directory");
 
   if (error) {
     return (

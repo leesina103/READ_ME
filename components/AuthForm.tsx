@@ -12,9 +12,10 @@ type AuthFormProps = {
   configured: boolean;
   next?: string;
   notice?: string;
+  guideToken?: string;
 };
 
-export function AuthForm({ mode, configured, next = "/my", notice }: AuthFormProps) {
+export function AuthForm({ mode, configured, next = "/my", notice, guideToken }: AuthFormProps) {
   const isLogin = mode === "login";
   const [state, formAction, pending] = useActionState(isLogin ? loginAction : signupAction, initialState);
   const [resendState, resendAction, resendPending] = useActionState(resendConfirmationAction, initialState);
@@ -26,9 +27,10 @@ export function AuthForm({ mode, configured, next = "/my", notice }: AuthFormPro
 
   return (
     <form action={formAction} className="mt-8 space-y-4">
+      {guideToken && <input type="hidden" name="guideToken" value={guideToken} />}
       {!isLogin && (
         <FormField label="이름" error={errorFor("displayName")}>
-          <input className={inputClassName(errorField === "displayName")} name="displayName" autoComplete="name" minLength={2} maxLength={30} required placeholder="가입 신청서에 적은 이름" defaultValue={values?.displayName ?? ""} />
+          <input className={inputClassName(errorField === "displayName")} name="displayName" autoComplete="name" minLength={2} maxLength={30} required placeholder={guideToken ? "운영자가 확인할 실명" : "가입 신청서에 적은 이름"} defaultValue={values?.displayName ?? ""} />
         </FormField>
       )}
       <FormField label="이메일" error={errorFor("email")}>

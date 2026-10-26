@@ -50,6 +50,8 @@ export default async function MyPage({ searchParams }: MyPageProps) {
     .maybeSingle();
 
   if (profile && !profile.onboarding_completed_at) redirect("/onboarding");
+  const { data: guideStatus } = await supabase.rpc("my_guide_status");
+  if (profile && !profile.cohort && guideStatus) redirect("/guide");
 
   const [{ data: cohortHistory, error: cohortHistoryError }, { data: cohortSchedule }] = await Promise.all([
     supabase.from("member_cohorts").select("cohort").eq("user_id", user.id),
@@ -97,6 +99,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       </div>
 
       {membershipRequired && <p className="mt-8 rounded-2xl border border-[var(--line)] bg-[var(--sand)] px-5 py-4 text-sm leading-6">멤버십이 필요한 공간이에요. 멤버십이 만료되었거나 아직 승인 전이라면 운영진에게 문의해 주세요.</p>}
+      {guideStatus && <Link href="/guide" className="button button--subtle mt-6">{guideStatus === "active" ? "가이드 모임 관리로 가기" : "가이드 승인 상태 보기"}</Link>}
 
       {profile?.cohort && <section className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 max-[430px]:p-5" aria-labelledby="my-confirmed-group">
         <h2 id="my-confirmed-group" className="text-xl font-semibold">내 모임</h2>
@@ -124,7 +127,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
             </Link>
           )}
         </div>
-        <p className="introduction-sharing-note">첫 모임 전에 나를 소개해 주세요. 현재 기수 동료들에게만 보여요. 첫 만남과 멤버 소개에도 같은 내용이 반영됩니다.</p>
+        <p className="introduction-sharing-note">첫 모임 전에 나를 소개해 주세요. 현재 기수 동료와 이 기수 담당 가이드·운영자에게 보여요. 첫 만남과 멤버 소개에도 같은 내용이 반영됩니다.</p>
         {profile ? <MemberIntroductionForm introduction={{ introduction_word: profile.introduction_word, bio: profile.bio, cohort_message: profile.cohort_message }} />
           : <p role="alert" className="mt-5 text-sm leading-7 text-[var(--muted)]">소개를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>}
       </section>

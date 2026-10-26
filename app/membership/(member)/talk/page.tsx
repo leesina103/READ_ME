@@ -23,11 +23,11 @@ export default async function TalkIndexPage() {
       <p className="eyebrow">ONLINE TALK</p>
       <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">{member.cohort ?? "나의 기수"} 온라인 대화</h1>
       <p className="mt-5 max-w-2xl leading-8 text-[var(--muted)]">
-        {currentCohortEnded
+        {member.staffCohorts.includes(member.cohort ?? "") ? "운영·진행을 위해 이 기수의 소개와 공개된 답변을 볼 수 있습니다. 내 답변은 참여자로 가입한 현재 기수에서 작성합니다." : currentCohortEnded
           ? `${member.cohort}가 마무리되어 대화방은 읽기만 가능해요. 답변을 남겼던 주차의 이야기를 다시 볼 수 있어요.`
           : "첫 만남에서는 서로의 소개를 자유롭게 읽어보세요. 1~8주차 대화는 내 답변을 남기면 동료들의 생각이 열려요."}
       </p>
-      {!currentCohortEnded && !scheduleError && <section className="mt-8 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-5"><h2 className="font-semibold">내 모임 일정</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">{meeting?.meeting_at ? `격주 ${talkMeetingTime(meeting.meeting_at)}` : "모임 일정 준비 중입니다."}</p></section>}
+      {!currentCohortEnded && !scheduleError && <section className="mt-8 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-5"><h2 className="font-semibold">{member.ownCohort === member.cohort ? "내 모임 일정" : "조회 기준 모임 일정"}</h2><p className="mt-2 text-sm leading-6 text-[var(--muted)]">{meeting?.meeting_at ? `${meeting.group_name} · 격주 ${talkMeetingTime(meeting.meeting_at)}` : "모임 일정 준비 중입니다."}</p>{member.ownCohort !== member.cohort && <p className="mt-2 text-xs text-[var(--muted)]">담당 모임이 여러 개이면 이름순 첫 모임을 기준으로 표시합니다. 각 모임의 일정과 답변은 가이드 모임 관리에서 확인할 수 있습니다.</p>}</section>}
       {member.cohortNumber && <TalkReminders schedule={schedule} cohortNumber={member.cohortNumber} ended={currentCohortEnded} />}
       {scheduleError && <p role="status" className="mt-5 text-sm text-[var(--muted)]">작성 일정을 불러오지 못했어요. 기존 대화방은 아래에서 이용할 수 있어요.</p>}
       {member.cohortNumber ? (

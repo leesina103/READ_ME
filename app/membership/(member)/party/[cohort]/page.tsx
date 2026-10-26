@@ -28,11 +28,11 @@ export default async function PartyInvitationPage({ params }: PartyInvitationPag
   const member = await requireActiveMembership();
   const cohortNumber = Number((await params).cohort);
 
-  if (!Number.isInteger(cohortNumber) || cohortNumber < 1 || member.cohortNumber !== cohortNumber) notFound();
+  if (!Number.isInteger(cohortNumber) || cohortNumber < 1 || (member.cohortNumber !== cohortNumber && !member.staffCohorts.includes(`${cohortNumber}기`))) notFound();
 
   const invitation = partyInvitationForCohort(cohortNumber);
   const theme = themeForCohort(cohortNumber);
-  const cohortName = member.cohort ?? `${cohortNumber}기`;
+  const cohortName = `${cohortNumber}기`;
   const confirmed = invitation.status !== "draft" && invitation.startsAt !== null;
   const facts = [
     { icon: CalendarDays, label: "DATE", value: confirmed && invitation.startsAt ? formatPartyDate(invitation.startsAt) : "확정 후 안내" },

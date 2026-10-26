@@ -43,7 +43,7 @@ export async function updateSession(request: NextRequest) {
     || /^\/membership\/apply\d+$/.test(pathname);
   const isProtectedMembership = pathname.startsWith("/membership") && !isPublicMembershipApply;
   const isProtected = pathname.startsWith("/my") || pathname.startsWith("/onboarding")
-    || pathname.startsWith("/admin") || isProtectedMembership;
+    || pathname.startsWith("/admin") || (pathname.startsWith("/guide") && !pathname.startsWith("/guide/join/")) || isProtectedMembership;
 
   let user;
   try {

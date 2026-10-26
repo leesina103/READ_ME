@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { cohortNumberFromName, findSeasonWeek } from "@/data/seasonWeeks";
 import { authCallbackUrl } from "@/lib/auth/site-url";
+import { sendGuideApprovalNotification } from "@/lib/guide/admin-notification";
 
 export type FormActionState = {
   status: "idle" | "error" | "success";
@@ -148,7 +149,10 @@ export async function signupAction(
   }
 
   const supabase = await createClient();
-  const { data: isInvited, error: invitationError } = await supabase.rpc("is_member_invited", {
+  const guideToken = textValue(formData, "guideToken");
+  const { data: isInvited, error: invitationError } = guideToken
+    ? await supabase.rpc("guide_invitation_valid", { p_token: guideToken })
+    : await supabase.rpc("is_member_invited", {
     p_email: email,
     p_name: displayName
   });
@@ -158,14 +162,14 @@ export async function signupAction(
   }
 
   if (!isInvited) {
-    return { status: "error", message: invitationRequiredMessage, values };
+    return { status: "error", message: guideToken ? "사용할 수 없는 가이드 초대입니다. 운영자에게 새 링크를 요청해 주세요." : invitationRequiredMessage, values };
   }
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { display_name: displayName },
+      data: { display_name: displayName, ...(guideToken ? { guide_token: guideToken } : {}) },
       emailRedirectTo: authCallbackUrl("/onboarding")
     }
   });
@@ -217,6 +221,7 @@ export async function completeOnboardingAction(
     return { status: "error", message: "회원 정보를 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
   }
 
+  await sendGuideApprovalNotification(supabase);
   revalidatePath("/my");
   redirect("/my");
 }
