@@ -1,0 +1,57 @@
+{
+  "tool": "내장 image_gen",
+  "reference": "C:/Users/Mycom/.codex/generated_images/01a17808-3dc7-7ea1-ba45-2f1af3cb3a6e/exec-a45448b0-0643-4570-8631-4dcf9ca9aafb.png",
+  "commonPrompt": "Create ONE standalone portrait 4:5 Instagram carousel illustration for READ ME, matching the supplied approved cover's mature restrained pencil/gouache editorial illustration, muted cream, sage, forest green, charcoal palette and understated emotion. Keep Remi identity: cream open-book-shaped head with page edges and two green leaves, small black oval eyes, forest green hoodie, small cream hands. Preserve intrinsic character colors. Ordinary Korean life, not ornate fairy-tale settings, no decorative foliage, no sparkles, no photoreal humans, no glossy 3D, no collage unless specifically requested. Composition varies by panel, scene fills canvas; leave quiet negative space in upper 32 percent for text, spacious typography matching cover's thin Korean serif, accurate Korean spelling; cream lettering on dark backgrounds and dark forest on light backgrounds. No extra headings or labels. Small 'READ ME' at bottom center only; do not add pagination inside image. Input image 1 is approved style and Remi identity reference. Input 2, if present, is rabbit identity reference only, NOT its golden fairy-tale style. Keep rabbit cream, long ears, understated beige clothes. Exact text must be easily read on phone, about three or four short lines. One image only. ",
+  "panels": [
+    {
+      "n": 1,
+      "text": "이번에는\n내가 먼저\n연락하지 않았다.",
+      "scene": "승인된 밤 식탁 원경 표지"
+    },
+    {
+      "n": 2,
+      "text": "학창 시절, 제일 친한 친구가 있었다.\n같은 이야기를 몇 번이나 해도\n늘 웃겼다.",
+      "scene": "Memory, overcast bright late afternoon school corridor after class. Wide shot from behind and side, Remi and familiar cream rabbit friend carrying bags walking side by side, naturally quietly laughing together at an ordinary small shared joke. Small figures lower half, a few plain classroom windows and worn tiled floor; natural daylight, no sepia haze, no gigantic plants or idyllic park. Felt memory, not posed portrait."
+    },
+    {
+      "n": 3,
+      "text": "특별히 다툰 일은 없었다.\n그냥 서로의 하루를\n점점 모르게 됐다.",
+      "scene": "Present-day ordinary commuter train at blue evening. Remi small seen in three-quarter profile sitting near a window, tote on lap, looking out toward simple apartment windows. Other seats mostly empty, subdued urban environment with sparse details, no friend in this frame. Wider negative space, cool sage gray palette, restrained reflections, no readable signage."
+    },
+    {
+      "n": 4,
+      "text": "그래도 만나면 반가웠다.\n나는 그 친구를\n계속 보고 싶었다.",
+      "scene": "Memory of adult reunion, modest neighborhood eatery under neutral soft daylight. View from outside across simple window frame; Remi and cream rabbit friend at small table, modest relaxed expressions, rabbit listening and Remi gesturing once. Two ordinary cups, coats on chairbacks. Characters occupy lower third; quiet wall upper area. Friendship genuine, no staged overly adorable smiling, no plants or luxurious cafe."
+    },
+    {
+      "n": 5,
+      "text": "일 년에 한두 번,\n내가 먼저 연락하고 약속을 잡았다.\n그렇게 몇 년을 만났다.",
+      "scene": "Close-up at ordinary kitchen table in daylight: Remi's cream hands and forest sleeves holding a phone, partly visible book-head at right edge, one plain paper planner and a pen on table. Phone screen turned obliquely toward character, contents not readable, no fabricated text. Frame hands as point of action, not full smiling portrait. Natural cream and subdued sage, sparse objects, fine drawing."
+    },
+    {
+      "n": 6,
+      "text": "그런데 내가 연락하지 않으니,\n다음 약속은 잡히지 않았다.",
+      "scene": "Still life in same approved cover nighttime apartment kitchen. No character face. One phone resting unlit beside a plain used ceramic mug on table. Empty chair on far side visible; countertop recedes dimly right, cool window to left. Close slightly overhead table composition with quiet dark wall above text; objects lower half. Time passing and silence, not tragedy."
+    },
+    {
+      "n": 7,
+      "text": "내가 먼저 연락하지 않으면\n우리는 이대로 끝나는 걸까.",
+      "scene": "Quiet nighttime apartment window, Remi seen from behind slightly side-on small at lower right sitting at table looking out at apartment windows. No hand cupping chin. Opposite wall and curtain occupy generous space. Cool blue-gray outside and restrained warm practical interior light, avoid sunset and foliage. Character is small, isolation without despair. Distinct shot from cover."
+    },
+    {
+      "n": 8,
+      "text": "서운한데도,\n다시 연락하고 싶었다.\n오래 좋아했던 친구니까.",
+      "scene": "Intimate close-up of Remi seated in same kitchen, partial torso at right, head three-quarter angled down toward phone held loosely near table, thumb hesitating above screen. Cream book face calm and conflicted, tiny neutral mouth, no tears and no smile. Crop chair, show only one mug edge, no decorative objects. Muted light, upper left quiet negative space, tactile understated drawing, not plush."
+    },
+    {
+      "n": 9,
+      "text": "계속 만나고 싶은 마음과\n혼자 애쓰고 싶지 않은 마음이\n같이 있었다.",
+      "scene": "Medium-wide shot across empty chair in apartment kitchen at pale early morning. Remi seated small on far side at lower right, both hands resting on tabletop, phone set aside, looking at space opposite. Overcast cool soft morning daylight entering left, no golden sunrise. Quiet acceptance with unresolved ambivalence, sparse living space, no magical healing beam, no exaggerated sadness."
+    },
+    {
+      "n": 10,
+      "text": "아쉬운 마음은 남았지만,\n이제 혼자 약속을 잡는 일은\n그만하기로 했다.",
+      "scene": "Final ordinary morning kitchen, matching cover apartment but now soft neutral daylight. Table and empty chair foreground, phone stays on table, Remi small in background at sink washing the single mug, seen from behind three-quarter, continuing everyday life. No dramatic departure, no grin, no triumphant symbolism. Calm pale cream wall and muted sage cabinets, quiet spacious composition, subtle lived-in towel. The empty chair remains, feelings unresolved but choice made."
+    }
+  ]
+}
