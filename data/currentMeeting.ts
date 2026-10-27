@@ -10,7 +10,7 @@ const schedule = {
   offlineSessions: "4회",
   onlineSessions: "4회",
   sessionDuration: "3시간",
-  location: "서울 오프라인",
+  location: "사당역 인근 예정 · 상세 장소는 참여 확정 후 안내",
   groupSize: "4~6명",
   fee: "인터뷰 후 안내"
 } as const;

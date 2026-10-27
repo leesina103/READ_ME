@@ -1,7 +1,7 @@
 export const bookCovers: Record<string, string> = {
   "관계의 언어": "/book-cover-relationship-1.jpg",
   "미움받을 용기": "/book-cover-relationship-2.jpg",
-  "비폭력대화": "/book-cover-relationship-3.jpg",
+  "말센스": "/book-cover-malsense.jpg",
   "사랑의 기술": "/book-cover-relationship-4.jpg",
   "너 자신의 이유로 살라": "/book-cover-self-1.jpg",
   "아들러 성격 상담소": "/book-cover-self-2.jpg",

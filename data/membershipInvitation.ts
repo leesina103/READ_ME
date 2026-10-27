@@ -24,7 +24,7 @@ export const membershipInvitations: Readonly<Record<string, MembershipInvitation
       { label: "오프라인 토의", value: "4회" },
       { label: "온라인 실천·기록", value: "4회" },
       { label: "회차별 소요", value: "3시간" },
-      { label: "장소", value: "서울 오프라인" },
+      { label: "장소", value: "사당역 인근 예정 · 상세 장소는 참여 확정 후 안내" },
       { label: "그룹당 인원", value: "4~6명" }
     ]
   },
@@ -35,7 +35,7 @@ export const membershipInvitations: Readonly<Record<string, MembershipInvitation
     sessions: [
       { title: "존중", question: "우리는 서로를 어떻게 존중하는가?", book: "관계의 언어", author: "문요한" },
       { title: "인정", question: "모두에게 좋은 사람이어야 할까?", book: "미움받을 용기", author: "기시미 이치로, 고가 후미타케" },
-      { title: "대화", question: "왜 우리는 자꾸 오해하는가?", book: "비폭력대화", author: "마셜 B. 로젠버그" },
+      { title: "대화", question: "왜 우리는 자꾸 오해하는가?", book: "말센스", author: "셀레스트 헤들리" },
       { title: "사랑", question: "가까워진다는 것은 무엇인가?", book: "사랑의 기술", author: "에리히 프롬" }
     ]
   },

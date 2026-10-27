@@ -42,7 +42,15 @@ export function buildSeasonWeeks(theme: Theme): readonly SeasonWeek[] {
 }
 
 export function seasonWeeksForCohort(cohortNumber: number) {
-  return buildSeasonWeeks(themeForCohort(cohortNumber));
+  return buildSeasonWeeks(themeForCohort(cohortNumber)).map((week) => {
+    if (cohortNumber === 1 && week.week === 1) {
+      return {
+        ...week,
+        prompt: "누군가에게 존중받는다고 느꼈던 순간은 언제였나요? 그 사람의 어떤 말이나 행동이 기억에 남나요?"
+      };
+    }
+    return week;
+  });
 }
 
 export function findSeasonWeek(cohortNumber: number, week: number) {
