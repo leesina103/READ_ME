@@ -11,10 +11,19 @@ type TalkComposerProps = {
   week: number;
   initialContent: string;
   hasAnswer: boolean;
+  onExampleSubmit?: (content: string) => void;
 };
 
-export function TalkComposer({ cohortNumber, week, initialContent, hasAnswer }: TalkComposerProps) {
-  const [state, formAction, pending] = useActionState(saveSessionAnswerAction, initialState);
+export function TalkComposer({ cohortNumber, week, initialContent, hasAnswer, onExampleSubmit }: TalkComposerProps) {
+  async function submitExample(_previous: FormActionState, form: FormData): Promise<FormActionState> {
+    const content = String(form.get("content") ?? "").trim();
+    if (content.length < 2 || content.length > 2000) {
+      return { status: "error", message: "답변은 2자 이상 2000자 이하로 작성해 주세요." };
+    }
+    onExampleSubmit?.(content);
+    return { status: "success", message: "예시 답변을 화면에 표시했어요. 실제 답변으로 저장되지는 않아요." };
+  }
+  const [state, formAction, pending] = useActionState(onExampleSubmit ? submitExample : saveSessionAnswerAction, initialState);
   const messageId = "talk-answer-message";
 
   return (
