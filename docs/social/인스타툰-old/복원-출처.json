@@ -1,0 +1,418 @@
+{
+  "revision": "989233eb37602c0e0bc56936ea8fbb94b60d3cd1",
+  "description": "Git에 마지막으로 저장된 기존 인스타툰 이미지. 커밋되지 않았던 수정은 포함 여부를 확인할 수 없습니다.",
+  "images": [
+    {
+      "file": "docs/social/01-인간관계/01.png",
+      "sha256": "9c29254c10ce3f71a00f228719f2d6304ed3a29753143c20cea710143b3afc26"
+    },
+    {
+      "file": "docs/social/01-인간관계/02.png",
+      "sha256": "2af6beccf6a25f3dc393b8fda3fc9e33f8c33f7126940b7d7ebeaaf1c3817d6c"
+    },
+    {
+      "file": "docs/social/01-인간관계/03.png",
+      "sha256": "92ff636abc4b728013310cecae814978e24271d8919b44c69ed899328e154875"
+    },
+    {
+      "file": "docs/social/01-인간관계/04.png",
+      "sha256": "a4715f626df3d8147d83a22fa69a347b55ba1d3def767ff56582ffb056508c64"
+    },
+    {
+      "file": "docs/social/01-인간관계/05.png",
+      "sha256": "0827a50b404f5f9c4bdf40f5547e51777f98c40437cca3fbe1461faecc865538"
+    },
+    {
+      "file": "docs/social/01-인간관계/06.png",
+      "sha256": "0fdcc19c5c80b0d1f1b99dbf948762fc82048ed6a90aedf2f0da6cf789d3907d"
+    },
+    {
+      "file": "docs/social/01-인간관계/07.png",
+      "sha256": "472e8e234178e63d2c0a779262e6a8156ed824a76dbcf218c34507050dbe1f3b"
+    },
+    {
+      "file": "docs/social/01-인간관계/08.png",
+      "sha256": "42a75f7eb041c6850bd1d0647c2aa135c9461027a74e88fff7c572897c217773"
+    },
+    {
+      "file": "docs/social/01-인간관계/09.png",
+      "sha256": "77522bc16acffc52e4bebd09eecee6c0f78dadfdef3bb0fd3919843502fbdf08"
+    },
+    {
+      "file": "docs/social/01-인간관계/10.png",
+      "sha256": "ebeded8296a8b287fc892d25738396b69ed8ccfd09c5680ec691a3d319e4faa2"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/01.png",
+      "sha256": "264bd3b8b07b7b86b6b97e2db331c934a50254910c1d8f1cd7c81591b8450d0c"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/02.png",
+      "sha256": "4cbba1f130634977326177c5429c7c9cb614569d3d2c4b33026eacceaeebd868"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/03.png",
+      "sha256": "fdcf5b74c966be68106b92341b1d191636f5bff6de1ffbe237f95b95d40b1f2a"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/04.png",
+      "sha256": "07fdb82af92501a272b2d6e33f4c5479b90c9c8d60a0e82174fded56161362fb"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/05.png",
+      "sha256": "9de6945f772bdca5e1ca57052a26201fbf7bdb0497b05547dad8b12ace86765d"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/06.png",
+      "sha256": "71379b246ed049a329b032fa74024f43e80cdae5a35ab9c47b0a01e89c911fb3"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/07.png",
+      "sha256": "acae4ace5dd642d1cc0e87025a23873cda6fd89f0f45ee5c5413803e27f6a428"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/08.png",
+      "sha256": "5f58d21de611cdab962397862685b9ca5aabad9b1522da1c5374aa7153baea4a"
+    },
+    {
+      "file": "docs/social/02-결이맞는사람/09.png",
+      "sha256": "448ca64fa571429fc5e8a2fb0cc6b22e4ac2f721417cdb0372a391b5ad0eee5a"
+    },
+    {
+      "file": "docs/social/03-같이나아갈사람/01.png",
+      "sha256": "f520dd11d476dd4c8561492b807625a1f942317511f1bfd4fa2a217e9a4d84d8"
+    },
+    {
+      "file": "docs/social/03-같이나아갈사람/02.png",
+      "sha256": "4678b65a523a411e1d3ee41c86fe3a2c0eb682eb64e747851f8cce16ba1bd131"
+    },
+    {
+      "file": "docs/social/03-같이나아갈사람/03.png",
+      "sha256": "aaf19c5da6a4daec528ca33396ccf99514631f9e23555b1f84102e427f3f3a23"
+    },
+    {
+      "file": "docs/social/03-같이나아갈사람/04.png",
+      "sha256": "b8fb2bc69d98090e0bd6739fb37c68c71a4f9f19f135d2e6da8fc07cd319f11e"
+    },
+    {
+      "file": "docs/social/03-같이나아갈사람/05.png",
+      "sha256": "16e0e3161b26d2b65e0938f53fe9cdc05d24eb6bd3e704f1f32555218daffdbb"
+    },
+    {
+      "file": "docs/social/03-같이나아갈사람/06.png",
+      "sha256": "b9bad0dc7fe3558954fa1c264e5f9d788d8fde37a700e757f8105d42e68f08c4"
+    },
+    {
+      "file": "docs/social/04-힘이되는사람/01.png",
+      "sha256": "8100d94b911ad63e8764169ba8c5da9a8b102c97f240e55edfe9265f3e2b50fd"
+    },
+    {
+      "file": "docs/social/04-힘이되는사람/02.png",
+      "sha256": "bfbad256591c1dcb66c2787970283b63e9f2c057f6f16cb83e2311190b048666"
+    },
+    {
+      "file": "docs/social/04-힘이되는사람/03.png",
+      "sha256": "6f98d75c57f936f978acb1997737e696250c71176231af8690c71b7939e5cd89"
+    },
+    {
+      "file": "docs/social/04-힘이되는사람/04.png",
+      "sha256": "b64bd8e8cba6616ce9d0e76e69309b5f630098d641a87b344aed7f3c06cb61b9"
+    },
+    {
+      "file": "docs/social/04-힘이되는사람/05.png",
+      "sha256": "ed8942b5106f0cd7c1ffbd5d8764da49ebf2d0f8fbbe180ec10dcef47c81bad2"
+    },
+    {
+      "file": "docs/social/04-힘이되는사람/06.png",
+      "sha256": "f673d6f54d43ed0dd977f57f87c714063e5ceff579ea8454a117c876a4ee8e58"
+    },
+    {
+      "file": "docs/social/04-힘이되는사람/07.png",
+      "sha256": "acf8b9f6657891f0a462d6d237e87caba52333ce52b9b6ea6e7341486293b0da"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/01.png",
+      "sha256": "124d4b9f5c624fcedff871d8d9f98016efd33e341d299c118b4b2b45acb482cb"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/02.png",
+      "sha256": "54013d81f82fd7683bf536a673ad5df59a389786485807deb2fbac078c002bcf"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/03.png",
+      "sha256": "f58ab16eda7ed00c42f0aeb9f38c7cf26e9d608acf81f5cdba4757f75a1709cf"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/04.png",
+      "sha256": "979f421f6fd8c34915583e5a4b8ebd9a082c60ffea86d3093d165d3673fd7a96"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/05.png",
+      "sha256": "1b3de04ac808a02c03ffaffe1deb391b8a0137d278b76aef5c88033b6d7d4fc3"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/06.png",
+      "sha256": "ff394ed6524cd039cef519e03d2a772e858dffcff809e15e214b00f6462b9ed9"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/07.png",
+      "sha256": "fe9d3bcd304afe021225779004b5b650803fadf438a5f441bc7e577f7edd59c5"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/08.png",
+      "sha256": "44aca42c6943c40ce2053ed2f0ea382992d48c4a208704cb3a7e17d2b45b3778"
+    },
+    {
+      "file": "docs/social/05-환경의중요성/09.png",
+      "sha256": "e9567877d06261d52ab8b2a510f451232e35b6ad61a6dfc17431041c0122c09e"
+    },
+    {
+      "file": "docs/social/06-직접만든이유/01.png",
+      "sha256": "6f16d05a300730c35c4b5db522d1c8669e4caae8abdad41e42fc62dee52099e1"
+    },
+    {
+      "file": "docs/social/06-직접만든이유/02.png",
+      "sha256": "5da92f960205ea1a8e660b04cef7a17318064aee8ea4fd91c3733d3df473d225"
+    },
+    {
+      "file": "docs/social/06-직접만든이유/03.png",
+      "sha256": "ef615db1516ff1083a921ce3f7a573f32f03c6a74d4f7695b0c1c078f0d63046"
+    },
+    {
+      "file": "docs/social/06-직접만든이유/04.png",
+      "sha256": "55a07de5a8ac2e4d7238151416e8e3dffd074f374efa1c79ef74866baf597fd6"
+    },
+    {
+      "file": "docs/social/06-직접만든이유/05.png",
+      "sha256": "c209f0e74fbfe496815bb62ebd0933e5bd2bd11264b789ccf9a0869bbb188693"
+    },
+    {
+      "file": "docs/social/06-직접만든이유/06.png",
+      "sha256": "84f44f9c7f9441415c9b382657e0dec1206cf603c5fa9b58a126c153df0a6d95"
+    },
+    {
+      "file": "docs/social/06-직접만든이유/07.png",
+      "sha256": "9ae2be7dd78f7b49d058db04c0db099e4c37378d565aa7431bd37c6f92e351c0"
+    },
+    {
+      "file": "docs/social/07-마음이채워지는대화/01.png",
+      "sha256": "39b0405240daa68082b244473591ac9d68eb0202e4c9154e78be35358d5a51b5"
+    },
+    {
+      "file": "docs/social/07-마음이채워지는대화/02.png",
+      "sha256": "e5f816d62251422de30a03e9ea7b40a6bc45b772f463df09a51cc6917668aa8c"
+    },
+    {
+      "file": "docs/social/07-마음이채워지는대화/03.png",
+      "sha256": "ae685cedb30df31657eb74ac7366750ec7b3eae9bda3d1de735158483353522f"
+    },
+    {
+      "file": "docs/social/07-마음이채워지는대화/04.png",
+      "sha256": "a63e07f59281cf1317ad54feaa8a898358e65864042dcd129aa47548eca94a5a"
+    },
+    {
+      "file": "docs/social/07-마음이채워지는대화/05.png",
+      "sha256": "4ca097f0b0fa9c803b71a4bd9ae2d01476867050e7e4fdba4e7769eec2606291"
+    },
+    {
+      "file": "docs/social/07-마음이채워지는대화/06.png",
+      "sha256": "09a7210a587123d63c79dbb672b5683fd1fd112844a399716f4b05a7a9064e18"
+    },
+    {
+      "file": "docs/social/07-마음이채워지는대화/07.png",
+      "sha256": "7f04851a70a18c9798d34ae796f8b3d73e3349e0930d7f67c16a971df4a8b2d6"
+    },
+    {
+      "file": "docs/social/08-일상의변화/01.png",
+      "sha256": "23f6775a016de9f5c2973c705ef4f0813c08059ddbc231904a312311e02337b7"
+    },
+    {
+      "file": "docs/social/08-일상의변화/02.png",
+      "sha256": "1e1b2d4c822b5ab3fc517e55c3e7ec89e79e7ffa95ce50e14cb4f4cf8e2f89fa"
+    },
+    {
+      "file": "docs/social/08-일상의변화/03.png",
+      "sha256": "e849ab9551dc27e17e8fb9ed2786eea5e53246e953d3173a8c26a15a1f61ef71"
+    },
+    {
+      "file": "docs/social/08-일상의변화/04.png",
+      "sha256": "348339682bc0c251e389991a3a742e60db116de3368f12c8402466c56ee0de32"
+    },
+    {
+      "file": "docs/social/08-일상의변화/05.png",
+      "sha256": "f0ec7dada1fcdda3dae4ef07198af38a5b3cd72f25c7e79d6d84c401c76598c5"
+    },
+    {
+      "file": "docs/social/08-일상의변화/06.png",
+      "sha256": "713523d819803131a283fd033e9000f3a8ef9e5ee4010c4d7618a167b62a1e99"
+    },
+    {
+      "file": "docs/social/08-일상의변화/07.png",
+      "sha256": "fcbc16c5d3ae2104b5714d77bd8249af852a17f5277318c4995fccc707366671"
+    },
+    {
+      "file": "docs/social/7-1-친한사람에게도-못했던말을-꺼냈다/01.png",
+      "sha256": "64ef2f2fa5b1c0f0571571904adb3e613e203274b2b4afa57d3c3e0913397869"
+    },
+    {
+      "file": "docs/social/7-1-친한사람에게도-못했던말을-꺼냈다/02.png",
+      "sha256": "268a2c60f3a8fbfcb0672ee71424d022a97b04d20defe8dd59f45a0707f0fca6"
+    },
+    {
+      "file": "docs/social/7-1-친한사람에게도-못했던말을-꺼냈다/03.png",
+      "sha256": "546cfdae7e52d7959e906d8059a15973f3af5b65fa5625cae28f3d294b0a7878"
+    },
+    {
+      "file": "docs/social/7-1-친한사람에게도-못했던말을-꺼냈다/04.png",
+      "sha256": "ec3f204fc74370cee87556e6f573bb98bd63715de11ef4facd3af82cf0bf0c96"
+    },
+    {
+      "file": "docs/social/7-1-친한사람에게도-못했던말을-꺼냈다/05.png",
+      "sha256": "fe61a55f8c2f16afde55f4be4769ebb3a8035e0821d4b65ae1facb95443affbd"
+    },
+    {
+      "file": "docs/social/7-1-친한사람에게도-못했던말을-꺼냈다/06.png",
+      "sha256": "9ee9529ecfb84e18a742237a6df8cd59438016c5bdf0a38c4cbb121a6114ab56"
+    },
+    {
+      "file": "docs/social/7-1-친한사람에게도-못했던말을-꺼냈다/07.png",
+      "sha256": "048ae1f4bee7237a950dbf1f0f952fe36cf988b6d1768734ce3483793fff95d3"
+    },
+    {
+      "file": "docs/social/7-1-친한사람에게도-못했던말을-꺼냈다/08.png",
+      "sha256": "e48b834b40f425db099fe50654cf4d4ccb148802fbb44ae3530ac811a0eca4ea"
+    },
+    {
+      "file": "docs/social/7-2-말하고나서야-내마음을-알았다/01.png",
+      "sha256": "459466cc53c1d90344f978c31abd884904e264250f13a67f825707c5acc1bb32"
+    },
+    {
+      "file": "docs/social/7-2-말하고나서야-내마음을-알았다/02.png",
+      "sha256": "de228fa5644ed6a56154f1fdc404feea6fff53ac0a3f107e63ba4bee30636f7a"
+    },
+    {
+      "file": "docs/social/7-2-말하고나서야-내마음을-알았다/03.png",
+      "sha256": "a2d7ab2a9d7065f8bfa9abf5686ba18dd91ce69bc479cae0483e43ea3d19f3cc"
+    },
+    {
+      "file": "docs/social/7-2-말하고나서야-내마음을-알았다/04.png",
+      "sha256": "ffc8d2dd8bc9ac285947aee143d8fb5ccc00b1c85b7a4cbae793325a0d262b61"
+    },
+    {
+      "file": "docs/social/7-2-말하고나서야-내마음을-알았다/05.png",
+      "sha256": "e9c60defa1642939545b09096e831c3e215d3e61ff886cf0895cbf1c540dc1cd"
+    },
+    {
+      "file": "docs/social/7-2-말하고나서야-내마음을-알았다/06.png",
+      "sha256": "620fa4451c0547d34da253a2b2c77806d8c404c60d29abc813190633d937a0a5"
+    },
+    {
+      "file": "docs/social/7-2-말하고나서야-내마음을-알았다/07.png",
+      "sha256": "569dfd70994871c9837a8093019f7d758ee4bfcbd19c2716062f0ecb41f9d116"
+    },
+    {
+      "file": "docs/social/7-2-말하고나서야-내마음을-알았다/08.png",
+      "sha256": "41411ef812fecf7a29665ada170874ae122312de25cc0f879b44d6f120c42806"
+    },
+    {
+      "file": "docs/social/7-3-생각이다른데도-대화가편했다/01.png",
+      "sha256": "4daec0953145d2c3ca4e3a48ae07edd9c3bc37748775cd8ae53a8a99b0f0f732"
+    },
+    {
+      "file": "docs/social/7-3-생각이다른데도-대화가편했다/02.png",
+      "sha256": "5244f608b3605f4d0130bbcb4aa64fab42b8ff26b8e18eda3ab43e113929bbc0"
+    },
+    {
+      "file": "docs/social/7-3-생각이다른데도-대화가편했다/03.png",
+      "sha256": "17dc23714d394b3994f99dd384232b64a75723e06bd91f767b3df8eae56da0e7"
+    },
+    {
+      "file": "docs/social/7-3-생각이다른데도-대화가편했다/04.png",
+      "sha256": "2b7815977388143ca8648d3085edefeb3d1cde1718878986c4823568dcf9a9b2"
+    },
+    {
+      "file": "docs/social/7-3-생각이다른데도-대화가편했다/05.png",
+      "sha256": "b54261920ab1a61e5310a9bcc4d257088b4dea4ba7d2cb7203672695b7b69c54"
+    },
+    {
+      "file": "docs/social/7-3-생각이다른데도-대화가편했다/06.png",
+      "sha256": "5a5409cac83a99286c1f1e5fae99ee94bca1d8464a128d1b806181a9cf72bea4"
+    },
+    {
+      "file": "docs/social/7-3-생각이다른데도-대화가편했다/07.png",
+      "sha256": "15a74822e169cb9378ea4700c40cb58018e2479206ef69e2a83855078a602a3d"
+    },
+    {
+      "file": "docs/social/7-3-생각이다른데도-대화가편했다/08.png",
+      "sha256": "3c578579ec68305518d9ee8f20cff6e8d77aab6d9e510cbb28cef7e90d1d9fae"
+    },
+    {
+      "file": "docs/social/7-4-쌓아두던책을-펼치게됐다/01.png",
+      "sha256": "db281463e613173755fd3cf7d309e8897c2bcf69ccbde038a412a4f4bf5bd958"
+    },
+    {
+      "file": "docs/social/7-4-쌓아두던책을-펼치게됐다/02.png",
+      "sha256": "2eeb449bf7578153e8e1455b648d9ee4f4275d9abc233893c59fcd67dad6a43d"
+    },
+    {
+      "file": "docs/social/7-4-쌓아두던책을-펼치게됐다/03.png",
+      "sha256": "eb45c9f756e65a76c9232f8a0c744ed482ffafd9d38eb88ac479614ddf1f4037"
+    },
+    {
+      "file": "docs/social/7-4-쌓아두던책을-펼치게됐다/04.png",
+      "sha256": "621b3129494b44383c3e62464cd0fc84855fae148c62051bb08da9c5294afb8b"
+    },
+    {
+      "file": "docs/social/7-4-쌓아두던책을-펼치게됐다/05.png",
+      "sha256": "038d7d4cd89d951e1462d38646524434f421b5d3b7a329ece23f26348e375059"
+    },
+    {
+      "file": "docs/social/7-4-쌓아두던책을-펼치게됐다/06.png",
+      "sha256": "ff6a91447109b0247155d150f08d8355971c423f0cecc1c26ac41273bf272abe"
+    },
+    {
+      "file": "docs/social/7-4-쌓아두던책을-펼치게됐다/07.png",
+      "sha256": "88f6fe236f7e611f76f69c11ee3750dbc2de3eb80b2399066a3711bb57ea4ec3"
+    },
+    {
+      "file": "docs/social/7-4-쌓아두던책을-펼치게됐다/08.png",
+      "sha256": "d5367575fea00c4750d1693f7db4176663e35ea97f0730cc15b3276e870b8e60"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/01.png",
+      "sha256": "beee2837f31444f77377471127589d06dd28598d8719a9ee9d348405cd4687c4"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/02.png",
+      "sha256": "dbdb467c907589ad69d6c324481ee0905c35c02f00d1a990f1d98a9fa701600d"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/03.png",
+      "sha256": "ce06197ff1d9070370aec8302baefc68506ea030ac8bdf082b572702b26bde82"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/04.png",
+      "sha256": "ff2d36201bbdc48c23f8ba6f737ed728ff9d600eb2a4f1bbf5d6076ad12cd27b"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/05.png",
+      "sha256": "ee09d364d9eb7d0b4fac000ca71518b88eed8f94795592c46d138e27c0316e4a"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/06.png",
+      "sha256": "91441a97fa63a6afc5f8d7a5af71ac08acffae36843aa6f527158e4f5cf3ab74"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/07.png",
+      "sha256": "6c60c5229fd4e8a11ef7a857a5fbde53d721b223974b77c7ff0cd714db46d09f"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/08.png",
+      "sha256": "36e4ffed61f6a3df32cd7cbeead957c744146c1cf8efe61575b757a7131f842e"
+    },
+    {
+      "file": "docs/social/7-5-혼자였다면-못했을생각들이-생겼다/09.png",
+      "sha256": "bb17efc276faf2e0468cff7793a7d0fe3dc34532453684f4136911ea443aa39b"
+    }
+  ]
+}
