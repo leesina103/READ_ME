@@ -4,6 +4,8 @@ import { formatInterviewTime } from "@/lib/interview/booking";
 type AdminNotificationOptions = {
   applicationId: string;
   startsAt: string;
+  name: string;
+  phone: string;
 } & ({ event?: "booked" } | { event: "rescheduled" | "cancelled"; updatedAt: string });
 
 // 수신자는 서버 설정으로만 정합니다. 예약자의 입력으로 바꿀 수 없습니다.
@@ -15,6 +17,8 @@ export async function sendInterviewAdminNotification(options: AdminNotificationO
 
   try {
     const event = options.event ?? "booked";
+    const name = options.name.trim().replace(/\s+/g, " ");
+    const phone = options.phone.replace(/[^0-9]/g, "").replace(/^(01\d)(\d{3,4})(\d{4})$/, "$1-$2-$3");
     const content = {
       booked: { subject: "새 인터뷰 예약", message: "새 인터뷰 예약이 접수됐습니다.", label: "인터뷰 일정" },
       rescheduled: { subject: "인터뷰 일정 변경", message: "인터뷰 예약 일정이 변경됐습니다.", label: "변경된 일정" },
@@ -38,9 +42,11 @@ export async function sendInterviewAdminNotification(options: AdminNotificationO
         subject: `[READ ME] ${content.subject}`,
         text: [
           content.message,
+          `예약자 이름: ${name}`,
+          `연락처: ${phone}`,
           `${content.label}: ${formatInterviewTime(startsAt)} (한국 시간)`,
           "",
-          "예약자 정보는 관리자 페이지에서 확인해 주세요.",
+          "예약 관리는 관리자 페이지에서 확인해 주세요.",
           adminUrl.href
         ].join("\n")
       }),

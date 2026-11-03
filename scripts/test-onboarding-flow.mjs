@@ -54,13 +54,22 @@ const { sendInterviewAdminNotification: notify } = load("lib/interview/admin-not
   process: { env }, AbortSignal,
   fetch: async (_url, init) => { requests.push(init); return { ok: true }; }
 });
-const booking = { applicationId: "test-booking", startsAt: "2030-01-01T00:00:00Z" };
+const booking = { applicationId: "test-booking", startsAt: "2030-01-01T00:00:00Z", name: "테스트 예약자", phone: "01000000000" };
 equal(await notify(booking), "accepted");
 equal(await notify({ ...booking, event: "rescheduled", updatedAt: "2030-01-01T01:00:00Z" }), "accepted");
 equal(await notify({ ...booking, event: "rescheduled", updatedAt: "2030-01-01T02:00:00Z" }), "accepted");
 equal(await notify({ ...booking, event: "cancelled", updatedAt: "2030-01-01T03:00:00Z" }), "accepted");
 equal(new Set(requests.map((request) => request.headers["Idempotency-Key"])).size, 4);
 equal(requests.map((request) => JSON.parse(request.body).subject), ["[READ ME] 새 인터뷰 예약", "[READ ME] 인터뷰 일정 변경", "[READ ME] 인터뷰 일정 변경", "[READ ME] 인터뷰 예약 취소"]);
+for (const request of requests) {
+  const message = JSON.parse(request.body);
+  equal(message.to, [env.INTERVIEW_ADMIN_EMAIL]);
+  equal(message.text.includes("예약자 이름: 테스트 예약자"), true);
+  equal(message.text.includes("연락처: 010-0000-0000"), true);
+  equal(message.text.includes(booking.startsAt), true);
+  equal(message.text.includes("/admin/interviews"), true);
+  equal(message.text.includes("/interview/apply/manage/"), false);
+}
 delete env.RESEND_API_KEY;
 equal(await notify(booking), "not_configured");
 equal(requests.length, 4);
