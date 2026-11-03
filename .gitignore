@@ -17,9 +17,14 @@ next-env.d.ts
 tmp/
 .codex-tmp/
 
-# 인스타그램 업로드용 내보내기 파일은 로컬에서만 보관
-/docs/social/**/인스타그램/*.jpg
-/docs/social/**/*-인스타그램-1080x1350.zip
+# 소셜 제작 이미지와 내보내기 파일은 로컬에서만 보관
+/docs/social/**/*.png
+/docs/social/**/*.jpg
+/docs/social/**/*.jpeg
+/docs/social/**/*.webp
+/docs/social/**/*.gif
+/docs/social/**/*.pdf
+/docs/social/**/*.zip
 
 # 문서 정리 기록, 발제문 원본과 화면 검증 캡처는 로컬에서만 보관
 /docs/드라이브-문서-본문-이동표.md
