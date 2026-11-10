@@ -5,7 +5,7 @@ const recruiting: boolean = true;
 
 const schedule = {
   duration: "8주",
-  start: "2026년 11월 말부터",
+  start: "2026년 12월 셋째 주 시작",
   cadence: "격주",
   offlineSessions: "4회",
   onlineSessions: "4회",
@@ -35,6 +35,7 @@ export const currentMeeting = {
   facts: [
     { label: "진행 기간", value: `${schedule.duration} · ${schedule.start}` },
     { label: "진행 주기", value: schedule.cadence },
+    { label: "신년 휴식", value: "1/1(금)·1/2(토) 휴식 · 1/8(금)·1/9(토)부터 재개 (휴식 1주 별도)" },
     { label: "오프라인 토의", value: schedule.offlineSessions },
     { label: "온라인 실천·기록", value: schedule.onlineSessions },
     { label: "회차별 소요", value: schedule.sessionDuration },

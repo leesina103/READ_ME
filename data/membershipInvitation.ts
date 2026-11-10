@@ -19,8 +19,9 @@ export const membershipInvitations: Readonly<Record<string, MembershipInvitation
     cohort: "1기",
     schedule: { duration: "8주" },
     facts: [
-      { label: "진행 기간", value: "8주 · 2026년 11월 말부터" },
+      { label: "진행 기간", value: "8주 · 2026년 12월 셋째 주 시작" },
       { label: "진행 주기", value: "격주" },
+      { label: "신년 휴식", value: "1/1(금)·1/2(토) 휴식 · 1/8(금)·1/9(토)부터 재개 (휴식 1주 별도)" },
       { label: "오프라인 토의", value: "4회" },
       { label: "온라인 실천·기록", value: "4회" },
       { label: "회차별 소요", value: "3시간" },

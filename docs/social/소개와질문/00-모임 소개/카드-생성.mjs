@@ -53,11 +53,11 @@ async function save(out,n){
  bounds.push({file:path.relative(root,path.join(out,name+'.png')),boxes});
 }
 // 모임 소개: B안 명조 제목과 고딕 본문을 유지하고 기록 예시만 손글씨로 씁니다.
-async function type(s,y,size=46,{bold=false,color='ink',x=92}={}){
+async function type(s,y,size=46,{bold=false,color='ink',x=92,spacing=22}={}){
  const serif=bold&&size>=55;
  // 작은 안내 문구는 유지하고 제목과 본문만 약 8% 줄입니다.
  if(size>=38)size=Math.round(size*0.92);
- const input=await sharp({text:{text:'<span foreground="'+colors[color]+'">'+esc(s)+'</span>',font:serif?'Noto Serif KR Medium '+size:'Malgun Gothic '+(bold?'Bold ':'')+size,fontfile:serif?'C:/Windows/Fonts/NotoSerifKR-VF.ttf':bold?'C:/Windows/Fonts/malgunbd.ttf':'C:/Windows/Fonts/malgun.ttf',rgba:true,dpi:72,spacing:22}}).png().toBuffer();
+ const input=await sharp({text:{text:'<span foreground="'+colors[color]+'">'+esc(s)+'</span>',font:serif?'Noto Serif KR Medium '+size:'Malgun Gothic '+(bold?'Bold ':'')+size,fontfile:serif?'C:/Windows/Fonts/NotoSerifKR-VF.ttf':bold?'C:/Windows/Fonts/malgunbd.ttf':'C:/Windows/Fonts/malgun.ttf',rgba:true,dpi:72,spacing}}).png().toBuffer();
  const m=await sharp(input).metadata();
  const b={text:s,x,y,width:m.width,height:m.height};
  if(x+m.width>988||y+m.height>1205)throw Error('소개 글자 범위 초과: '+s+' '+m.width+'x'+m.height);
@@ -73,9 +73,9 @@ async function card(n,dark=false){
 await card(1);
 await type('다른 사람의 마음은\n신경 쓰면서,\n내 마음은 얼마나 알까?',140,66,{bold:true,color:'forest'});
 await picture(path.join(dir,'assets/리미-기다림.png'),660,745,290,320);
-await type('책으로 시작해',940,34,{color:'forest'});
-await type('서로의 삶을 이야기하는',1000,34,{color:'forest'});
-await type('독서모임, READ ME',1060,34,{bold:true,color:'forest'});
+await type('Read Books.',940,34,{bold:true,color:'forest'});
+await type('Read Yourself.',1000,34,{bold:true,color:'forest'});
+await type('독서모임 READ ME',1060,34,{bold:true,color:'forest'});
 await save(dir,1);
 
 await card(2);
@@ -87,7 +87,7 @@ await save(dir,2);
 
 await card(3);
 await type('만나기 전, 질문에 답하며\n내 생각을 적어봐요.',125,65,{bold:true,color:'forest'});
-await type('책에서 나온 질문에 내 경험을 떠올리며,\n내가 소중히 여기는 것을 알아가요.',350,35);
+await type('책에서 나온 질문에\n내 경험을 떠올려 봐요.',350,35);
 await picture(path.join(dir,'assets/토의-실제화면.png'),92,530,896,505);
 await type('READ ME 웹 대화방 · 질문과 답변 예시',1080,25,{color:'muted'});
 await save(dir,3);
@@ -96,17 +96,18 @@ await card(4);
 await type('모임 날, 서로의 생각을 나누고\n다른 관점을 들어봐요.',145,60,{bold:true,color:'forest'});
 await picture(path.join(dir,'assets/리미-대화.png'),550,390,420,260);
 await type('생각이 달라도, 먼저 끝까지 들어요.',710,41);
-await type('“어떤 점에서 그렇게 느끼셨어요?”\n판단하기 전에 이해해 보려고 해요.',840,38);
+await type('“어떤 점에서 그렇게 느끼셨어요?”\n판단하기 전에 궁금한 점을 물어봐요.',840,38);
+await type('말하기 어려운 이야기는 넘겨도 돼요.',1040,30,{color:'muted'});
 await save(dir,4);
 
 await card(5);
 await type('대화를 나눈 뒤,\n나에 대해 알게 된 것을 남겨요.',110,60,{bold:true,color:'forest'});
 layers.push({input:Buffer.from('<svg width="1080" height="1350" xmlns="http://www.w3.org/2000/svg"><rect x="75" y="340" width="930" height="680" rx="12" fill="'+colors.paper+'" stroke="'+colors.sand+'" stroke-width="2"/><path d="M115 565H965 M115 790H965" stroke="'+colors.sand+'" stroke-width="2"/></svg>'),left:0,top:0});
-await type('토의 전, 내 생각',375,32,{bold:true,color:'forest',x:120});
+await type('토의 전 내 생각',375,32,{bold:true,color:'forest',x:120});
 await text('친구가 고민을 말하면 해결책을\n찾아주는 게 도움이라고 생각했다.',440,43,{x:120,maxWidth:820});
 await type('오늘 새로 들은 관점',600,32,{bold:true,color:'forest',x:120});
 await text('어떤 사람은 조언보다 자기 생각을\n물어봐 줬을 때 좋았다고 했다.',665,43,{x:120,maxWidth:820});
-await type('다음 주에 해볼 일',825,32,{bold:true,color:'forest',x:120});
+await type('다음 주에 살펴볼 행동이나 질문',825,32,{bold:true,color:'forest',x:120});
 await text('조언하기 전에\n“넌 어떻게 하고 싶어?” 하고 물어보기.',890,42,{x:120,maxWidth:820});
 await picture(path.join(dir,'assets/리미-기록.png'),805,1010,165,135);
 await type('해본 뒤의 느낌이나, 아직 남은 질문도 좋아요.',1050,27,{color:'muted'});
@@ -114,16 +115,16 @@ await type('참여 방식을 보여주기 위한 예시입니다.',1100,24,{colo
 await save(dir,5);
 
 await card(6);
-await type('다음 만남까지,\n일상에서 해보고 기록해요.',110,65,{bold:true,color:'forest'});
-await type('대화에서 떠올린 작은 행동을 시도하고,\n해본 뒤의 마음을 온라인 대화방에 남겨요.',335,39);
-await picture(path.join(dir,'assets/실천-실제화면.png'),92,500,896,575);
+await type('대화에서 떠오른 작은 시도를\n일상으로 가져가요.',110,60,{bold:true,color:'forest'});
+await type('해본 뒤 어떤 마음이 들었는지,\n아직 남은 질문은 무엇인지\n온라인 대화방에 남겨요.',335,35);
+await picture(path.join(dir,'assets/실천-실제화면.png'),92,550,896,525);
 await type('READ ME 웹 대화방 · 실천과 기록 예시',1110,25,{color:'muted'});
 await save(dir,6);
 
 await card(7);
 await type('잘된 이야기만\n가져오지 않아도 돼요.',145,65,{bold:true,color:'forest'});
 await type('생각이 덜 정리돼 있어도,\n해본 일이 생각처럼 안 됐어도 괜찮아요.',415,41);
-await type('다음 만남에서 그 이야기를 이어가요.\n말하기 어려운 이야기는 넘겨도 돼요.',640,40);
+await type('다음 만남에서 그 이야기를 이어가요.',640,40);
 await picture(path.join(dir,'assets/리미-실천.png'),745,865,205,230);
 await type('읽고 적기 → 만나서 대화\n→ 일상에서 시도 → 다시 나누기',980,29,{color:'forest'});
 await save(dir,7);

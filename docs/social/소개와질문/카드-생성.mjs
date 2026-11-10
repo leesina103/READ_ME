@@ -54,11 +54,13 @@ async function save(out,n){
  bounds.push({file:path.relative(root,path.join(out,name+'.png')),boxes});
 }
 // 모임 소개: B안 명조 제목과 고딕 본문을 유지하고 기록 예시만 손글씨로 씁니다.
-async function type(s,y,size=46,{bold=false,color='ink',x=92,spacing=22}={}){
+async function type(s,y,size=46,{bold=false,color='ink',x=92,spacing=22,renderScale=1}={}){
  const serif=bold&&size>=55;
  // 작은 안내 문구는 유지하고 제목과 본문만 약 8% 줄입니다.
  if(size>=38)size=Math.round(size*0.92);
- const input=await sharp({text:{text:'<span foreground="'+colors[color]+'">'+esc(s)+'</span>',font:serif?'Noto Serif KR Medium '+size:'Malgun Gothic '+(bold?'Bold ':'')+size,fontfile:serif?'C:/Windows/Fonts/NotoSerifKR-VF.ttf':bold?'C:/Windows/Fonts/malgunbd.ttf':'C:/Windows/Fonts/malgun.ttf',rgba:true,dpi:72,spacing}}).png().toBuffer();
+ let input=await sharp({text:{text:'<span foreground="'+colors[color]+'">'+esc(s)+'</span>',font:serif?'Noto Serif KR Medium '+(size*renderScale):'Malgun Gothic '+(bold?'Bold ':'')+(size*renderScale),fontfile:serif?'C:/Windows/Fonts/NotoSerifKR-VF.ttf':bold?'C:/Windows/Fonts/malgunbd.ttf':'C:/Windows/Fonts/malgun.ttf',rgba:true,dpi:72,spacing:spacing*renderScale}}).png().toBuffer();
+ // 작은 한글의 획이 깨지는 경우 크게 렌더링한 뒤 원래 크기로 축소합니다.
+ if(renderScale!==1){const scaled=await sharp(input).metadata();input=await sharp(input).resize(Math.round(scaled.width/renderScale),Math.round(scaled.height/renderScale)).png().toBuffer();}
  const m=await sharp(input).metadata();
  const b={text:s,x,y,width:m.width,height:m.height};
  if(x+m.width>988||y+m.height>1205)throw Error('소개 글자 범위 초과: '+s+' '+m.width+'x'+m.height);
@@ -101,7 +103,7 @@ for(const [i,[book,author,q]] of books.entries()){
  await picture(path.join(root,'public/book-cover-relationship-'+(i+1)+'.jpg'),92,y,100,145);
  await type(book,y+5,42,{bold:true,color:'forest',x:230});
  await type(author,y+65,25,{color:'muted',x:230});
- await type(q,y+100,29,{x:230,spacing:8});
+ await type(q,y+100,29,{x:230,spacing:8,renderScale:i===0?2:1});
 }
 await save(recruit,3);
 
@@ -126,12 +128,12 @@ await save(recruit,5);
 
 await card(6);
 await title('함께할 8주를\n미리 살펴봐 주세요.');
-const facts=[['시작','2026년 11월 말부터 예정'],['기간','8주'],['장소','사당역 인근 예정'],['인원','그룹당 4~6명'],['만남','격주 오프라인 · 회차당 3시간']];
+const facts=[['시작','2026년 12월 셋째 주 시작'],['기간','8주'],['장소','사당 또는 강남 지역 검토 중'],['인원','그룹당 4~6명'],['만남','격주 오프라인 · 회차당 3시간']];
 for(const [i,[label,value]] of facts.entries()){
  const y=385+i*125;
  await type(label,y,32,{color:'muted'});await type(value,y,38,{x:255,color:'forest'});
 }
-await type('정확한 시작일과 요일·시간은 추후 안내합니다.\n상세 장소는 참여 확정 후 안내합니다.',1050,29,{color:'muted'});
+await type('금·토 오후 3~6시 · 신년 휴식 1주 별도\n상세 장소는 참여 확정 후 안내합니다.',1050,29,{color:'muted'});
 await save(recruit,6);
 
 await card(7);
