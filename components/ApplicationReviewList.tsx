@@ -19,6 +19,8 @@ export type MembershipApplication = {
   phone: string | null;
   cohort: string;
   birth_year: number | null;
+  referral_sources: string[] | null;
+  referral_other: string | null;
   message: string;
   status: "pending" | "approved" | "rejected";
   admin_note: string;
@@ -85,6 +87,11 @@ function ApplicationReviewCard({ application }: { application: MembershipApplica
           )}
         </div>
       </div>
+      <p className="mt-4 break-words text-sm leading-7 text-[var(--muted)]">
+        유입 경로: {application.referral_sources?.length
+          ? application.referral_sources.map((source) => source === "기타" && application.referral_other ? `기타 (${application.referral_other})` : source).join(", ")
+          : "미수집 (기존 신청)"}
+      </p>
       {application.group_id && <div className="mt-5 rounded-2xl border border-[var(--line)] px-5 py-4">
         <p className="mb-3 text-xs font-semibold text-[var(--forest)]">{application.status === "approved" ? "확정한 모임" : "선택한 모임"}</p>
         <MembershipGroupDetails hostName={application.host_name ?? ""} venue={application.venue ?? ""} durationMinutes={application.duration_minutes ?? 180} meetings={application.meetings ?? []} />

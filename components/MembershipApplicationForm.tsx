@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { MembershipGroupDetails } from "@/components/MembershipGroupDetails";
 import type { MembershipGroupOption } from "@/lib/membership/groupSelection";
+import { referralSources } from "@/lib/membership/referral";
 import {
   submitMembershipApplicationAction,
   type MembershipApplicationState
@@ -20,6 +21,7 @@ type MembershipApplicationFormProps = {
 export function MembershipApplicationForm({ cohort, configured, groups, groupsError = false }: MembershipApplicationFormProps) {
   const [state, formAction, pending] = useActionState(submitMembershipApplicationAction, initialState);
   const [groupId, setGroupId] = useState("");
+  const [selectedSources, setSelectedSources] = useState<string[]>([]);
 
   return (
     <form action={formAction} className="mt-10 space-y-5">
@@ -94,6 +96,33 @@ export function MembershipApplicationForm({ cohort, configured, groups, groupsEr
           readOnly
         />
       </label>
+      <fieldset disabled={pending || state.status === "success"} className="min-w-0 space-y-3" aria-describedby="referral-help">
+        <legend className="text-sm font-medium">READ ME를 어디서 알게 되셨나요?</legend>
+        <p id="referral-help" className="text-sm text-[var(--muted)]">하나 이상 선택해 주세요. 여러 개 선택할 수 있어요.</p>
+        <div className="grid grid-cols-2 gap-3 max-[820px]:grid-cols-1 max-[430px]:gap-2">
+          {referralSources.map((source) => (
+            <label key={source} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 text-sm">
+              <input type="checkbox" name="referralSources" value={source}
+                checked={selectedSources.includes(source)}
+                required={selectedSources.length === 0}
+                onChange={(event) => {
+                  const checked = event.target.checked;
+                  setSelectedSources((previous) => checked ? [...previous, source] : previous.filter((item) => item !== source));
+                }}
+                className="size-4 shrink-0 accent-[var(--forest)]" />
+              {source}
+            </label>
+          ))}
+        </div>
+        {selectedSources.includes("기타") && (
+          <label className="block text-sm font-medium">
+            기타 경로
+            <input name="referralOther" required maxLength={200} pattern=".*\S.*"
+              placeholder="어디서 알게 되셨는지 적어 주세요"
+              className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-3 outline-none focus:border-[var(--forest)]" />
+          </label>
+        )}
+      </fieldset>
       <label className="block text-sm font-medium">
         남기고 싶은 말 <span className="font-normal text-[var(--muted)]">(선택)</span>
         <textarea
@@ -105,7 +134,7 @@ export function MembershipApplicationForm({ cohort, configured, groups, groupsEr
       </label>
       <label className="flex items-start gap-3 rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 py-4 text-sm leading-6">
         <input className="mt-1 accent-[var(--forest)]" type="checkbox" name="privacyConsent" required />
-        <span>입력한 이름, 이메일, 전화번호, 출생연도를 가입 신청 검토와 참여 안내에 사용하는 것에 동의합니다.</span>
+        <span>입력한 이름, 이메일, 전화번호, 출생연도를 가입 신청 검토와 참여 안내에, 유입 경로를 홍보 경로 파악에 사용하는 것에 동의합니다.</span>
       </label>
       {(state.message || !configured) && (
         <p role="status" className="rounded-2xl border border-[var(--line)] px-4 py-3 text-sm leading-6 text-[var(--ink)]">

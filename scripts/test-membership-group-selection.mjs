@@ -53,6 +53,7 @@ try {
   await db.exec(`insert into public.membership_applications(name,email,cohort,birth_year) values('기존 신청','legacy@example.test','1기',1990);`);
   await db.exec(await source("20260930123533_membership_application_phone.sql"));
   await db.exec(await source("20261001000000_optional_membership_group_host.sql"));
+  await db.exec(await source("20261112075859_membership_referral_sources.sql"));
   equal(await one("select phone from public.membership_applications where email='legacy@example.test'"), null);
   await db.exec(invitationSource.slice(invitationSource.indexOf("create or replace function public.handle_new_user()")));
   await db.exec(`create trigger handle_signup after insert on auth.users for each row execute function public.handle_new_user();`);
@@ -64,6 +65,31 @@ try {
     ('${gid(4)}','1기','비공개','가이드 D','경험 나누기','서울',false);
     insert into public.talk_meetings select g.id,w,now()+interval '2 days'+(w-1)*interval '7 days' from public.talk_groups g cross join unnest(array[1,3,5,7]) w;`);
   await db.exec("begin");
+  await login(null);
+  const referralSubmit = (sources, other = "''", email = "referral@example.test") =>
+    `select public.submit_membership_application_with_referral('검증 회원','${email}','1기',1990,'${gid(1)}','01012345678','',${sources},${other})`;
+  async function referralFails(sql, pattern) {
+    await db.exec("savepoint referral_case");
+    await fails(sql, pattern);
+    await db.exec("rollback to savepoint referral_case; release savepoint referral_case");
+  }
+  for (const sources of ["null", "array[]::text[]", "array[null]::text[]", "array['잘못된 경로']"]) {
+    await referralFails(referralSubmit(sources), /invalid_application_referral/);
+  }
+  await referralFails(referralSubmit("array['기타']", "'   '"), /invalid_application_referral/);
+  await referralFails(referralSubmit("array['기타']", "repeat('가',201)"), /invalid_application_referral/);
+  await db.exec(referralSubmit("array['인스타그램','블로그','기타']", "'  독서 행사  '"));
+  await referralFails(referralSubmit("array['지인 소개']"), /application_already_submitted/);
+  await login(1);
+  const referral = (await db.query("select referral_sources,referral_other from public.admin_list_membership_applications() where email='referral@example.test'")).rows[0];
+  equal(referral.referral_sources.sort(), ["인스타그램","블로그","기타"].sort());
+  equal(referral.referral_other, "독서 행사");
+  equal(await one("select referral_sources from public.admin_list_membership_applications() where email='legacy@example.test'"), null);
+  await login(null);
+  await db.exec(referralSubmit("array['블로그']", "'선택하지 않은 기타 내용'", "blog@example.test"));
+  await login(1);
+  equal(await one("select referral_other from public.admin_list_membership_applications() where email='blog@example.test'"), null);
+  await db.exec("rollback; begin");
   const blankHostMeetings = await one("select jsonb_agg(jsonb_build_object('week_number',week_number,'starts_at',starts_at) order by week_number) from public.talk_meetings where group_id='" + gid(4) + "'");
   await db.query("select public.admin_save_talk_group($1,'1기','','','서울',180,true,$2::jsonb)",[gid(4),JSON.stringify(blankHostMeetings)]);
   await login(null);
