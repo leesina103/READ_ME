@@ -44,20 +44,22 @@ export async function sendInterviewAdminNotification(options: AdminNotificationO
         to: [recipient],
         subject: `[READ ME] ${content.subject}`,
         text: [
+          "① 자동 처리 결과",
           content.message,
           `예약자 이름: ${name}`,
           `연락처: ${phone}`,
           `${content.label}: ${formatInterviewTime(startsAt)} (한국 시간)`,
           "",
-          "예약 관리는 관리자 페이지에서 확인해 주세요.",
-          adminUrl.href,
-          "", "지금 할 일",
+          "Google 일정·Meet·노션의 반영 결과는 별도 자동화 알림이나 노션에서 확인해 주세요.",
+          "", "② 직접 할 일",
           event === "cancelled" ? "취소된 일정의 안내와 할 일을 확인해 주세요." : "예약 안내 발송 여부와 Meet 준비 상태를 확인해 주세요.",
-          "", "지금 보낼 메시지 초안", draft,
-          "", "다음 행동",
+          "실제 안내 후 노션에 완료 체크하세요. 참여자에게 문자가 자동 발송되지는 않습니다.",
+          "", "③ 보낼 메시지 초안", draft,
+          "", "④ 다음 행동",
           event === "cancelled" ? "재예약이 들어오면 새 일정으로 안내합니다." : "전날 안내 여부를 확인하고, 시작 30분 전에 Meet 링크를 보내세요.",
-          "", "다음 메시지 초안",
-          event === "cancelled" ? "[이름]님, 새로 신청해 주신 [일시]에 인터뷰가 예약됐어요. 접속 링크는 시작 30분 전에 보내드릴게요." : `${name}님, 30분 후 인터뷰가 시작돼요. [Meet 링크]로 들어와 주세요. 접속이 어렵거나 늦어지면 알려주세요.`
+          "", "⑤ 다음 메시지 초안",
+          event === "cancelled" ? "[이름]님, 새로 신청해 주신 [일시]에 인터뷰가 예약됐어요. 접속 링크는 시작 30분 전에 보내드릴게요." : `${name}님, 30분 후 인터뷰가 시작돼요. [Meet 링크]로 들어와 주세요. 접속이 어렵거나 늦어지면 알려주세요.`,
+          "", "예약 관리 링크", adminUrl.href
         ].join("\n")
       }),
       signal: AbortSignal.timeout(5000)

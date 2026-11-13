@@ -42,6 +42,15 @@ export function payment(member) {
   return { key: `member:${member.id}:cohort:1:payment`, payer, amount, date, name: readText(p['이름']), memberId: member.id };
 }
 
-export function emailBody(action, draft, next, nextDraft, url) {
-  return [`지금 할 일\n${action}`, `지금 보낼 메시지 초안\n${draft}`, `다음 행동\n${next}`, `다음 메시지 초안\n${nextDraft}`, `노션에서 확인\n${url}`].join('\n\n');
+export const statusLabel = value => ({ passed: '정상', failed: '실패', waiting: '확인 대기', skipped_recent_success: '최근 성공으로 생략' }[value] || value);
+
+export function emailBody(action, draft, next, nextDraft, url, automated = '아래 업무의 확인 결과를 정리했습니다.') {
+  return [
+    `① 자동 처리 결과\n${automated}`,
+    `② 직접 할 일\n${action}`,
+    `③ 보낼 메시지 초안\n${draft}`,
+    `④ 다음 행동\n${next}`,
+    `⑤ 다음 메시지 초안\n${nextDraft}`,
+    `확인 링크\n${url}`
+  ].join('\n\n');
 }
