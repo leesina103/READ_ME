@@ -29,6 +29,9 @@ export async function sendInterviewAdminNotification(options: AdminNotificationO
     const baseUrl = process.env.INTERVIEW_ADMIN_SITE_URL?.trim() || "https://read-me-two-black.vercel.app";
     const adminUrl = new URL("/admin/interviews", baseUrl);
     if (adminUrl.protocol !== "https:" && adminUrl.protocol !== "http:") throw new Error("invalid_site_url");
+    const draft = event === "cancelled"
+      ? `${name}님, 인터뷰 예약 취소를 확인했어요. 다시 신청하실 때 인터뷰 예약 페이지를 이용해 주세요.`
+      : `${name}님, READ ME 인터뷰가 ${formatInterviewTime(startsAt)}으로 ${event === "rescheduled" ? "변경" : "예약"}됐어요. Meet 링크는 시작 30분 전에 보내드릴게요.`;
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -47,7 +50,14 @@ export async function sendInterviewAdminNotification(options: AdminNotificationO
           `${content.label}: ${formatInterviewTime(startsAt)} (한국 시간)`,
           "",
           "예약 관리는 관리자 페이지에서 확인해 주세요.",
-          adminUrl.href
+          adminUrl.href,
+          "", "지금 할 일",
+          event === "cancelled" ? "취소된 일정의 안내와 할 일을 확인해 주세요." : "예약 안내 발송 여부와 Meet 준비 상태를 확인해 주세요.",
+          "", "지금 보낼 메시지 초안", draft,
+          "", "다음 행동",
+          event === "cancelled" ? "재예약이 들어오면 새 일정으로 안내합니다." : "전날 안내 여부를 확인하고, 시작 30분 전에 Meet 링크를 보내세요.",
+          "", "다음 메시지 초안",
+          event === "cancelled" ? "[이름]님, 새로 신청해 주신 [일시]에 인터뷰가 예약됐어요. 접속 링크는 시작 30분 전에 보내드릴게요." : `${name}님, 30분 후 인터뷰가 시작돼요. [Meet 링크]로 들어와 주세요. 접속이 어렵거나 늦어지면 알려주세요.`
         ].join("\n")
       }),
       signal: AbortSignal.timeout(5000)

@@ -1,0 +1,36 @@
+name: READ ME 서버 로그인 점검
+on:
+  schedule:
+    - cron: '10 0 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: readme-server-monitor
+  cancel-in-progress: false
+jobs:
+  monitor:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+      - name: 고정된 점검 패키지 설치
+        run: npm ci --ignore-scripts --prefix scripts/server-monitor
+      - name: 서버용 브라우저 설치
+        working-directory: scripts/server-monitor
+        run: npx --no-install playwright install --with-deps chromium
+      - name: 로그인 전체 흐름 확인 및 결과 전달
+        if: always()
+        run: node scripts/server-monitor/run.mjs
+        env:
+          MONITOR_ENDPOINT: https://whkaobzprcyfyvnkkqgr.supabase.co/functions/v1/operations-worker
+          MONITOR_JWT: ${{ secrets.README_MONITOR_JWT }}
+          MONITOR_TOKEN: ${{ secrets.README_MONITOR_TOKEN }}
+          MONITOR_TEST_EMAIL: ${{ secrets.README_MONITOR_TEST_EMAIL }}
+          MONITOR_TEST_PASSWORD: ${{ secrets.README_MONITOR_TEST_PASSWORD }}
