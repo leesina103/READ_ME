@@ -25,7 +25,7 @@ export const membershipInvitations: Readonly<Record<string, MembershipInvitation
       { label: "오프라인 토의", value: "4회" },
       { label: "온라인 실천·기록", value: "4회" },
       { label: "회차별 소요", value: "3시간" },
-      { label: "장소", value: "사당역 인근 예정 · 상세 장소는 참여 확정 후 안내" },
+      { label: "장소", value: "강남 또는 사당 검토 중 · 상세 장소는 확정 후 안내" },
       { label: "그룹당 인원", value: "4~6명" }
     ]
   },
@@ -41,9 +41,9 @@ export const membershipInvitations: Readonly<Record<string, MembershipInvitation
     ]
   },
   feeLabel: "첫 기수 특별가",
-  feeDescription: "READ ME의 첫 시작을 함께하는 1기에게 24만 원에서 8만 원 할인한 금액으로 안내드려요.",
-  regularFee: "240,000원",
-  fee: "160,000원",
+  feeDescription: "READ ME의 첫 시작을 함께하는 1기에게 16만 원에서 10만 원 할인한 6만 원으로 안내드려요.",
+  regularFee: "160,000원",
+  fee: "60,000원",
   bank: "카카오뱅크",
   account: "3333157130826",
   accountHolder: "이신아",
