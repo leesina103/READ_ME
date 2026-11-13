@@ -1,5 +1,6 @@
 import { TASKS, LEDGER, MEMBERS, SITE, koreanDay, when, text, title, readText, done, stepDone, plan, payment, emailBody, statusLabel } from './domain.mjs';
 import { checkServiceHealth } from './health.mjs';
+import { emailHtml } from './email-html.mjs';
 
 export function createWorker(env, fetcher = fetch) {
   let deadline;
@@ -42,7 +43,7 @@ export function createWorker(env, fetcher = fetch) {
     if (prior?.status === 'accepted') return;
     // Resend의 24시간 중복 방지 기간이 지난 불확실한 발송은 자동 재시도하지 않습니다.
     if (prior && Date.now() - Date.parse(prior.startedAt) > 23 * 3600000) throw new Error('메일 접수 이력 확인 필요');
-    const payload = prior?.payload || { from: env.OPS_MAIL_FROM, to: [env.OPS_MAIL_TO], subject, text: body };
+    const payload = prior?.payload || { from: env.OPS_MAIL_FROM, to: [env.OPS_MAIL_TO], subject, text: body, html: emailHtml(body) };
     if (!prior) await save(`mail:${key}`, { status: 'pending', startedAt: new Date().toISOString(), payload });
     const idempotency = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(key))), x => x.toString(16).padStart(2, '0')).join('');
     const result = await request('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${env.OPS_RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': `readme-ops-${idempotency}` }, body: JSON.stringify(payload) });

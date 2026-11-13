@@ -1,5 +1,6 @@
 import "server-only";
 import { formatInterviewTime } from "@/lib/interview/booking";
+import { emailHtml } from "@/supabase/functions/operations-worker/email-html.mjs";
 
 type AdminNotificationOptions = {
   applicationId: string;
@@ -32,18 +33,7 @@ export async function sendInterviewAdminNotification(options: AdminNotificationO
     const draft = event === "cancelled"
       ? `${name}님, 인터뷰 예약 취소를 확인했어요. 다시 신청하실 때 인터뷰 예약 페이지를 이용해 주세요.`
       : `${name}님, READ ME 인터뷰가 ${formatInterviewTime(startsAt)}으로 ${event === "rescheduled" ? "변경" : "예약"}됐어요. Meet 링크는 시작 30분 전에 보내드릴게요.`;
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "Idempotency-Key": `interview-admin-${event}-${applicationId}${eventVersion}`
-      },
-      body: JSON.stringify({
-        from: process.env.INTERVIEW_ADMIN_EMAIL_FROM?.trim() || "READ ME <onboarding@resend.dev>",
-        to: [recipient],
-        subject: `[READ ME] ${content.subject}`,
-        text: [
+    const mailText = [
           "① 자동 처리 결과",
           content.message,
           `예약자 이름: ${name}`,
@@ -60,7 +50,20 @@ export async function sendInterviewAdminNotification(options: AdminNotificationO
           "", "⑤ 다음 메시지 초안",
           event === "cancelled" ? "[이름]님, 새로 신청해 주신 [일시]에 인터뷰가 예약됐어요. 접속 링크는 시작 30분 전에 보내드릴게요." : `${name}님, 30분 후 인터뷰가 시작돼요. [Meet 링크]로 들어와 주세요. 접속이 어렵거나 늦어지면 알려주세요.`,
           "", "예약 관리 링크", adminUrl.href
-        ].join("\n")
+        ].join("\n");
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "Idempotency-Key": `interview-admin-${event}-${applicationId}${eventVersion}`
+      },
+      body: JSON.stringify({
+        from: process.env.INTERVIEW_ADMIN_EMAIL_FROM?.trim() || "READ ME <onboarding@resend.dev>",
+        to: [recipient],
+        subject: `[READ ME] ${content.subject}`,
+        text: mailText,
+        html: emailHtml(mailText)
       }),
       signal: AbortSignal.timeout(5000)
     });
