@@ -80,7 +80,7 @@ export async function submitInterviewApplicationAction(
 
   const [notificationStatus] = await Promise.all([
     sendInterviewConfirmation({ name, phone, startsAt, managementToken: booking.management_token, applicationId: booking.application_id }),
-    sendInterviewAdminNotification({ applicationId: booking.application_id, startsAt, name, phone })
+    sendInterviewAdminNotification({ applicationId: booking.application_id, startsAt, name, phone, managementToken: booking.management_token })
   ]);
   revalidatePath("/interview/apply");
 

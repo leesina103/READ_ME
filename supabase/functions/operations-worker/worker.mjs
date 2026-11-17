@@ -1,9 +1,11 @@
 import { TASKS, LEDGER, MEMBERS, SITE, koreanDay, when, text, title, readText, done, stepDone, plan, payment, emailBody, statusLabel } from './domain.mjs';
 import { checkServiceHealth } from './health.mjs';
 import { emailHtml } from './email-html.mjs';
+import { loadMessageTemplates, stageMessages, bookingMessages, needsConfirmation } from './message-templates.mjs';
 
 export function createWorker(env, fetcher = fetch) {
   let deadline;
+  let templates;
   const checkTime = () => { if (Date.now() > deadline) throw new Error('실행 시간 한도'); };
   async function request(url, options = {}) {
     checkTime();
@@ -41,6 +43,8 @@ export function createWorker(env, fetcher = fetch) {
   async function send(key, subject, body) {
     const prior = await state(`mail:${key}`);
     if (prior?.status === 'accepted') return;
+    // 접수 여부가 불확실한 예전 본문을 새 원문으로 바꿔 재전송하지 않습니다.
+    if (prior?.payload && prior.payload.text !== body) throw new Error('기존 메일 접수 여부와 변경된 문서 원문 확인 필요');
     // Resend의 24시간 중복 방지 기간이 지난 불확실한 발송은 자동 재시도하지 않습니다.
     if (prior && Date.now() - Date.parse(prior.startedAt) > 23 * 3600000) throw new Error('메일 접수 이력 확인 필요');
     const payload = prior?.payload || { from: env.OPS_MAIL_FROM, to: [env.OPS_MAIL_TO], subject, text: body, html: emailHtml(body) };
@@ -101,13 +105,13 @@ export function createWorker(env, fetcher = fetch) {
     let meetUrl = '';
     try { meetUrl = await meet(booking); } catch {
       await save('calendar-error:'+booking.id, { status: '확인 필요', at: new Date().toISOString() });
-      await send('calendar-error:'+booking.id+':'+koreanDay(now), '[READ ME] 인터뷰 일정 동기화 확인 필요', emailBody('Google 연결 상태를 확인하고, 실제 캘린더 일정과 예약 시간을 대조하세요.', '해당 없음(운영 점검)', '일정을 확인한 뒤 필요한 경우 참여자에게 다시 안내하세요.', '[이름]님, 인터뷰는 [확정 일시]에 진행됩니다. 접속 링크는 [확인한 Meet 링크]입니다.', SITE+'/admin/interviews', 'Google 일정·Meet 동기화 중 오류가 발생했습니다.\n일정 생성·변경·취소의 완료 여부는 확인이 필요합니다.'));
+      await send('calendar-error:'+booking.id+':'+koreanDay(now), '[READ ME] 인터뷰 일정 동기화 확인 필요', emailBody('Google 연결 상태를 확인하고, 실제 캘린더 일정과 예약 시간을 대조하세요.', '해당 없음(운영 점검)', '일정을 확인한 뒤 필요한 경우 참여자에게 다시 안내하세요.', needsConfirmation('일정·Meet 링크 동기화 상태 확인 후 기준 문서의 해당 단계를 사용하세요.'), SITE+'/admin/interviews', 'Google 일정·Meet 동기화 중 오류가 발생했습니다.\n일정 생성·변경·취소의 완료 여부는 확인이 필요합니다.'));
     }
     if (booking.status === 'cancelled') {
       if (existing[0] && !done(existing[0])) await notion('pages/'+existing[0].id, 'PATCH', { properties: { '상태': { status: { name: '취소' } } } });
       return;
     }
-    const steps = plan(booking, now, meetUrl);
+    const steps = plan(booking, now, meetUrl, templates);
     if (!steps.length) return;
     const rowKey = 'booking:'+booking.id;
     const page = existing[0] || await ensurePage(TASKS, '중복 방지 키', rowKey, {
@@ -161,12 +165,15 @@ export function createWorker(env, fetcher = fetch) {
     }
     if (dryRun) {
       await query(TASKS, { property: '상태', status: { does_not_equal: '완료' } });
-      return { status: 'dry_run', bookings: bookings.length, due: bookings.flatMap(b => plan(b, now)).filter(s => s.actionable).length, googleConfigured: Boolean(env.OPS_GOOGLE_REFRESH_TOKEN), writes: 0 };
+      const source = await loadMessageTemplates(env, fetcher);
+      return { status: 'dry_run', bookings: bookings.length, due: bookings.flatMap(b => plan(b, now)).filter(s => s.actionable).length, googleConfigured: Boolean(env.OPS_GOOGLE_REFRESH_TOKEN), messageTemplates: source.error ? { status: '확인 필요', reason: source.error } : { status: 'passed', revisionId: source.revisionId, count: Object.keys(source.templates).length }, writes: 0 };
     }
     const workerId = crypto.randomUUID();
     if (!await db('rpc/claim_operations_worker', 'POST', { worker: workerId })) return { status: 'busy' };
     const errors = [];
     try {
+      templates = await loadMessageTemplates(env, fetcher);
+      if (templates.error) errors.push(templates.error);
       for (const booking of bookings) {
         if (Date.parse(booking.interview_slots.starts_at) + 86400000 < now && booking.status !== 'cancelled') continue;
         try { await syncBooking(booking, now); } catch (e) { errors.push(e.message); }
@@ -179,7 +186,15 @@ export function createWorker(env, fetcher = fetch) {
         const paymentNotes = await ledger();
         const pages = await query(TASKS, { and: [{ property: '상태', status: { does_not_equal: '완료' } }, { property: '상태', status: { does_not_equal: '취소' } }] });
         const due = pages.filter(p => !stepDone(p, p.properties['단계']?.select?.name) && p.properties['기한']?.date?.start && Date.parse(p.properties['기한'].date.start) <= now);
-        const chunks = due.map(p => emailBody('현재 단계의 실제 처리 여부를 확인하세요. 미처리라면 아래 초안을 확인한 뒤 처리하고 노션에 완료 체크하세요.', readText(p.properties['메시지 초안']) || '해당 없음(운영 점검)', readText(p.properties['다음 행동']) || '완료 여부 확인', readText(p.properties['다음 메시지 초안']) || '해당 없음(운영 점검)', p.url, '대상: '+readText(p.properties['참여자 이름'])+' · '+(p.properties['단계']?.select?.name || readText(p.properties['기존 할 일']))+'\n기한이 지났고 노션에 완료 표시가 없는 업무입니다.\n완료 표시가 없다는 이유만으로 실제 미발송을 단정하지는 않습니다.'));
+        const chunks = due.map(p => {
+          const stage = p.properties['단계']?.select?.name || readText(p.properties['기존 할 일']);
+          const booking = bookings.find(b => b.id === readText(p.properties['예약 ID']));
+          const meetUrl = p.properties['Meet 링크']?.url || '';
+          const planned = booking && plan(booking, now, meetUrl, templates).find(step => step.stage === stage);
+          const messages = planned || stageMessages(templates, stage, booking ? bookingMessages(templates, { ...booking, meetUrl }, SITE, now).values : { '이름': readText(p.properties['참여자 이름']), '홈페이지 주소': SITE });
+          // 체크표에 저장된 과거 문구 대신 이번 실행에서 읽은 원문으로 다시 만듭니다.
+          return emailBody('현재 단계의 실제 처리 여부를 확인하세요. 미처리라면 아래 초안을 확인한 뒤 처리하고 노션에 완료 체크하세요.', messages.draft, planned?.next || readText(p.properties['다음 행동']) || '완료 여부 확인', messages.nextDraft, p.url, '대상: '+readText(p.properties['참여자 이름'])+' · '+stage+'\n기한이 지났고 노션에 완료 표시가 없는 업무입니다.\n완료 표시가 없다는 이유만으로 실제 미발송을 단정하지는 않습니다.');
+        });
         const browser = await state('monitor:latest');
         chunks.unshift(emailBody(health.status === 'passed' ? '서비스 점검 항목은 정상입니다. 지금 별도로 처리할 일은 없습니다.' : '아래 점검 결과에서 실패·대기 항목을 확인하고 해당 화면을 점검하세요.', '해당 없음(운영 점검)', '09:10 이후 별도로 오는 로그인 점검 결과를 확인하세요.', '해당 없음(운영 점검)', `${SITE}/admin/interviews`, `서비스 점검: ${statusLabel(health.status)}\n${health.checks.map(c => `- ${c.name}: ${statusLabel(c.status)}`).join('\n')}\n브라우저 최근 기록: ${browser ? `${statusLabel(browser.status)} (${when(browser.checkedAt)})` : '실행 기록 없음'}\n기한이 지난 미완료 업무: ${due.length}건`));
         chunks.push(emailBody(paymentNotes.length ? paymentNotes.join('\n') : '대조한 자료에 누락·불일치가 없습니다. 새 입금이 있다면 은행 내역을 직접 확인한 뒤 회원 명단에 입력하세요.', '해당 없음(운영 점검)', '회원 명단에 납부 표시·입금자명·실제 입금액·입금일을 입력하면 다음 오전 9시 장부에 반영합니다.', '해당 없음(운영 점검)', 'https://www.notion.so/c368c6b5ed514ad79f684f086ed2ee9b', '1기 납부 자료와 가계부 대조를 마쳤습니다.\n정보가 갖춰진 납부 건은 중복 없이 장부에 반영합니다.\n은행 입금 내역을 자동 조회한 결과는 아닙니다.'));

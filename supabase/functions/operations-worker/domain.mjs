@@ -1,3 +1,5 @@
+import { bookingMessages, needsConfirmation } from './message-templates.mjs';
+
 export const TASKS = '09d2add2-4718-4b06-9c8e-29a3f0a85b7a';
 export const LEDGER = '401a0af7-5fb6-4731-8df8-be933ef50ff2';
 export const MEMBERS = '1c730ca8-2d4a-45ff-bc4e-5f332bd86ff7';
@@ -10,20 +12,18 @@ export const readText = prop => (prop?.rich_text || prop?.title || []).map(x => 
 export const done = page => page.in_trash || page.archived || ['완료', '취소'].includes(page.properties?.['상태']?.status?.name);
 export const stepDone = (page, stage) => done(page) || page.properties?.[stage === '인터뷰 기록' ? '인터뷰 기록 완료' : stage]?.checkbox === true;
 
-export function plan(booking, now, meet = '') {
+export function plan(booking, now, meet = '', templates) {
   const start = Date.parse(booking.interview_slots.starts_at);
   const created = Date.parse(booking.updated_at);
   const dayBefore = Date.parse(`${koreanDay(start - 86400000)}T09:00:00+09:00`);
-  const name = booking.name;
-  const schedule = when(start);
-  const reminder = `${name}님, 30분 후 ${schedule}에 READ ME 인터뷰가 시작돼요. 카메라와 마이크를 확인하고 ${meet || '[Meet 링크 준비 필요]'}로 들어와 주세요. 접속이 어렵거나 늦어지면 이 대화창으로 알려주세요.`;
-  const thanks = `${name}님, 오늘 이야기 나눠주셔서 감사합니다. 운영진과 이야기 나눈 뒤 1~2일 안에 참여 관련 안내를 드릴게요.`;
+  const { reservation, reminder, thanks } = bookingMessages(templates, { ...booking, meetUrl: meet }, SITE, now);
+  const dayBeforeDraft = needsConfirmation('기준 문서에 인터뷰 전날 문자 본문이 없습니다.');
   const nextIsDayBefore = created <= dayBefore && now < start - 3600000;
   const entries = [
-    ['예약 안내', created, start, `${name}님, READ ME 인터뷰가 ${schedule}으로 예약됐어요. ${SITE}/interview 에서 안내를 확인해 주세요. Meet 링크는 시작 30분 전에 보내드릴게요. 예약 변경: ${SITE}/interview/apply/manage/${booking.management_token}`, nextIsDayBefore ? '전날 안내 발송 여부 확인' : '시작 30분 전 Meet 안내 발송', nextIsDayBefore ? `${name}님, 내일 ${schedule}에 인터뷰가 예정되어 있어요. 접속 링크는 시작 30분 전에 보내드릴게요.` : reminder],
-    ['전날 확인', dayBefore, start - 3600000, `${name}님, 내일 ${schedule}에 READ ME 인터뷰가 예정되어 있어요. 접속 링크는 시작 30분 전에 보내드릴게요.`, '시작 30분 전 Meet 안내 발송', reminder],
+    ['예약 안내', created, start, reservation, nextIsDayBefore ? '전날 안내 발송 여부 확인' : '시작 30분 전 Meet 안내 발송', nextIsDayBefore ? dayBeforeDraft : reminder],
+    ['전날 확인', dayBefore, start - 3600000, dayBeforeDraft, '시작 30분 전 Meet 안내 발송', reminder],
     ['30분 전 안내', start - 3600000, start, reminder, '인터뷰 진행 여부 확인 후 기록 작성', thanks],
-    ['인터뷰 기록', start + 1800000, start + 86400000, thanks, '실제 진행 여부와 운영진 논의 결과 확인 후 1~2일 내 안내', `${name}님, READ ME 참여 관련 안내를 드려요. [확정된 결과와 다음 절차를 작성해 주세요.]`]
+    ['인터뷰 기록', start + 1800000, start + 86400000, thanks, '실제 진행 여부와 운영진 논의 결과 확인 후 1~2일 내 안내', needsConfirmation('운영진 논의 결과에 따라 문서 4번(초대) 또는 5번(함께하지 못하는 경우)을 선택하세요.')]
   ];
   return entries.filter(([stage, due, end]) => (stage !== '전날 확인' || created <= due) && end > created).map(([stage, due, end, draft, next, nextDraft]) => ({
     key: `booking:${booking.id}:${booking.updated_at}:${stage}`, stage, due, end, draft, next, nextDraft,

@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import { parseMessageTemplates, renderMessage, bookingMessages, stageMessages, loadMessageTemplates } from '../supabase/functions/operations-worker/message-templates.mjs';
+import { manualMessageDocument } from './fixtures/manual-message-document.mjs';
+
+const source = parseMessageTemplates(manualMessageDocument());
+assert.match(source.templates['1'], /안녕하세요, \[이름\]님\.\n\nREAD ME/);
+assert.doesNotMatch(JSON.stringify(source.templates), /발송:|운영자 참고|사용하면 안 되는/);
+assert.doesNotMatch(JSON.stringify(source.templates), /example\.com\/review|참고 문구|session은|1회차|2회차/);
+assert.equal(source.templates['10'], '[이름]님, 오늘 함께 이야기 나눠주셔서 고맙습니다.\n\n[회차 후기 링크]\n편하게 들려주세요 :)');
+assert.equal(source.templates['12'], '[이름]님, READ ME [기수]의 8주를 함께해 주셔서 고맙습니다.\n\n[전체 기수 후기 링크]');
+assert.equal(source.templates['13'], '[이름]님, 파티에 함께해 주셔서 고맙습니다.\n\n[파티 후기 링크]');
+assert.equal(renderMessage(source, '3', { 이름: '테스트' }), '테스트님, 고맙습니다 :)');
+assert.match(renderMessage(source, '2'), /\[확인 필요: 이름\]/);
+assert.match(renderMessage(source, '없는 단계'), /^확인 필요:/);
+assert.match(stageMessages(source, '인터뷰 기록', {}).nextDraft, /^확인 필요:/);
+assert.throws(() => parseMessageTemplates({ tabs: [] }));
+const booking = { name: '테스트', management_token: 'token', meetUrl: 'https://meet.google.com/test', interview_slots: { starts_at: '2026-11-16T11:40:00Z' } };
+const soon = bookingMessages(source, booking, 'https://example.com', Date.parse('2026-11-16T11:30:00Z'));
+assert.match(soon.reservation, /https:\/\/meet.google.com\/test/);
+assert.doesNotMatch(soon.reservation, /30분 후|시작 30분 전에 문자로/);
+assert.match(soon.reminder, /오늘 오후 8:40/);
+assert.match(soon.reservation, /\/interview\/apply\/manage\/token/);
+const normal = bookingMessages(source, booking, 'https://example.com', Date.parse('2026-11-16T10:00:00Z'));
+assert.match(normal.reminder, /30분 후/);
+const unavailable = await loadMessageTemplates({});
+assert.match(renderMessage(unavailable, '3', { 이름: '테스트' }), /^확인 필요:/);
+let reads = 0;
+const env = { OPS_GOOGLE_CLIENT_ID: 'test', OPS_GOOGLE_CLIENT_SECRET: 'test', OPS_GOOGLE_REFRESH_TOKEN: 'test' };
+const mock = async (url, options) => {
+  assert.equal(options.cache, 'no-store');
+  return Response.json(url.includes('oauth2') ? { access_token: 'test' } : manualMessageDocument(String(++reads)));
+};
+const first = await loadMessageTemplates(env, mock), second = await loadMessageTemplates(env, mock);
+assert.notEqual(first.templates['1'], second.templates['1']);
+console.log('원문·줄바꿈 유지, 참고 문구 제외, 변수 누락, 30분 미만 예약, 최신 재조회 검증 통과');

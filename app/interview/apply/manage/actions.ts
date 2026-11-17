@@ -49,6 +49,7 @@ export async function manageInterviewAction(token: string, _previous: ManageBook
     event
   }), sendInterviewAdminNotification({
     applicationId: booking.application_id,
+    managementToken: token,
     name: booking.name,
     phone: booking.phone,
     startsAt: booking.starts_at,
