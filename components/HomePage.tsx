@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, CalendarDays, Check, Clock3, HeartHandshake, MessageCircle, NotebookPen, Repeat, UsersRound } from "lucide-react";
 import { AfterSeasonCarousel } from "@/components/AfterSeasonCarousel";
 import { MeetRemi } from "@/components/MeetRemi";
+import { HomeValues } from "@/components/HomeValues";
 import { SectionTitle } from "@/components/SectionTitle";
 import { StoryCarousel } from "@/components/StoryCarousel";
 import { TalkRoomPreview } from "@/components/TalkRoomPreview";
@@ -57,6 +58,8 @@ export function HomePage() {
         </div>
         <blockquote className="hero__quote">“나를 읽다.<br />서로를 읽다.<br />삶을 읽다.”</blockquote>
       </section>
+
+      <HomeValues />
 
       <section className="section meeting-format-section"><div className="section-shell">
         <SectionTitle eyebrow="HOW IT WORKS" title={<>{currentMeeting.schedule.duration} 동안,<br />함께 깊게 읽습니다.</>} />
