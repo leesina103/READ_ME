@@ -43,6 +43,8 @@ async function picture(file,x,y,width,height){
  layers.push({input:buffer,left:x+Math.round((width-m.width)/2),top:y});
 }
 async function save(out,n){
+ if(process.env.README_RECRUIT_CARD&&(out!==recruit||n!==Number(process.env.README_RECRUIT_CARD)))return;
+ if(process.env.README_RECRUIT_REVIEW==='1'&&(out!==recruit||![1,3,4,5,6].includes(n)))return;
  const name=String(n).padStart(2,'0');
  const rendered=await sharp({create:{width:W,height:H,channels:3,background:colors[cardBackground]}}).composite(layers).png().toBuffer();
  // 미리보기에서 이미지를 읽는 동안 생기는 일시적인 Windows 파일 잠금을 기다립니다.
@@ -54,11 +56,13 @@ async function save(out,n){
  bounds.push({file:path.relative(root,path.join(out,name+'.png')),boxes});
 }
 // 모임 소개: B안 명조 제목과 고딕 본문을 유지하고 기록 예시만 손글씨로 씁니다.
-async function type(s,y,size=46,{bold=false,color='ink',x=92,spacing=22,renderScale=1}={}){
+async function type(s,y,size=46,{bold=false,color='ink',x=92,spacing=22,renderScale=1,highlights=[]}={}){
  const serif=bold&&size>=55;
  // 작은 안내 문구는 유지하고 제목과 본문만 약 8% 줄입니다.
  if(size>=38)size=Math.round(size*0.92);
- let input=await sharp({text:{text:'<span foreground="'+colors[color]+'">'+esc(s)+'</span>',font:serif?'Noto Serif KR Medium '+(size*renderScale):'Malgun Gothic '+(bold?'Bold ':'')+(size*renderScale),fontfile:serif?'C:/Windows/Fonts/NotoSerifKR-VF.ttf':bold?'C:/Windows/Fonts/malgunbd.ttf':'C:/Windows/Fonts/malgun.ttf',rgba:true,dpi:72,spacing:spacing*renderScale}}).png().toBuffer();
+ let markup=esc(s);
+ for(const phrase of highlights)markup=markup.replace(esc(phrase),'<span foreground="'+colors.forest+'" weight="bold">'+esc(phrase)+'</span>');
+ let input=await sharp({text:{text:'<span foreground="'+colors[color]+'">'+markup+'</span>',font:serif?'Noto Serif KR Medium '+(size*renderScale):'Malgun Gothic '+(bold?'Bold ':'')+(size*renderScale),fontfile:serif?'C:/Windows/Fonts/NotoSerifKR-VF.ttf':bold?'C:/Windows/Fonts/malgunbd.ttf':'C:/Windows/Fonts/malgun.ttf',rgba:true,dpi:72,spacing:spacing*renderScale}}).png().toBuffer();
  // 작은 한글의 획이 깨지는 경우 크게 렌더링한 뒤 원래 크기로 축소합니다.
  if(renderScale!==1){const scaled=await sharp(input).metadata();input=await sharp(input).resize(Math.round(scaled.width/renderScale),Math.round(scaled.height/renderScale)).png().toBuffer();}
  const m=await sharp(input).metadata();
@@ -84,7 +88,7 @@ await card(1);
 await title('부탁을 거절하고 나서도\n계속 마음이 쓰이나요?');
 await type('상대의 마음을 신경 쓰다 보면,\n내가 원하는 것은 뒤로 미루게 될 때가 있어요.',430,37);
 await remi('기다림',690,660,265,300);
-await type('READ ME 1기 모집 · 관계',955,40,{bold:true,color:'forest'});
+await type('READ ME 1기 모집 · 관계',955,50,{bold:true,color:'forest'});
 await type('책 네 권으로 서로의 삶을 이야기하는 8주',1050,29);
 await save(recruit,1);
 
@@ -96,11 +100,11 @@ await remi('경청',790,940,155,175);
 await save(recruit,2);
 
 await card(3);
-await title('네 권의 책으로\n관계를 들여다봅니다.');
+await type('네 권의 책으로\n관계를 들여다봅니다.',105,65,{bold:true,color:'forest',spacing:12});
 const books=[['관계의 언어','문요한','나는 어떤 말과 행동에서\n존중받는다고 느낄까?'],['미움받을 용기','기시미 이치로 · 고가 후미타케','누군가를 실망시킬까 봐\n하지 못한 말이 있을까?'],['말센스','셀레스트 헤들리','나는 상대의 말을 듣는 동안\n무엇을 생각할까?'],['사랑의 기술','에리히 프롬','나는 가까운 사람에게 마음을\n어떻게 표현하고 있을까?']];
 for(const [i,[book,author,q]] of books.entries()){
- const y=365+i*190;
- await picture(path.join(root,'public/book-cover-relationship-'+(i+1)+'.jpg'),92,y,100,145);
+ const y=325+i*200;
+ await picture(path.join(root,i===2?'public/book-cover-malsense.jpg':'public/book-cover-relationship-'+(i+1)+'.jpg'),92,y,100,145);
  await type(book,y+5,42,{bold:true,color:'forest',x:230});
  await type(author,y+65,25,{color:'muted',x:230});
  await type(q,y+100,29,{x:230,spacing:8,renderScale:i===0?2:1});
@@ -108,19 +112,23 @@ for(const [i,[book,author,q]] of books.entries()){
 await save(recruit,3);
 
 await card(4);
-await title('이런 마음이라면,\n함께 이야기해요.');
-await type('삶에 변화가 필요한 사람',410,43,{bold:true,color:'forest'});
-await type('익숙한 일상에 새로운 계기를 만들고 싶을 때.',480,32);
-await type('같이 나아갈 사람이 필요한 사람',620,43,{bold:true,color:'forest'});
-await type('혼자 하던 고민과 시도를 누군가와 나누고 싶을 때.',690,32);
-await type('여러 사람의 생각과 삶이 궁금한 사람',830,40,{bold:true,color:'forest'});
-await type('같은 질문에 다른 사람은 어떻게 답할지 궁금할 때.',900,32);
-await remi('경청',810,995,140,140);
+await title('이런 분에게 추천해요.');
+for(const [i,[heading,description]] of [
+ ['삶의 전환점이나 변화가 필요한 분','익숙한 일상에 새로운 계기를 만들고 싶을 때.'],
+ ['같이 나아갈 사람이 필요한 분','혼자 하던 고민을 나누고, 함께 시도하며 나아가고 싶을 때.'],
+ ['여러 사람의 생각과 삶이 궁금한 분','각자가 살아온 이야기와 생각을 듣고 싶을 때.'],
+ ['책의 내용을 내 것으로 만들고 싶은 분','읽는 데서 그치지 않고, 쓰고 말하고 실천하고 싶을 때.']
+].entries()){
+ const y=370+i*175;
+ await type(heading,y,40,{bold:true,color:'forest'});
+ await type(description,y+65,30);
+}
+await remi('경청',810,1000,140,140);
 await save(recruit,4);
 
 await card(5);
 await title('대화에서 떠오른 생각을\n내 관계에서 시도해봐요.');
-await type('조언하기 전에 상대의 생각을 먼저 물어보기처럼,\n내가 해볼 작은 행동을 정하고 기록해요.',355,34);
+await type('질문에 내 경험을 적고, 만나서 이야기를 나눠요.\n대화에서 얻은 생각은 일상에서 작은 행동으로 시도해봐요.',355,32);
 await picture(path.join(dir,'assets/토의-실제화면.png'),92,510,896,505);
 await type('격주 오프라인 토의 4회 + 사이 주 온라인 실천·기록 4회',1040,28,{color:'forest'});
 await type('READ ME 웹 대화방 · 질문과 답변 예시',1100,25,{color:'muted'});
@@ -128,12 +136,12 @@ await save(recruit,5);
 
 await card(6);
 await title('함께할 8주를\n미리 살펴봐 주세요.');
-const facts=[['시작','2026년 12월 셋째 주 시작'],['기간','8주'],['장소','사당 또는 강남 지역 검토 중'],['인원','그룹당 4~6명'],['만남','격주 오프라인 · 회차당 3시간']];
+const facts=[['시작','2026년 12월 셋째 주 시작'],['기간','8주 · 신년 휴식 1주 별도'],['장소','강남 또는 사당'],['인원','그룹당 4~6명'],['만남','격주 오프라인 · 회차당 3시간']];
 for(const [i,[label,value]] of facts.entries()){
  const y=385+i*125;
  await type(label,y,32,{color:'muted'});await type(value,y,38,{x:255,color:'forest'});
 }
-await type('금·토 오후 3~6시 · 신년 휴식 1주 별도\n상세 장소는 참여 확정 후 안내합니다.',1050,29,{color:'muted'});
+await type('상세 장소는 참여 확정 후 안내합니다.',1050,29,{color:'muted'});
 await save(recruit,6);
 
 await card(7);
@@ -212,6 +220,7 @@ const style=':root{'+tokens+'}*{box-sizing:border-box}body{margin:0;background:v
 const indexPath=path.join(home,'../전체-미리보기.html');
 let index=await fs.readFile(indexPath,'utf8');
 for(const set of sets){
+ if(process.env.README_RECRUIT_REVIEW==='1'&&set.out!==recruit)continue;
  const thumbs=[],cards=[],indexCards=[];
  for(let n=1;n<=set.count;n++){
   const file=String(n).padStart(2,'0')+'.png',buffer=await fs.readFile(path.join(set.out,file));
@@ -229,4 +238,4 @@ for(const set of sets){
 }
 await fs.writeFile(indexPath,index);
 await fs.writeFile(path.join(runtime,'모집-질문-텍스트-검증.json'),JSON.stringify(bounds,null,2));
-console.log('1기 모집 8장과 대화와 기록 · 실제 예시 보여주기 5장 생성. 글자 범위·겹침 검사 통과.');
+console.log(process.env.README_RECRUIT_CARD?'1기 모집 '+process.env.README_RECRUIT_CARD+'장과 미리보기 갱신. 글자 범위·겹침 검사 통과.':process.env.README_RECRUIT_REVIEW==='1'?'1기 모집 1·3·4·5·6장과 미리보기 갱신. 글자 범위·겹침 검사 통과.':'1기 모집 8장과 대화와 기록 · 실제 예시 보여주기 5장 생성. 글자 범위·겹침 검사 통과.');
