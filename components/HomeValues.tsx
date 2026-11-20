@@ -12,7 +12,7 @@ export function HomeValues() {
       <div className="section-shell">
         <div className="home-values__intro">
           <h2 id="home-values-title">책을 읽고, 함께 대화하며<br />단단한 나를 만드는 <strong>마음근력</strong>을 기릅니다.</h2>
-          <p className="home-values__purpose">빠르게 변하고 불확실한 세상에서도<br />나에게 중요한 것을 알고, 내 삶의 방향을 스스로 찾아가기 위해.</p>
+          <p className="home-values__purpose">빠르게 변하고 불확실한 세상에서도<br />나에게 중요한 것을 알고, 외부에 쉽게 흔들리지 않으며,<br className="home-values__purpose-break" /> 내 삶의 방향을 스스로 찾아가기 위해.</p>
         </div>
         <div className="home-values__grid">
           {values.map(({ keyword, title, description }) => (
