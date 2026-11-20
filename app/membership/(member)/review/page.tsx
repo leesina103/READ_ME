@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { TallyReviewEmbed } from "@/components/TallyReviewEmbed";
+import { ReviewNextSteps } from "@/components/ReviewNextSteps";
 import { themeForCohort } from "@/data/cohortThemes";
-import { requireActiveMembership } from "@/lib/membership/access";
-import { parseReviewEvent, reviewEventDetails } from "@/lib/membership/reviews";
+import { getMemberCohortHistory } from "@/lib/membership/access";
+import { getTalkSchedule } from "@/lib/membership/talkData";
+import { parseReviewEvent, midpointReviewDetails, reviewEventDetails } from "@/lib/membership/reviews";
 
 export const metadata: Metadata = {
   title: "후기 남기기",
@@ -12,13 +14,14 @@ export const metadata: Metadata = {
 };
 
 type ReviewPageProps = {
-  searchParams: Promise<{ event?: string; session?: string }>;
+  searchParams: Promise<{ event?: string; session?: string; period?: string }>;
 };
 
 export default async function ReviewPage({ searchParams }: ReviewPageProps) {
-  const member = await requireActiveMembership();
+  const [{ member, currentCohortEnded }, params] = await Promise.all([getMemberCohortHistory(), searchParams]);
+  const { schedule, error: scheduleError } = member.cohort
+    ? await getTalkSchedule(member.cohort) : { schedule: [], error: false };
   const cohortTheme = themeForCohort(member.cohortNumber);
-  const params = await searchParams;
   const requestedEvent = parseReviewEvent(params.event);
   const requestedSession = Number(params.session);
   const session = requestedEvent === "session"
@@ -28,10 +31,11 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
     ? requestedSession
     : undefined;
   const event = requestedEvent === "session" && !session ? "cohort" : requestedEvent;
-  const detail = reviewEventDetails[event];
+  const midpoint = event === "session" && session === 2 && params.period === "midpoint";
+  const detail = midpoint ? midpointReviewDetails : reviewEventDetails[event];
   const cohort = member.cohortNumber ? String(member.cohortNumber) : member.cohort ?? "";
   const contextLabel = event === "session" && session
-    ? `READ ME ${member.cohort ?? "현재 기수"} · ${session}회차 세션`
+    ? `READ ME ${member.cohort ?? "현재 기수"} · ${midpoint ? "1~4주차" : `${session}회차 세션`}`
     : `READ ME ${member.cohort ?? "현재 기수"} · ${event === "party" ? "파티" : "기수 전체"}`;
   const tallyParams = new URLSearchParams({
     alignLeft: "1",
@@ -72,6 +76,7 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
           </p>
         </div>
       </section>
+      <ReviewNextSteps event={event} session={session} midpoint={midpoint} cohortNumber={member.cohortNumber} schedule={schedule} ended={currentCohortEnded} scheduleError={scheduleError} />
     </main>
   );
 }

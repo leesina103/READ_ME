@@ -14,6 +14,7 @@ export function TallyReviewEmbed({ embedUrl }: { embedUrl: string }) {
   return (
     <>
       <iframe
+        src={embedUrl}
         data-tally-src={embedUrl}
         loading="lazy"
         width="100%"
