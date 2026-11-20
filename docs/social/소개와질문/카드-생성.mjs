@@ -64,7 +64,8 @@ async function type(s,y,size=46,{bold=false,color='ink',x=92,spacing=22,renderSc
  for(const phrase of highlights)markup=markup.replace(esc(phrase),'<span foreground="'+colors.forest+'" weight="bold">'+esc(phrase)+'</span>');
  let input=await sharp({text:{text:'<span foreground="'+colors[color]+'">'+markup+'</span>',font:serif?'Noto Serif KR Medium '+(size*renderScale):'Malgun Gothic '+(bold?'Bold ':'')+(size*renderScale),fontfile:serif?'C:/Windows/Fonts/NotoSerifKR-VF.ttf':bold?'C:/Windows/Fonts/malgunbd.ttf':'C:/Windows/Fonts/malgun.ttf',rgba:true,dpi:72,spacing:spacing*renderScale}}).png().toBuffer();
  // 작은 한글의 획이 깨지는 경우 크게 렌더링한 뒤 원래 크기로 축소합니다.
- if(renderScale!==1){const scaled=await sharp(input).metadata();input=await sharp(input).resize(Math.round(scaled.width/renderScale),Math.round(scaled.height/renderScale)).png().toBuffer();}
+ // 반올림한 가로·세로 크기를 그대로 사용해 축소 시 양끝 획이 잘리지 않게 합니다.
+ if(renderScale!==1){const scaled=await sharp(input).metadata();input=await sharp(input).resize(Math.round(scaled.width/renderScale),Math.round(scaled.height/renderScale),{fit:'fill'}).png().toBuffer();}
  const m=await sharp(input).metadata();
  const b={text:s,x,y,width:m.width,height:m.height};
  if(x+m.width>988||y+m.height>1205)throw Error('소개 글자 범위 초과: '+s+' '+m.width+'x'+m.height);
@@ -101,13 +102,13 @@ await save(recruit,2);
 
 await card(3);
 await type('네 권의 책으로\n관계를 들여다봅니다.',105,65,{bold:true,color:'forest',spacing:12});
-const books=[['관계의 언어','문요한','나는 어떤 말과 행동에서\n존중받는다고 느낄까?'],['미움받을 용기','기시미 이치로 · 고가 후미타케','누군가를 실망시킬까 봐\n하지 못한 말이 있을까?'],['말센스','셀레스트 헤들리','나는 상대의 말을 듣는 동안\n무엇을 생각할까?'],['사랑의 기술','에리히 프롬','나는 가까운 사람에게 마음을\n어떻게 표현하고 있을까?']];
+const books=[['관계의 언어','문요한','나는 어떤 말과 행동에서 존중받는다고 느낄까?'],['미움받을 용기','기시미 이치로 · 고가 후미타케','누군가를 실망시킬까 봐 하지 못한 말이 있을까?'],['말센스','셀레스트 헤들리','나는 상대의 말을 듣는 동안 무엇을 생각할까?'],['사랑의 기술','에리히 프롬','나는 가까운 사람에게 마음을 어떻게 표현하고 있을까?']];
 for(const [i,[book,author,q]] of books.entries()){
  const y=325+i*200;
  await picture(path.join(root,i===2?'public/book-cover-malsense.jpg':'public/book-cover-relationship-'+(i+1)+'.jpg'),92,y,100,145);
  await type(book,y+5,42,{bold:true,color:'forest',x:230});
  await type(author,y+65,25,{color:'muted',x:230});
- await type(q,y+100,29,{x:230,spacing:8,renderScale:i===0?2:1});
+ await type(q,y+100,29,{x:230,spacing:8,renderScale:i===0?4:1});
 }
 await save(recruit,3);
 
