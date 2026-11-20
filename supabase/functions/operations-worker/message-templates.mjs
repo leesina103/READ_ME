@@ -1,5 +1,6 @@
 export const MESSAGE_DOCUMENT_ID = '1oYHtiYVAsJxnB-B_7hBwCpM4WRLPZDKSc5fERCsEGLY';
 export const MESSAGE_DOCUMENT_URL = `https://docs.google.com/document/d/${MESSAGE_DOCUMENT_ID}/edit?tab=t.0`;
+export const MIDPOINT_REVIEW_PATH = '/membership/review?event=session&session=2&period=midpoint';
 export const needsConfirmation = reason => `확인 필요: ${reason}`;
 
 // 본문은 실행할 때마다 읽습니다. 실패 시 과거 초안이나 로컬 사본으로 대체하지 않습니다.
@@ -114,10 +115,14 @@ const stages = {
   '입금 확인·가입 신청서 안내': ['4-2', null], '이번 기수에 함께하지 못하는 경우': ['5', null],
   '신청서 승인·회원가입 안내': ['6', '7'], '재참여 승인·로그인 안내': ['6-1', '7'], '첫 만남 준비 안내': ['7', '8'],
   '오프라인 토의 전·사전 질문 안내 (D-2까지 완료)': ['8', '8-1'], '사전 질문 마감 당일 알림': ['8-1', '8-2'],
-  '모임 전날 안내': ['8-2', '9'], '실천과 기록 안내': ['9', '9-1'], '실천·기록 마감 당일 알림': ['9-1', '10'],
-  '토의 후·후기 요청': ['10', null], '파티 초대장 전달': ['11', null], '기수 마무리·전체 후기': ['12', null], '파티 후·후기 요청': ['13', null]
+  '모임 전날 안내': ['8-2', '9'], '실천과 기록 안내': ['9', '9-1'], '실천·기록 마감 당일 알림': ['9-1', null],
+  '중간 후기 요청': ['10', null], '파티 초대장 전달': ['11', null], '기수 마무리·전체 후기': ['12', null], '파티 후·후기 요청': ['13', null]
 };
 export function stageMessages(source, stage, values) {
   const keys = stages[stage] || [];
+  if (stage === '중간 후기 요청' && values?.['홈페이지 주소']) {
+    const link = values['홈페이지 주소'].replace(/\/$/, '') + MIDPOINT_REVIEW_PATH;
+    values = { '회차 후기 링크': link, '중간 후기 링크': link, ...values };
+  }
   return { draft: renderMessage(source, keys[0], values), nextDraft: keys[1] ? renderMessage(source, keys[1], values) : needsConfirmation('실제 진행 여부·결과와 다음 단계를 확인한 뒤 기준 문서에서 해당 문구를 선택하세요.') };
 }

@@ -2,6 +2,7 @@ import { TASKS, LEDGER, MEMBERS, SITE, koreanDay, when, text, title, readText, d
 import { checkServiceHealth } from './health.mjs';
 import { emailHtml } from './email-html.mjs';
 import { loadMessageTemplates, stageMessages, bookingMessages, needsConfirmation } from './message-templates.mjs';
+import { runCohortOperations } from './cohort-operations.mjs';
 
 export function createWorker(env, fetcher = fetch) {
   let deadline;
@@ -166,7 +167,8 @@ export function createWorker(env, fetcher = fetch) {
     if (dryRun) {
       await query(TASKS, { property: '상태', status: { does_not_equal: '완료' } });
       const source = await loadMessageTemplates(env, fetcher);
-      return { status: 'dry_run', bookings: bookings.length, due: bookings.flatMap(b => plan(b, now)).filter(s => s.actionable).length, googleConfigured: Boolean(env.OPS_GOOGLE_REFRESH_TOKEN), messageTemplates: source.error ? { status: '확인 필요', reason: source.error } : { status: 'passed', revisionId: source.revisionId, count: Object.keys(source.templates).length }, writes: 0 };
+      const cohort = await runCohortOperations({ now, dryRun, query, checkTime });
+      return { status: 'dry_run', bookings: bookings.length, due: bookings.flatMap(b => plan(b, now)).filter(s => s.actionable).length, googleConfigured: Boolean(env.OPS_GOOGLE_REFRESH_TOKEN), messageTemplates: source.error ? { status: '확인 필요', reason: source.error } : { status: 'passed', revisionId: source.revisionId, count: Object.keys(source.templates).length }, cohort, writes: 0 };
     }
     const workerId = crypto.randomUUID();
     if (!await db('rpc/claim_operations_worker', 'POST', { worker: workerId })) return { status: 'busy' };
@@ -179,6 +181,10 @@ export function createWorker(env, fetcher = fetch) {
         try { await syncBooking(booking, now); } catch (e) { errors.push(e.message); }
         checkTime();
       }
+      let cohort;
+      try {
+        cohort = await runCohortOperations({ now, dryRun, query, db, ensurePage, notion, state, save, send, templates, checkTime });
+      } catch (error) { errors.push(`기수 운영 체크: ${error.message}`); }
       const day = koreanDay(now);
       if (now >= Date.parse(`${day}T09:00:00+09:00`) && !await state(`daily:${day}`)) {
         const health = await checkServiceHealth({ site: SITE, api: env.SUPABASE_URL, key: env.SUPABASE_ANON_KEY });
@@ -202,8 +208,8 @@ export function createWorker(env, fetcher = fetch) {
         await send(`daily:${day}`, `[READ ME] ${day} 운영 할 일`, chunks.join('\n\n────────\n\n'));
         await save(`daily:${day}`, { status: 'accepted', tasks: due.length });
       }
-      await save('worker:last', { at: new Date().toISOString(), status: errors.length ? 'partial' : 'passed', errors });
-      return { status: errors.length ? 'partial' : 'passed', errors };
+      await save('worker:last', { at: new Date().toISOString(), status: errors.length ? 'partial' : 'passed', errors, cohort });
+      return { status: errors.length ? 'partial' : 'passed', errors, cohort };
     } finally {
       await db(`operations_worker_lock?owner=eq.${workerId}`, 'DELETE');
     }
