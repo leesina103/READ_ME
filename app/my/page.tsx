@@ -69,10 +69,14 @@ export default async function MyPage({ searchParams }: MyPageProps) {
   const { data: assignment, error: assignmentError } = profile?.cohort
     ? await supabase.from("talk_group_members").select("group_id").eq("user_id", user.id).eq("cohort", profile.cohort).maybeSingle()
     : { data: null, error: null };
-  const groupResult = assignment
-    ? await supabase.from("talk_groups").select("id, host_name, host_style, venue, duration_minutes, talk_meetings(week_number, starts_at)").eq("id", assignment.group_id).maybeSingle()
-    : { data: null, error: null };
-  const confirmedGroup = groupResult.data as (Omit<MembershipGroupOption, "meetings"> & { talk_meetings: GroupMeeting[] }) | null;
+  const [groupResult, guideResult] = assignment
+    ? await Promise.all([
+        supabase.from("talk_groups").select("venue, duration_minutes, talk_meetings(week_number, starts_at)").eq("id", assignment.group_id).maybeSingle(),
+        supabase.rpc("my_group_guide_name", { p_group_id: assignment.group_id })
+      ])
+    : [{ data: null, error: null }, { data: null, error: null }];
+  const confirmedGroup = groupResult.data as (Pick<MembershipGroupOption, "venue" | "duration_minutes"> & { talk_meetings: GroupMeeting[] }) | null;
+  const guideName = guideResult.data as string | null;
   const nicknameLocked = Boolean(
     cohortSchedule?.starts_at && new Date(cohortSchedule.starts_at).getTime() <= Date.now()
   );
@@ -104,8 +108,8 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       {profile?.cohort && <section className="mt-10 rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-7 max-[430px]:p-5" aria-labelledby="my-confirmed-group">
         <h2 id="my-confirmed-group" className="text-xl font-semibold">내 모임</h2>
         <p className="mt-2 text-sm text-[var(--muted)]">READ ME {cohort}</p>
-        {assignmentError || groupResult.error ? <p role="alert" className="mt-4 text-sm leading-7">모임 정보를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.</p>
-          : confirmedGroup ? <div className="mt-4"><MembershipGroupDetails hostName={confirmedGroup.host_name} guideHref={guideHref(confirmedGroup.host_name)} venue={confirmedGroup.venue} durationMinutes={confirmedGroup.duration_minutes} meetings={[...confirmedGroup.talk_meetings].sort((a, b) => a.week_number - b.week_number)} /></div>
+        {assignmentError || groupResult.error || guideResult.error ? <p role="alert" className="mt-4 text-sm leading-7">모임 정보를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.</p>
+          : confirmedGroup ? <div className="mt-4"><MembershipGroupDetails hostName={guideName ?? "미정"} guideHref={guideName ? guideHref(guideName) : undefined} venue={confirmedGroup.venue} durationMinutes={confirmedGroup.duration_minutes} meetings={[...confirmedGroup.talk_meetings].sort((a, b) => a.week_number - b.week_number)} /></div>
           : <p className="mt-4 text-sm leading-7 text-[var(--muted)]">모임이 확정되면 가이드와 전체 일정을 이곳에서 확인할 수 있어요.</p>}
       </section>}
 
