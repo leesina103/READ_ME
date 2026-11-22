@@ -54,6 +54,7 @@ try {
   await db.exec(await source("20260930123533_membership_application_phone.sql"));
   await db.exec(await source("20261001000000_optional_membership_group_host.sql"));
   await db.exec(await source("20261112075859_membership_referral_sources.sql"));
+  await db.exec(await source("20261122081606_expand_membership_referral_sources.sql"));
   equal(await one("select phone from public.membership_applications where email='legacy@example.test'"), null);
   await db.exec(invitationSource.slice(invitationSource.indexOf("create or replace function public.handle_new_user()")));
   await db.exec(`create trigger handle_signup after insert on auth.users for each row execute function public.handle_new_user();`);
@@ -78,11 +79,12 @@ try {
   }
   await referralFails(referralSubmit("array['기타']", "'   '"), /invalid_application_referral/);
   await referralFails(referralSubmit("array['기타']", "repeat('가',201)"), /invalid_application_referral/);
-  await db.exec(referralSubmit("array['인스타그램','블로그','기타']", "'  독서 행사  '"));
+  const sources = ["인스타그램","에브리타임","지인 소개","교보문고 VORA 블로그","북카페 블로그","그믐","온오프믹스","젤록","기타"];
+  await db.exec(referralSubmit(`array[${sources.map(source => `'${source}'`).join(",")}]`, "'  독서 행사  '"));
   await referralFails(referralSubmit("array['지인 소개']"), /application_already_submitted/);
   await login(1);
   const referral = (await db.query("select referral_sources,referral_other from public.admin_list_membership_applications() where email='referral@example.test'")).rows[0];
-  equal(referral.referral_sources.sort(), ["인스타그램","블로그","기타"].sort());
+  equal(referral.referral_sources.sort(), sources.sort());
   equal(referral.referral_other, "독서 행사");
   equal(await one("select referral_sources from public.admin_list_membership_applications() where email='legacy@example.test'"), null);
   await login(null);

@@ -1,4 +1,14 @@
-export const referralSources = ["인스타그램", "에브리타임", "지인 소개", "블로그", "기타"] as const;
+export const referralSources = [
+  "인스타그램",
+  "에브리타임",
+  "지인 소개",
+  "교보문고 VORA 블로그",
+  "북카페 블로그",
+  "그믐",
+  "온오프믹스",
+  "젤록",
+  "기타",
+] as const;
 
 export function validateReferral(sources: string[], other: string): string | null {
   if (sources.length === 0) return "READ ME를 알게 된 경로를 하나 이상 선택해 주세요.";
