@@ -137,9 +137,9 @@ await save(recruit,5);
 
 await card(6);
 await title('함께할 8주를\n미리 살펴봐 주세요.');
-const facts=[['시작','2026년 12월 셋째 주 시작'],['기간','8주 · 신년 휴식 1주 별도'],['장소','강남 또는 사당'],['인원','그룹당 4~6명'],['만남','격주 오프라인 · 회차당 3시간']];
+const facts=[['시작','2026년 12월 셋째 주 시작'],['기간','8주 · 신년 휴식 1주 별도'],['장소','강남 또는 사당'],['인원','그룹당 4~6명'],['만남','격주 오프라인 · 회차당 3시간'],['금요일','19:30~22:30'],['토요일','15:00~18:00']];
 for(const [i,[label,value]] of facts.entries()){
- const y=385+i*125;
+ const y=365+i*93;
  await type(label,y,32,{color:'muted'});await type(value,y,38,{x:255,color:'forest'});
 }
 await type('상세 장소는 참여 확정 후 안내합니다.',1050,29,{color:'muted'});
