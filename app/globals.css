@@ -1058,9 +1058,10 @@ section[id], footer[id] { scroll-margin-top: 84px; }
 textarea.introduction-form__input { resize: vertical; min-height: 120px; }
 .introduction-form__input::placeholder { color: var(--muted); }
 .introduction-form__input:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
-.introduction-form__input[aria-invalid="true"] { border-color: var(--ink); }
+.introduction-form__input[aria-invalid="true"] { border-color: var(--error); }
 .introduction-form__hint { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.7; }
 .introduction-form__hint > span:last-child { flex-shrink: 0; }
+.introduction-form__hint [role="alert"] { color: var(--error); font-weight: 700; }
 .introduction-form__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .introduction-form__actions button:disabled { cursor: wait; opacity: .6; }
 .introduction-content { margin-top: 20px; display: grid; gap: 20px; min-width: 0; overflow-wrap: anywhere; }
