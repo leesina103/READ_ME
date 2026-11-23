@@ -25,6 +25,7 @@ export const membershipInvitations: Readonly<Record<string, MembershipInvitation
       { label: "오프라인 토의", value: "4회" },
       { label: "온라인 실천·기록", value: "4회" },
       { label: "회차별 소요", value: "3시간" },
+      { label: "모임 시간", value: "금요일 19:30~22:30 · 토요일 15:00~18:00" },
       { label: "장소", value: "강남 또는 사당 검토 중 · 상세 장소는 확정 후 안내" },
       { label: "그룹당 인원", value: "4~6명" }
     ]

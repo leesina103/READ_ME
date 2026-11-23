@@ -10,6 +10,7 @@ const schedule = {
   offlineSessions: "4회",
   onlineSessions: "4회",
   sessionDuration: "3시간",
+  groupTimes: "금요일 19:30~22:30 · 토요일 15:00~18:00",
   location: "사당역 인근 예정 · 상세 장소는 참여 확정 후 안내",
   groupSize: "4~6명",
   fee: "인터뷰 후 안내"
@@ -39,6 +40,7 @@ export const currentMeeting = {
     { label: "오프라인 토의", value: schedule.offlineSessions },
     { label: "온라인 실천·기록", value: schedule.onlineSessions },
     { label: "회차별 소요", value: schedule.sessionDuration },
+    { label: "모임 시간", value: schedule.groupTimes },
     { label: "장소", value: schedule.location },
     { label: "그룹당 인원", value: schedule.groupSize }
   ],
