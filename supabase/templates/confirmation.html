@@ -1,4 +1,14 @@
-<h2>READ ME 이메일 확인</h2>
-<p>아래 링크를 눌러 이메일을 확인하고 회원 정보를 작성해 주세요.</p>
-<p><a href="{{ .RedirectTo }}&amp;token_hash={{ .TokenHash }}&amp;type=email">이메일 확인하기</a></p>
-<p>가입을 요청하지 않았다면 이 메일을 무시해 주세요.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#f7f3e7" lang="ko" style="background:#f7f3e7;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#3b3a34;">
+  <tr><td align="center" style="padding:32px 14px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#fffdf7" style="max-width:560px;background:#fffdf7;border:1px solid #eadfc6;border-radius:20px;">
+      <tr><td style="padding:32px 28px 0;">
+        <p style="margin:0;padding-bottom:16px;border-bottom:2px solid #9bae8f;font:700 17px Georgia,serif;letter-spacing:2px;color:#5b6b57;">READ ME</p>
+        <h1 style="margin:28px 0 16px;font-size:26px;line-height:1.4;color:#3b3a34;">가입 이메일 인증</h1>
+        <p style="margin:0;font-size:16px;line-height:1.75;word-break:keep-all;">반가워요. 모임에서 쓸 닉네임을 정하기 전에 이메일을 확인해 주세요.</p>
+        <p style="margin:24px 0 16px;"><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}" style="display:inline-block;padding:14px 24px;background:#5b6b57;border-radius:24px;color:#fffdf7;text-decoration:none;font-size:16px;font-weight:700;">이메일 인증 화면 열기</a></p>
+        <p style="margin:0 0 28px;font-size:14px;line-height:1.7;color:#716f65;word-break:keep-all;">홈페이지에서 ‘이메일 인증 완료하기’를 누르면 닉네임을 정할 수 있어요.</p>
+      </td></tr>
+      <tr><td style="padding:0 28px 24px;"><p style="margin:0;padding-top:16px;border-top:1px solid #eadfc6;font-size:13px;line-height:1.6;color:#716f65;">가입을 요청하지 않으셨다면 이 메일을 무시해 주세요.</p></td></tr>
+    </table>
+  </td></tr>
+</table>

@@ -27,7 +27,7 @@ export async function GET(request: Request) {
   }
 
   const isPasswordReset = type === "recovery" || next.startsWith("/reset-password");
-  const failureUrl = new URL(isPasswordReset ? "/reset-password" : "/login", url.origin);
-  failureUrl.searchParams.set("message", isPasswordReset ? resetLinkExpiredMessage : "이메일 인증에 실패했습니다. 다시 로그인해 주세요.");
+  const failureUrl = new URL(isPasswordReset ? "/reset-password" : "/auth/confirm", url.origin);
+  if (isPasswordReset) failureUrl.searchParams.set("message", resetLinkExpiredMessage);
   return NextResponse.redirect(failureUrl);
 }

@@ -191,7 +191,7 @@ export async function signupAction(
 
   return {
     status: "success",
-    message: "가입 확인 메일을 보냈습니다. 메일의 링크를 누르면 첫 회원 정보 작성으로 이어져요."
+    message: "가입 확인 메일을 보냈습니다. 메일 링크를 열고 ‘이메일 인증 완료하기’를 눌러 주세요."
   };
 }
 

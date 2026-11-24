@@ -85,7 +85,8 @@ export async function updateSession(request: NextRequest) {
     return copyCookies(response, NextResponse.redirect(url));
   }
 
-  if (user && (pathname === "/login" || pathname === "/signup")) {
+  const isConfirmationResume = pathname === "/auth/confirm" && !request.nextUrl.searchParams.has("token_hash");
+  if (user && (pathname === "/login" || pathname === "/signup" || isConfirmationResume)) {
     const url = request.nextUrl.clone();
     url.pathname = "/onboarding";
     url.search = "";
