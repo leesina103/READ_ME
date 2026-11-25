@@ -61,7 +61,7 @@ function GroupEditor({ group, meetings }: { group: TalkGroup; meetings: TalkMeet
       })}
     </div>
     <button type="button" className="min-h-11 justify-self-start text-sm font-semibold text-[var(--forest)] underline underline-offset-4" onClick={repeatFirst} disabled={!parseSeoulInput(dates[0])}>1주차 기준으로 2주 간격 채우기</button>
-    <p className="text-xs leading-6 text-[var(--muted)]">자동으로 채운 뒤 특정 주차만 바꿀 수 있어요. 1주차 사전 질문은 기수 시작일, 3·5·7주차는 모임 7일 전에 열립니다. 실천 기록은 모임 다음 날 0시에 열립니다.</p>
+    <p className="text-xs leading-6 text-[var(--muted)]">자동으로 채운 뒤 특정 주차만 바꿀 수 있어요. 1주차 질문은 첫 모임 14일 전 0시에 열려요. 매 모임 다음 날 0시에 실천 기록이 열리고, 다음 회차가 있으면 그 토의 질문도 함께 열려요.</p>
     <label className="flex items-start gap-3 text-sm leading-6"><input type="checkbox" name="applicationOpen" defaultChecked={group.application_open} className="mt-1 accent-[var(--forest)]" />가입 신청서에서 이 모임 선택 허용</label>
     <p className="text-xs leading-6 text-[var(--muted)]">안내와 일정을 함께 저장합니다. 확정 정원은 가입 대기자를 포함해 6명입니다. 신청 후 일정이나 가이드가 바뀌면 신청자에게 별도로 안내해주세요.</p>
   </GroupForm>;

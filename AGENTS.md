@@ -100,7 +100,7 @@ Next 15.5는 dev 잠금 파일이 없어 같은 폴더에서 두 서버가 동�
 ## 9. 기수와 회원 데이터
 
 - `profiles.cohort`는 **현재 기수**입니다. 참여 이력은 `member_cohorts`(user_id, cohort) 표에 쌓이며, 프로필 기수가 바뀌면 트리거가 한 줄 추가합니다.
-- `cohorts.starts_at`은 온라인 대화방 1주차 공개 시각입니다. 매주 같은 요일·시각에 다음 주차가 열립니다. `cohorts.ends_at`은 종료일이고 null이면 진행 중입니다. 종료일이 지난 기수는 현재 기수라도 읽기 전용입니다.
+- `cohorts.starts_at`은 기수 시작 시각입니다. 1주차는 그룹 첫 모임 14일 전, 실천 기록과 다음 토의 질문은 직전 모임 다음 날에 한국 시간 0시 기준으로 열립니다. `cohorts.ends_at`은 종료일이고 null이면 진행 중입니다. 종료일이 지난 기수는 현재 기수라도 읽기 전용입니다.
 - 조회 정책은 `is_cohort_member(cohort)`로 참여했던 기수까지 허용하고, 답변 저장은 현재 기수에만 가능합니다(`save_session_answer`가 `cohort_ended`로 막습니다).
 - **`profiles` 표는 본인 행만 조회하는 잠금을 유지합니다.** 공유가 필요한 항목은 `list_member_directory()` 함수로만 내보냅니다. 새 공유 항목이 생겨도 표의 정책을 푸는 방식으로 풀지 않습니다.
 - 재참여 회원(1기 → 2기 재신청)은 `review_membership_application`이 처리합니다. 이미 `claimed_by`가 찍힌 invitation을 만나면 이름·기수를 새 신청서 값으로 갱신합니다. `member_invitations_normalized_email_key`는 여전히 이메일 전역 unique입니다.

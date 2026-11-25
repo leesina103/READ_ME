@@ -48,6 +48,18 @@ try {
     create function public.talk_due_at(timestamptz,integer,timestamptz) returns timestamptz language sql as $$select $3$$;
   `);
   await db.exec(await readFile(new URL("../supabase/migrations/20261022083947_role_hierarchy_member_access.sql",import.meta.url),"utf8"));
+  await db.exec(await readFile(new URL("../supabase/migrations/20261125011822_group_question_release_dates.sql",import.meta.url),"utf8"));
+  // 첫 공개가 기수 시작 전이고 연말 휴무로 회차 간격이 달라도 실제 직전 모임을 따릅니다.
+  await db.exec(`begin;
+    update public.cohorts set starts_at='2026-12-14T00:00:00+09' where name='1기';
+    update public.talk_meetings set starts_at=(
+      case week_number when 1 then '2026-12-19' when 3 then '2027-01-09'
+        when 5 then '2027-01-23' when 7 then '2027-02-06' end || 'T15:00:00+09'
+    )::timestamptz where group_id='${gid(1)}'`);
+  await login(2);
+  await equal("select array_agg(to_char(opens_at at time zone 'Asia/Seoul','MM-DD HH24:MI') order by week_number) from public.my_talk_schedule('1기')",
+    ["12-05 00:00","12-20 00:00","12-20 00:00","01-10 00:00","01-10 00:00","01-24 00:00","01-24 00:00","02-07 00:00"]);
+  await db.exec("rollback");
   await db.exec(await readFile(new URL("../supabase/migrations/20261022090131_guide_group_first_meeting.sql",import.meta.url),"utf8"));
   await db.exec(await readFile(new URL("../supabase/migrations/20261023010142_guide_invitation_history.sql",import.meta.url),"utf8"));
   await db.exec(await readFile(new URL("../supabase/migrations/20261023011348_guide_audit_cleanup.sql",import.meta.url),"utf8"));
