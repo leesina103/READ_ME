@@ -1,6 +1,7 @@
 "use server";
 
 import { currentMeeting } from "@/data/currentMeeting";
+import { sendAdminReviewEmail } from "@/lib/admin-review-email";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { validateReferral } from "@/lib/membership/referral";
@@ -102,6 +103,18 @@ export async function submitMembershipApplicationAction(
     if (error.message.includes("application_group_unavailable")) return { status: "error", message: "선택한 모임의 신청이 마감되었습니다. 새로고침 후 신청 가능한 모임을 확인해 주세요." };
     if (error.message.includes("application_already_submitted")) return { status: "error", message: "이미 접수된 신청이 있습니다. 모임 변경이 필요하면 운영자에게 문의해 주세요." };
     return { status: "error", message: "신청서를 저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
+  }
+
+  try {
+    await sendAdminReviewEmail({
+      subject: `가입 신청 접수 · ${cohort} · ${name}`,
+      message: "새 가입 신청이 접수되었습니다.",
+      details: [`이름: ${name}`, `신청 기수: ${cohort}`, `이메일: ${email}`],
+      path: "/admin/applications",
+      linkLabel: "가입 신청 검토하러 가기"
+    });
+  } catch {
+    console.error("가입 신청 알림 메일 발송 실패");
   }
 
   return {

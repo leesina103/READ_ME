@@ -49,7 +49,9 @@ const requests = [];
 const env = { RESEND_API_KEY: "test-key", INTERVIEW_ADMIN_EMAIL: "admin@example.test" };
 const { sendInterviewAdminNotification: notify } = load("lib/interview/admin-notification.ts", {
   "server-only": {},
-  "@/lib/interview/booking": { formatInterviewTime: (value) => value }
+  "@/lib/interview/booking": { formatInterviewTime: (value) => value },
+  "@/supabase/functions/operations-worker/email-html.mjs": await import("../supabase/functions/operations-worker/email-html.mjs"),
+  "@/supabase/functions/operations-worker/message-templates.mjs": await import("../supabase/functions/operations-worker/message-templates.mjs")
 }, {
   process: { env }, AbortSignal,
   fetch: async (_url, init) => { requests.push(init); return { ok: true }; }
@@ -78,10 +80,14 @@ let claimed = { id: 'notice', lease_id: 'lease', payload: { name: '<가이드>',
 let sendOk = true;
 const finishes = [];
 const guideRequests = [];
-const { sendGuideApprovalNotification: notifyGuide } = load('lib/guide/admin-notification.ts', { 'server-only': {} }, {
+const mailGlobals = {
   process: { env }, AbortSignal, console: { error() {} },
   fetch: async (_url, init) => { guideRequests.push(init); return { ok: sendOk, status: sendOk ? 200 : 500 }; }
-});
+};
+const mail = load('lib/admin-review-email.ts', { 'server-only': {} }, mailGlobals);
+const { sendGuideApprovalNotification: notifyGuide } = load('lib/guide/admin-notification.ts', {
+  'server-only': {}, '@/lib/admin-review-email': mail
+}, mailGlobals);
 const client = { rpc: async (name, args) => {
   if (name === 'claim_guide_approval_notification') return { data: claimed, error: null };
   finishes.push(args); return { error: null };
@@ -99,4 +105,29 @@ equal(finishes.length, 1);
 equal(guideRequests[1].body, guideRequests[0].body);
 claimed = null; await notifyGuide(client); equal(guideRequests.length, 2);
 delete env.RESEND_API_KEY; await notifyGuide(client); equal(guideRequests.length, 2);
+env.RESEND_API_KEY = 'test-key';
+let applicationError = null;
+const { submitMembershipApplicationAction } = load('app/membership/actions.ts', {
+  '@/data/currentMeeting': { currentMeeting: { cohort: '1기', recruiting: true } },
+  '@/lib/admin-review-email': mail,
+  '@/lib/supabase/config': { isSupabaseConfigured: () => true },
+  '@/lib/supabase/server': { createClient: async () => ({ rpc: async () => ({ error: applicationError }) }) },
+  '@/lib/membership/referral': { validateReferral: () => null }
+}, mailGlobals);
+const form = new FormData();
+for (const [key, value] of Object.entries({
+  name: '<신청자>', email: 'member@example.test', phone: '01012345678', birthYear: '1990',
+  cohort: '1기', groupId: '12345678-1234-1234-1234-123456789abc', privacyConsent: 'on'
+})) form.set(key, value);
+sendOk = true;
+equal((await submitMembershipApplicationAction(null, form)).status, 'success');
+const applicationMail = JSON.parse(guideRequests.at(-1).body);
+equal(applicationMail.to, ['admin@example.test']);
+equal(applicationMail.html.includes('&lt;신청자&gt;'), true);
+equal(applicationMail.html.includes('/admin/applications'), true);
+sendOk = false;
+equal((await submitMembershipApplicationAction(null, form)).status, 'success');
+applicationError = { message: 'application_already_submitted' };
+equal((await submitMembershipApplicationAction(null, form)).status, 'error');
+equal(guideRequests.length, 4);
 console.log(`인증·알림 검증 ${checks}개 통과`);
