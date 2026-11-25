@@ -11,7 +11,7 @@ export function GuideGroupEditor({ id, initial, ended }: { id: string; initial: 
   const [state, action, pending] = useActionState(saveGuideGroup, { message: "" });
   const [draft, setDraft] = useState(initial);
   const [review, setReview] = useState(false);
-  const fields = [["host_name", "가이드 이름", 80], ["host_style", "가이드 소개", 600], ["venue", "장소", 200]] as const;
+  const fields = [["venue", "장소", 200]] as const;
   const changes = fields.filter(([key]) => draft[key] !== initial[key]).map(([key, label]) => `${label}: ${initial[key] || "미입력"} → ${draft[key]}`);
   if (draft.duration_minutes !== initial.duration_minutes) changes.push(`소요 시간: ${initial.duration_minutes}분 → ${draft.duration_minutes}분`);
   draft.meetings.forEach((m, index) => { const old = initial.meetings.find(x => x.week_number === m.week_number); if (old?.starts_at !== m.starts_at) changes.push(`${index + 1}회차: ${old ? show(old.starts_at) : "미정"} → ${show(m.starts_at)}`); });

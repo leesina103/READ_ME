@@ -233,6 +233,7 @@ function withJosa(word: string, batchimForm: string, openForm: string) {
 }
 
 const profileFields = {
+  guideIntroduction: { column: "guide_introduction", label: "가이드 소개", min: 0, max: 600 },
   displayName: { column: "display_name", label: "닉네임", min: 2, max: 30 },
   bio: { column: "bio", label: "자기소개", min: 2, max: 200 },
   cohortMessage: { column: "cohort_message", label: "동료들에게 하고 싶은 말", min: 2, max: 300 }
@@ -263,6 +264,11 @@ export async function updateProfileFieldAction(
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) return { status: "error", message: "로그인이 만료되었습니다. 다시 로그인해 주세요." };
+
+  if (fieldName === "guideIntroduction") {
+    const { data: status } = await supabase.rpc("my_guide_status");
+    if (status !== "active") return { status: "error", message: "승인된 가이드만 소개를 수정할 수 있어요." };
+  }
 
   if (fieldName === "displayName") {
     const { data: profile } = await supabase
@@ -301,6 +307,10 @@ export async function updateProfileFieldAction(
   revalidatePath("/my");
   revalidatePath("/membership/members");
   revalidatePath("/membership/talk", "layout");
+  if (fieldName === "displayName" || fieldName === "guideIntroduction") {
+    revalidatePath("/guide");
+    revalidatePath("/membership/guides");
+  }
   if (fieldName === "displayName") {
     revalidatePath("/membership/community");
   }

@@ -17,7 +17,7 @@ type ProfileFieldProps = {
   note?: string;
 };
 
-function ProfileField({ name, label, value, minLength, maxLength, multiline, locked, note }: ProfileFieldProps) {
+export function ProfileField({ name, label, value, minLength, maxLength, multiline, locked, note }: ProfileFieldProps) {
   const [state, formAction, pending] = useActionState(updateProfileFieldAction, initialState);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -73,7 +73,8 @@ function ProfileField({ name, label, value, minLength, maxLength, multiline, loc
           minLength={minLength}
           maxLength={maxLength}
           autoFocus
-          required
+          aria-label={label}
+          required={minLength > 0}
         />
       ) : (
         <input
@@ -84,7 +85,8 @@ function ProfileField({ name, label, value, minLength, maxLength, multiline, loc
           minLength={minLength}
           maxLength={maxLength}
           autoFocus
-          required
+          aria-label={label}
+          required={minLength > 0}
         />
       )}
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">

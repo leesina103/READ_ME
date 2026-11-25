@@ -1,3 +1,4 @@
+import type { GuideOverview } from "@/lib/guide/types";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, CalendarRange, CalendarClock, UsersRound } from "lucide-react";
@@ -45,6 +46,10 @@ export default async function AdminCohortsPage({ searchParams }: { searchParams:
     const reserved = new Map<string, number>((capacity.data ?? []).map((item: { group_id: string; reserved_count: number }) => [item.group_id, item.reserved_count]));
     return { cohort, rosterError: Boolean(groups.error || meetings.error || roster.error), roster: (roster.data ?? []) as CohortRosterMember[], error: Boolean(groups.error || meetings.error || members.error || capacity.error), groups: (groups.data ?? []).map((group) => ({ ...group, reserved_count: reserved.get(group.id) ?? 0 })) as TalkGroup[], meetings: (meetings.data ?? []) as TalkMeeting[], members: (members.data ?? []) as TalkMember[] };
   }));
+  const candidates = activeTab === "groups" && supabase ? await supabase.rpc("admin_guide_overview") : null;
+  const availableGuides = ((candidates?.data as GuideOverview | null)?.people ?? [])
+    .filter(person => person.ready && ["pending", "active"].includes(person.status ?? "") && !person.groups.length)
+    .map(({ id, name, nickname }) => ({ id, name, nickname }));
   const guideResult = await guideRequest;
   const guides = (guideResult?.data ?? []) as AdminGuideRow[];
 
@@ -90,7 +95,7 @@ export default async function AdminCohortsPage({ searchParams }: { searchParams:
         {cohorts.length === 0 && <p className="mt-5 text-sm text-[var(--muted)]">기수 관리 탭에서 먼저 기수를 추가해 주세요.</p>}
         {groupData.map((item) => item && (item.error
           ? <p key={item.cohort.name} role="alert" className="mt-5 rounded-2xl border border-[var(--line)] p-5 text-sm">{item.cohort.name} 그룹 정보를 불러오지 못했습니다. 그룹 일정 마이그레이션 적용 여부를 확인해주세요.</p>
-          : <TalkGroupManager key={item.cohort.name} cohort={item.cohort.name} ended={Boolean(item.cohort.ends_at && Date.parse(item.cohort.ends_at) <= now)} groups={item.groups} meetings={item.meetings} members={item.members} />))}
+          : <TalkGroupManager availableGuides={availableGuides} guideLoadError={Boolean(candidates?.error)} key={item.cohort.name} cohort={item.cohort.name} ended={Boolean(item.cohort.ends_at && Date.parse(item.cohort.ends_at) <= now)} groups={item.groups} meetings={item.meetings} members={item.members} />))}
       </section>}
     </main>
   );

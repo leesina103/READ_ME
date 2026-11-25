@@ -72,11 +72,11 @@ export default async function MyPage({ searchParams }: MyPageProps) {
   const [groupResult, guideResult] = assignment
     ? await Promise.all([
         supabase.from("talk_groups").select("venue, duration_minutes, talk_meetings(week_number, starts_at)").eq("id", assignment.group_id).maybeSingle(),
-        supabase.rpc("my_group_guide_name", { p_group_id: assignment.group_id })
+        supabase.rpc("member_guide_profiles", { p_group_id: assignment.group_id })
       ])
     : [{ data: null, error: null }, { data: null, error: null }];
   const confirmedGroup = groupResult.data as (Pick<MembershipGroupOption, "venue" | "duration_minutes"> & { talk_meetings: GroupMeeting[] }) | null;
-  const guideName = guideResult.data as string | null;
+  const guide = guideResult.data?.[0];
   const nicknameLocked = Boolean(
     cohortSchedule?.starts_at && new Date(cohortSchedule.starts_at).getTime() <= Date.now()
   );
@@ -109,7 +109,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
         <h2 id="my-confirmed-group" className="text-xl font-semibold">내 모임</h2>
         <p className="mt-2 text-sm text-[var(--muted)]">READ ME {cohort}</p>
         {assignmentError || groupResult.error || guideResult.error ? <p role="alert" className="mt-4 text-sm leading-7">모임 정보를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.</p>
-          : confirmedGroup ? <div className="mt-4"><MembershipGroupDetails hostName={guideName ?? "미정"} guideHref={guideName ? guideHref(guideName) : undefined} venue={confirmedGroup.venue} durationMinutes={confirmedGroup.duration_minutes} meetings={[...confirmedGroup.talk_meetings].sort((a, b) => a.week_number - b.week_number)} /></div>
+          : confirmedGroup ? <div className="mt-4"><MembershipGroupDetails hostName={guide?.nickname ?? "미정"} guideHref={guide ? guideHref(guide.guide_id) : undefined} hostStyle={guide ? guide.introduction || "소개를 준비하고 있어요." : undefined} venue={confirmedGroup.venue} durationMinutes={confirmedGroup.duration_minutes} meetings={[...confirmedGroup.talk_meetings].sort((a, b) => a.week_number - b.week_number)} /></div>
           : <p className="mt-4 text-sm leading-7 text-[var(--muted)]">모임이 확정되면 가이드와 전체 일정을 이곳에서 확인할 수 있어요.</p>}
       </section>}
 

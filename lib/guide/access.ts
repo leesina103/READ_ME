@@ -13,5 +13,5 @@ export async function guideSession(active = true) {
   if (error) throw new Error("가이드 권한을 확인하지 못했습니다. 잠시 뒤 다시 시도해 주세요.");
   const isAdmin = user.app_metadata?.role === "admin";
   if (active && !isAdmin && status !== "active") redirect("/guide");
-  return { supabase, status: status as string | null, isAdmin, isMember: Boolean(profile.cohort) };
+  return { supabase, userId: user.id, status: status as string | null, isAdmin, isMember: Boolean(profile.cohort) };
 }
