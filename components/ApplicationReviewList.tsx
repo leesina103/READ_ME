@@ -1,14 +1,14 @@
 "use client";
 
-import { useActionState } from "react";
-import { Check, Clock3, X } from "lucide-react";
+import { useActionState, useState } from "react";
+import { Check, ChevronDown, Clock3, X } from "lucide-react";
+import { currentMeeting } from "@/data/currentMeeting";
 import {
   archiveMembershipApplicationAction,
   reviewMembershipApplicationAction,
   type ApplicationReviewState
 } from "@/app/admin/applications/actions";
 import { formatPhone, formatSeoulDateTime } from "@/lib/admin/format";
-import { AdminLinkCopyButton } from "@/components/AdminLinkCopyButton";
 import { MembershipGroupDetails } from "@/components/MembershipGroupDetails";
 import type { GroupMeeting } from "@/lib/membership/groupSelection";
 
@@ -36,126 +36,171 @@ export type MembershipApplication = {
 const initialState: ApplicationReviewState = { status: "idle", message: "" };
 
 const statusLabel = {
-  pending: "검토 대기",
+  pending: "승인 대기",
   approved: "승인",
   rejected: "거절"
 } as const;
 
 const statusStyle = {
-  pending: { className: "bg-[var(--sand)] text-[#7a5a22]", Icon: Clock3 },
+  pending: { className: "bg-[var(--sand)] text-[var(--ink)]", Icon: Clock3 },
   approved: { className: "bg-[var(--forest)] text-[var(--cream)]", Icon: Check },
   rejected: { className: "bg-[var(--line)] text-[var(--muted)]", Icon: X }
 } as const;
 
 const errorTextClassName = "text-[#9c3d22]";
+const weekday = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", weekday: "long" });
 
 function ApplicationReviewCard({ application }: { application: MembershipApplication }) {
   const [state, formAction, pending] = useActionState(reviewMembershipApplicationAction, initialState);
   const [archiveState, archiveAction, archivePending] = useActionState(archiveMembershipApplicationAction, initialState);
   const reviewed = application.status !== "pending" || state.status === "success";
   const StatusIcon = statusStyle[application.status].Icon;
-  const details = [application.email, application.birth_year ? `${application.birth_year}년생` : null, `READ ME ${application.cohort}`].filter(Boolean).join(" · ");
+  const days = [...new Set(application.meetings?.map(meeting => weekday.format(new Date(meeting.starts_at))))];
+  const referral = application.referral_sources?.map(source =>
+    source === "기타" && application.referral_other ? `기타 (${application.referral_other})` : source
+  ).join(", ");
+  const summary = [
+    application.birth_year && `${application.birth_year}년생`,
+    application.email,
+    application.phone && formatPhone(application.phone),
+    days.join("·"),
+    `유입 경로: ${application.referral_sources?.join(", ") || "미수집"}`
+  ].filter(Boolean).join(" · ");
 
   return (
-    <article className="rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-6 sm:p-7">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-xl font-semibold">{application.name}</h2>
-            <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${statusStyle[application.status].className}`}>
-              <StatusIcon size={13} strokeWidth={2.5} aria-hidden="true" /> {statusLabel[application.status]}
-            </span>
+    <details className="group min-w-0 rounded-2xl border border-[var(--line)] bg-[var(--paper)]">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-4 py-3 font-semibold focus-visible:outline-[var(--forest)] sm:px-6 [&::-webkit-details-marker]:hidden">
+        <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1 max-[820px]:flex-col">
+          <span className="break-all">{application.name}</span>
+          <span className="min-w-0 text-sm font-normal text-[var(--muted)] [overflow-wrap:anywhere]">{summary}</span>
+        </span>
+        <ChevronDown size={18} aria-hidden="true" className="shrink-0 text-[var(--forest)] group-open:rotate-180" />
+      </summary>
+      <div className="border-t border-[var(--line)] p-4 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${statusStyle[application.status].className}`}>
+                <StatusIcon size={13} strokeWidth={2.5} aria-hidden="true" /> {statusLabel[application.status]}
+              </span>
+            </div>
+            <p className="mt-2 text-sm text-[var(--muted)]">전화번호: {application.phone ? <a href={`tel:${application.phone}`} className="text-[var(--forest)] underline underline-offset-4">{formatPhone(application.phone)}</a> : "미수집 (기존 신청)"}</p>
           </div>
-          <p className="mt-2 break-all text-sm text-[var(--muted)]">{details}</p>
-          <p className="mt-2 text-sm text-[var(--muted)]">전화번호: {application.phone ? <a href={`tel:${application.phone}`} className="text-[var(--forest)] underline underline-offset-4">{formatPhone(application.phone)}</a> : "미수집 (기존 신청)"}</p>
+          <div className="flex items-center gap-3">
+            <time className="text-xs text-[var(--muted)]" dateTime={application.created_at}>{formatSeoulDateTime(application.created_at)}</time>
+            {application.status !== "pending" && (
+              <form action={archiveAction}>
+                <input type="hidden" name="applicationId" value={application.id} />
+                <button
+                  type="submit"
+                  disabled={archivePending}
+                  aria-label={`${application.name} 신청 보관`}
+                  title="보관"
+                  className="inline-flex size-9 items-center justify-center rounded-full border border-[var(--line)] text-[var(--muted)] transition hover:border-[var(--forest)] hover:text-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <X size={16} />
+                </button>
+              </form>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <time className="text-xs text-[var(--muted)]" dateTime={application.created_at}>{formatSeoulDateTime(application.created_at)}</time>
-          {application.status !== "pending" && (
-            <form action={archiveAction}>
-              <input type="hidden" name="applicationId" value={application.id} />
+        <p className="mt-4 break-words text-sm leading-7 text-[var(--muted)]">
+          유입 경로: {referral || "미수집 (기존 신청)"}
+        </p>
+        {application.group_id && <div className="mt-5 rounded-2xl border border-[var(--line)] px-5 py-4">
+          <p className="mb-3 text-xs font-semibold text-[var(--forest)]">{application.status === "approved" ? "확정한 모임" : "선택한 모임"}</p>
+          <MembershipGroupDetails hostName={application.host_name ?? ""} venue={application.venue ?? ""} durationMinutes={application.duration_minutes ?? 180} meetings={application.meetings ?? []} />
+        </div>}
+        <div className="mt-5 rounded-2xl bg-[var(--cream)] px-5 py-4">
+          <span className="text-xs font-semibold text-[var(--forest)]">신청자가 남긴 말</span>
+          <p className="mt-2 whitespace-pre-line text-sm leading-7 text-[var(--muted)]">
+            {application.message || "남긴 말이 없습니다."}
+          </p>
+        </div>
+        {reviewed ? (
+          <div className="mt-5 border-t border-[var(--line)] pt-5 text-sm leading-6 text-[var(--muted)]">
+            <p>{application.admin_note || state.message || "관리자 메모가 없습니다."}</p>
+            {application.status === "approved" && <p className="mt-2 text-xs">입금을 확인한 뒤 회원가입을 안내해 주세요. 이미 가입한 회원은 기존 계정으로 로그인하면 됩니다.</p>}
+            {application.reviewed_at && <time className="mt-2 block text-xs" dateTime={application.reviewed_at}>처리: {formatSeoulDateTime(application.reviewed_at)}</time>}
+            {archiveState.status === "error" && <p role="status" className={`mt-3 ${errorTextClassName}`}>{archiveState.message}</p>}
+          </div>
+        ) : (
+          <form action={formAction} className="mt-5 border-t border-[var(--line)] pt-5">
+            <input type="hidden" name="applicationId" value={application.id} />
+            <label className="block text-sm font-medium">
+              관리자 메모 <span className="font-normal text-[var(--muted)]">(선택)</span>
+              <textarea
+                className="mt-2 min-h-24 w-full resize-y rounded-2xl border border-[var(--line)] bg-[var(--cream)] px-4 py-3 leading-7 outline-none focus:border-[var(--forest)]"
+                name="adminNote"
+                maxLength={1000}
+                placeholder="승인 또는 거절 사유를 남겨두세요."
+              />
+            </label>
+            {state.message && <p role="status" className={`mt-3 text-sm ${state.status === "error" ? errorTextClassName : "text-[var(--forest)]"}`}>{state.message}</p>}
+            <div className="mt-4 flex flex-wrap gap-2">
               <button
                 type="submit"
-                disabled={archivePending}
-                aria-label={`${application.name} 신청 보관`}
-                title="보관"
-                className="inline-flex size-9 items-center justify-center rounded-full border border-[var(--line)] text-[var(--muted)] transition hover:border-[var(--forest)] hover:text-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-50"
+                name="decision"
+                value="approved"
+                disabled={pending}
+                className="button button--primary disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <X size={16} />
+                <Check size={16} /> {pending ? "처리 중..." : application.group_id ? "승인하고 모임 확정" : "승인하고 가입 허용"}
               </button>
-            </form>
-          )}
-        </div>
+              <button
+                type="submit"
+                name="decision"
+                value="rejected"
+                disabled={pending}
+                className="button button--ghost disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <X size={16} /> 거절
+              </button>
+            </div>
+          </form>
+        )}
       </div>
-      <p className="mt-4 break-words text-sm leading-7 text-[var(--muted)]">
-        유입 경로: {application.referral_sources?.length
-          ? application.referral_sources.map((source) => source === "기타" && application.referral_other ? `기타 (${application.referral_other})` : source).join(", ")
-          : "미수집 (기존 신청)"}
-      </p>
-      {application.group_id && <div className="mt-5 rounded-2xl border border-[var(--line)] px-5 py-4">
-        <p className="mb-3 text-xs font-semibold text-[var(--forest)]">{application.status === "approved" ? "확정한 모임" : "선택한 모임"}</p>
-        <MembershipGroupDetails hostName={application.host_name ?? ""} venue={application.venue ?? ""} durationMinutes={application.duration_minutes ?? 180} meetings={application.meetings ?? []} />
-      </div>}
-      <div className="mt-5 rounded-2xl bg-[var(--cream)] px-5 py-4">
-        <span className="text-xs font-semibold text-[var(--forest)]">신청자가 남긴 말</span>
-        <p className="mt-2 whitespace-pre-line text-sm leading-7 text-[var(--muted)]">
-          {application.message || "남긴 말이 없습니다."}
-        </p>
-      </div>
-      {reviewed ? (
-        <div className="mt-5 border-t border-[var(--line)] pt-5 text-sm leading-6 text-[var(--muted)]">
-          <p>{application.admin_note || state.message || "관리자 메모가 없습니다."}</p>
-          {application.status === "approved" && <div className="mt-3"><AdminLinkCopyButton path="/signup" label="회원가입 링크 복사" /><p className="mt-2 text-xs">입금을 확인한 뒤 보내 주세요. 이미 가입한 회원은 기존 계정으로 로그인하면 됩니다.</p></div>}
-          {application.reviewed_at && <time className="mt-2 block text-xs" dateTime={application.reviewed_at}>처리: {formatSeoulDateTime(application.reviewed_at)}</time>}
-          {archiveState.status === "error" && <p role="status" className={`mt-3 ${errorTextClassName}`}>{archiveState.message}</p>}
-        </div>
-      ) : (
-        <form action={formAction} className="mt-5 border-t border-[var(--line)] pt-5">
-          <input type="hidden" name="applicationId" value={application.id} />
-          <label className="block text-sm font-medium">
-            관리자 메모 <span className="font-normal text-[var(--muted)]">(선택)</span>
-            <textarea
-              className="mt-2 min-h-24 w-full resize-y rounded-2xl border border-[var(--line)] bg-[var(--cream)] px-4 py-3 leading-7 outline-none focus:border-[var(--forest)]"
-              name="adminNote"
-              maxLength={1000}
-              placeholder="승인 또는 거절 사유를 남겨두세요."
-            />
-          </label>
-          {state.message && <p role="status" className={`mt-3 text-sm ${state.status === "error" ? errorTextClassName : "text-[var(--forest)]"}`}>{state.message}</p>}
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button
-              type="submit"
-              name="decision"
-              value="approved"
-              disabled={pending}
-              className="button button--primary disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Check size={16} /> {pending ? "처리 중..." : application.group_id ? "승인하고 모임 확정" : "승인하고 가입 허용"}
-            </button>
-            <button
-              type="submit"
-              name="decision"
-              value="rejected"
-              disabled={pending}
-              className="button button--ghost disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <X size={16} /> 거절
-            </button>
-          </div>
-        </form>
-      )}
-    </article>
+    </details>
   );
 }
 
 export function ApplicationReviewList({ applications }: { applications: MembershipApplication[] }) {
-  if (applications.length === 0) {
-    return (
-      <div className="rounded-[28px] border border-[var(--line)] bg-[var(--paper)] p-8 text-center text-sm text-[var(--muted)]">
-        아직 접수된 가입 신청이 없습니다.
-      </div>
-    );
-  }
+  const [active, setActive] = useState<"pending" | "completed">("pending");
+  const [cohort, setCohort] = useState<string>(currentMeeting.cohort);
+  const cohorts = [...new Set([currentMeeting.cohort, ...applications.map(application => application.cohort)])]
+    .sort((a, b) => b.localeCompare(a, "ko", { numeric: true }));
+  const selectedCohort = cohorts.includes(cohort) ? cohort : currentMeeting.cohort;
+  const cohortApplications = applications.filter(application => application.cohort === selectedCohort);
+  const pendingCount = cohortApplications.filter(application => application.status === "pending").length;
+  const tabs = [
+    { id: "pending", label: "승인 대기", count: pendingCount },
+    { id: "completed", label: "완료", count: cohortApplications.length - pendingCount }
+  ] as const;
+  const visible = cohortApplications.filter(application => (application.status === "pending") === (active === "pending"));
 
-  return <div className="grid gap-4">{applications.map((application) => <ApplicationReviewCard key={application.id} application={application} />)}</div>;
+  return (
+    <div>
+      <label className="mb-4 flex flex-wrap items-center gap-3 text-sm font-semibold">
+        신청 기수
+        <select value={selectedCohort} onChange={event => setCohort(event.target.value)}
+          className="min-h-11 rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 text-[var(--ink)] focus-visible:outline-[var(--forest)]">
+          {cohorts.map(name => <option key={name} value={name}>{name}</option>)}
+        </select>
+      </label>
+      <div role="group" aria-label="신청 처리 상태" className="mb-4 flex gap-2">
+        {tabs.map(tab => (
+          <button key={tab.id} type="button" aria-pressed={active === tab.id} onClick={() => setActive(tab.id)}
+            className={`min-h-11 rounded-full border px-4 text-sm font-semibold ${active === tab.id ? "border-[var(--forest)] bg-[var(--forest)] text-[var(--cream)]" : "border-[var(--line)] bg-[var(--paper)] text-[var(--muted)]"}`}>
+            {tab.label} {tab.count}건
+          </button>
+        ))}
+      </div>
+      <div className="grid gap-2">
+        {visible.map(application => <ApplicationReviewCard key={application.id} application={application} />)}
+        {visible.length === 0 && <p className="rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-6 text-center text-sm text-[var(--muted)]">
+          {active === "pending" ? "승인 대기 중인 신청이 없습니다." : "처리가 완료된 신청이 없습니다."}
+        </p>}
+      </div>
+    </div>
+  );
 }

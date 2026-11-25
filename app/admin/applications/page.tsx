@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ClipboardList } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { ApplicationReviewList, type MembershipApplication } from "@/components/ApplicationReviewList";
 import { requireAdmin, supabaseNotConfiguredMessage } from "@/lib/admin/access";
 
@@ -23,23 +23,16 @@ export default async function AdminApplicationsPage() {
     else applications = (data ?? []) as MembershipApplication[];
   }
 
-  const pendingCount = applications.filter((application) => application.status === "pending").length;
-
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-16 md:py-24">
       <Link href="/admin" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)]">
         <ArrowLeft size={16} /> 운영자 공간으로 돌아가기
       </Link>
-      <div className="mt-8 flex flex-wrap items-end justify-between gap-5">
-        <div>
-          <p className="eyebrow">MEMBERSHIP APPLICATIONS</p>
-          <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">가입 신청 관리</h1>
-          <p className="mt-4 max-w-2xl text-[var(--muted)]">신청 내용을 확인하고 승인하면 가입 허용 명단에 등록됩니다. 승인 뒤에는 신청자에게 회원가입 안내를 보내 주세요.</p>
-        </div>
-        <div className="flex items-center gap-3 rounded-2xl bg-[var(--sage)] px-5 py-4">
-          <ClipboardList className="text-[var(--forest)]" size={20} />
-          <span className="text-sm font-semibold">검토 대기 {pendingCount}건</span>
-        </div>
+      <div className="mt-8">
+        <p className="eyebrow">MEMBERSHIP APPLICATIONS</p>
+        <h1 className="mt-5 font-serif text-4xl font-medium tracking-[-0.04em] sm:text-5xl">가입 신청 관리</h1>
+        <p className="mt-4 max-w-2xl text-[var(--muted)]">신청 내용을 확인하고 승인하면 가입 허용 명단에 등록됩니다. 승인 뒤에는 신청자에게 회원가입 안내를 보내 주세요.</p>
+
       </div>
       <section className="mt-10">
         {loadError ? (
