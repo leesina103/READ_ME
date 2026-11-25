@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, ShieldCheck, UsersRound } from "lucide-react";
 import { requireAdmin, supabaseNotConfiguredMessage } from "@/lib/admin/access";
 import { formatSeoulDate } from "@/lib/admin/format";
+import { weekdays } from "@/lib/membership/talkDeadlines";
 import { PendingMemberDeleteButton } from "@/components/PendingMemberDeleteButton";
 import { AdminGuideRoster, type AdminGuideRow } from "@/components/AdminGuideRoster";
 
@@ -23,9 +24,20 @@ type MemberRow = {
   onboarding_completed_at: string | null;
   membership_status: string | null;
   is_admin: boolean | null;
+  meeting_weekdays?: number[];
 };
 
 type MemberState = { kind: "pending" | "moved" | "onboarding" | "active" | "inactive"; label: string; tone: "forest" | "sand" | "muted" };
+
+// 실제 회원이 가려지지 않도록 확인한 테스트 계정 주소만 제외합니다.
+const testMemberEmails = new Set([
+  "test@example.com",
+  "readmebook.team+signup-resume-1124@gmail.com",
+  "readmebook.team+signup-test@gmail.com",
+  "readmebook.kr+signup-button-1124@gmail.com",
+  "readmebook.kr+design-final-1124@gmail.com",
+  "readmebook.kr+design-confirm-1124@gmail.com"
+]);
 
 const toneClassName: Record<MemberState["tone"], string> = {
   forest: "bg-[var(--sage)]/50 text-[var(--forest)]",
@@ -71,13 +83,14 @@ function onePerPerson(rows: MemberRow[]) {
 const cell = "px-3 py-2";
 const head = "px-3 py-2 font-semibold";
 
-function MemberTable({ rows, lastColumn }: { rows: MemberRow[]; lastColumn: "state" | "cohort" }) {
+function MemberTable({ rows, lastColumn, showWeekdays = false }: { rows: MemberRow[]; lastColumn: "state" | "cohort"; showWeekdays?: boolean }) {
   return (
     <div className="overflow-x-auto">
       <table className="admin-member-table w-full min-w-[640px] text-left text-sm">
         <thead className="text-xs text-[var(--muted)]">
           <tr>
             <th className={`${head} pl-4`}>이름</th>
+            {showWeekdays && <th className={`${head} whitespace-nowrap`}>참여 요일</th>}
             <th className={head}>이메일</th>
             <th className={head}>닉네임</th>
             <th className={head}>{lastColumn === "state" ? "상태" : "소속 기수"}</th>
@@ -91,6 +104,7 @@ function MemberTable({ rows, lastColumn }: { rows: MemberRow[]; lastColumn: "sta
             return (
               <tr key={`${member.id}-${member.cohort}`} className="border-t border-[var(--line)]">
                 <td className={`${cell} pl-4 font-semibold`}>{member.name}</td>
+                {showWeekdays && <td className={`${cell} whitespace-nowrap`}>{member.meeting_weekdays?.map(day => weekdays[day]).join(" · ") || "미확인"}</td>}
                 <td className={cell}><a href={`mailto:${member.email}`} className="text-[var(--forest)] underline-offset-4 hover:underline">{member.email}</a></td>
                 <td className={cell}>{member.claimed_at && member.display_name ? member.display_name : <span className="text-[var(--muted)]">가입 전</span>}</td>
                 <td className={cell}>
@@ -128,7 +142,7 @@ export default async function AdminMembersPage() {
     if (guideResult.error) guideError = "가이드 연결 상태를 불러오지 못했습니다. 새로고침해 주세요.";
     else guides = (guideResult.data ?? []) as AdminGuideRow[];
     if (error) loadError = "회원 명단을 불러오지 못했습니다. 데이터베이스 마이그레이션 적용 여부를 확인해 주세요.";
-    else members = (data ?? []) as MemberRow[];
+    else members = ((data ?? []) as MemberRow[]).filter(member => !testMemberEmails.has(member.email.trim().toLowerCase()));
   }
 
   const admins = onePerPerson(members.filter((member) => member.is_admin));
@@ -192,7 +206,7 @@ export default async function AdminMembersPage() {
                   <section aria-label="가입 완료 명단" className="min-w-0 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--paper)]">
                     <h3 className="border-b border-[var(--line)] bg-[var(--sage)]/30 px-4 py-3 font-semibold text-[var(--forest)]">가입 완료 · {joined.length}명</h3>
                     {joined.length > 0 ? (
-                      <MemberTable rows={joined} lastColumn="state" />
+                      <MemberTable rows={joined} lastColumn="state" showWeekdays />
                     ) : (
                       <p className="px-4 pb-3 text-sm text-[var(--muted)]">아직 가입을 완료한 회원이 없습니다.</p>
                     )}
