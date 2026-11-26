@@ -1,3 +1,4 @@
+import { logoutAction } from "@/app/auth/actions";
 import { OnboardingForm } from "@/components/OnboardingForm";
 
 export function OnboardingScreen({ fullName, cohort, preview = false }: { fullName: string; cohort: string | null; preview?: boolean }) {
@@ -10,6 +11,11 @@ export function OnboardingScreen({ fullName, cohort, preview = false }: { fullNa
           {cohort ? <>{fullName}님, <strong className="text-[var(--ink)]">{cohort}</strong> 멤버로 승인되었어요. 닉네임을 정하면 나의 서재가 열려요. 자기소개는 첫 모임 전, 온라인 대화의 ‘첫 만남’에서 작성해 주세요.</> : <>{fullName}님, 가이드로 사용할 닉네임을 정해 주세요. 운영자가 가입 정보를 확인하고 담당 모임을 배정하면 가이드 모임 관리가 열립니다.</>}
         </p>
         <OnboardingForm preview={preview} />
+        <form action={preview ? "/" : logoutAction} className="mt-2 text-center">
+          <button type="submit" className="min-h-11 px-4 text-sm text-[var(--muted)] underline underline-offset-4">
+            로그아웃
+          </button>
+        </form>
       </section>
     </main>
   );
