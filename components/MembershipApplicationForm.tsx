@@ -138,6 +138,7 @@ export function MembershipApplicationForm({ cohort, configured, groups, groupsEr
       </label>
       {(state.message || !configured) && (
         <p role="status" className="rounded-2xl border border-[var(--line)] px-4 py-3 text-sm leading-6 text-[var(--ink)]">
+          {state.status === "success" && <strong className="block">가입 신청서 제출이 완료됐어요.</strong>}
           {state.message || "Supabase 프로젝트 연결 후 신청할 수 있습니다."}
         </p>
       )}
