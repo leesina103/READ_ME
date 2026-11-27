@@ -1,4 +1,5 @@
 import { CohortLabel } from "@/components/CohortLabel";
+import { AdminMissingIntroductions } from "@/components/AdminMissingIntroductions";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -23,10 +24,11 @@ export default async function FirstMeetingPage({ params }: { params: Promise<{ c
   const staffView = member.staffCohorts.includes(cohortName);
   if (member.cohort !== cohortName && !staffView) redirect("/membership/talk");
   const supabase = await createClient();
-  const [profileResult, directoryResult, cohortResult] = await Promise.all([
+  const [profileResult, directoryResult, cohortResult, missingResult] = await Promise.all([
     supabase.from("profiles").select("introduction_word, bio, cohort_message").eq("id", member.user.id).single(),
     staffView ? supabase.rpc("staff_member_directory", { p_cohort: cohortName }) : supabase.rpc("list_member_directory"),
-    supabase.from("cohorts").select("ends_at").eq("name", cohortName).maybeSingle()
+    supabase.from("cohorts").select("ends_at").eq("name", cohortName).maybeSingle(),
+    member.role === "admin" ? supabase.rpc("admin_missing_introductions", { p_cohort: cohortName }).order("name") : null
   ]);
   const readOnly = member.ownCohort !== cohortName || Boolean(cohortResult.data?.ends_at && Date.parse(cohortResult.data.ends_at) <= Date.now());
   const peers = ((directoryResult.data ?? []) as MemberDirectoryRow[]).filter((row) => row.cohort === cohortName && row.user_id !== member.user.id);
@@ -53,8 +55,9 @@ export default async function FirstMeetingPage({ params }: { params: Promise<{ c
               <p className="mt-5 text-sm leading-7 text-[var(--muted)]">이 기수는 읽기 전용이에요. 현재 소개는 <Link href="/my#introduction" className="font-semibold underline underline-offset-4">나의 서재</Link>에서 수정할 수 있어요.</p>
             </> : <MemberIntroductionForm introduction={profileResult.data as MemberIntroduction} cohortNumber={cohortNumber} />}
         </section>
+        {missingResult && <AdminMissingIntroductions members={missingResult.data ?? []} failed={Boolean(missingResult.error)} />}
         <section className="first-meeting-room__peers" aria-labelledby="peer-introduction-title">
-          <div className="first-meeting-room__section-heading"><h2 id="peer-introduction-title">같은 기수 동료들의 소개</h2><Link href="/membership/members" className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--forest)] underline-offset-4 hover:underline focus-visible:underline">전체 멤버 소개 보기 <ArrowRight size={15} aria-hidden="true" /></Link></div>
+          <div className="first-meeting-room__section-heading"><h2 id="peer-introduction-title">같은 기수 동료들의 소개{!directoryResult.error && ` · ${peers.length}명`}</h2><Link href="/membership/members" className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--forest)] underline-offset-4 hover:underline focus-visible:underline">전체 멤버 소개 보기 <ArrowRight size={15} aria-hidden="true" /></Link></div>
           {directoryResult.error ? <p role="alert" className="mt-5 text-sm leading-7">동료 소개를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>
             : peers.length === 0 ? <p className="mt-5 text-sm leading-7 text-[var(--muted)]">아직 함께할 동료의 소개가 없어요. 첫 인사를 남겨주세요.</p>
               : <div className="first-meeting-room__peer-list">{peers.map((peer) => <article key={peer.user_id} className="first-meeting-room__peer"><h3>{peer.display_name}</h3><MemberIntroductionContent introduction={peer} variant="reading" /></article>)}</div>}
