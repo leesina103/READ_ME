@@ -323,13 +323,15 @@ export async function saveSessionAnswerAction(
 ): Promise<FormActionState> {
   const cohortNumber = Number(textValue(formData, "cohort"));
   const week = Number(textValue(formData, "week"));
+  const question = Number(textValue(formData, "question"));
   const content = textValue(formData, "content");
 
-  if (!Number.isInteger(cohortNumber) || cohortNumber < 1 || !findSeasonWeek(cohortNumber, week)) {
+  if (!Number.isInteger(question) || question < 1 || question > 4 || !Number.isInteger(cohortNumber) || cohortNumber < 1 || !findSeasonWeek(cohortNumber, week)) {
     return { status: "error", message: "잘못된 요청입니다." };
   }
 
-  if (content.length < 2 || content.length > 2000) {
+  const deleting = formData.get("intent") === "delete" && typeof formData.get("content") === "string" && !content;
+  if (!deleting && (content.length < 2 || content.length > 2000)) {
     return { status: "error", message: "답변은 2자 이상 2000자 이하로 작성해 주세요." };
   }
 
@@ -359,10 +361,14 @@ export async function saveSessionAnswerAction(
   if (!profile?.cohort || cohortNumberFromName(profile.cohort) !== cohortNumber) {
     return { status: "error", message: "참여 중인 기수의 토크방에만 답변을 남길 수 있어요." };
   }
-  const { error } = await supabase.rpc("save_session_answer", {
-    target_week: week,
-    target_content: content
-  });
+  const target = {
+    target_cohort: profile.cohort,
+    target_question: question,
+    target_week: week
+  };
+  const { error } = deleting
+    ? await supabase.rpc("delete_my_talk_answer", target)
+    : await supabase.rpc("save_talk_question_answer", { ...target, target_content: content });
 
   if (error) {
     if (error.message.includes("cohort_ended")) {
@@ -377,7 +383,7 @@ export async function saveSessionAnswerAction(
   revalidatePath(`/membership/talk/${cohortNumber}/${week}`);
   revalidatePath("/membership/talk");
   revalidatePath("/membership");
-  return { status: "success", message: "답변을 저장했습니다." };
+  return { status: "success", message: deleting ? "답변을 삭제했어요." : "답변을 저장했어요." };
 }
 
 export async function logoutAction() {

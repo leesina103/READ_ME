@@ -36,7 +36,7 @@ const run = (at, dryRun = false) => runCohortOperations({ now: Date.parse(at), d
     if (path.startsWith('talk_groups?')) return ['금요일', '토요일'].map((name, i) => ({ id: i + 1, name, talk_meetings: match().filter(m => m.group === i).map(m => ({ week_number: 2 * m.round - 1, starts_at: m.at })) }));
     if (path.startsWith('talk_group_members?')) return [{ user_id: 'a', group_id: 1 }];
     if (path.startsWith('profiles?')) return [{ id: 'a', full_name: '가 회원', introduction_word: '리미', bio: '소개' }];
-    if (path.startsWith('session_answers?')) return answered ? [{ user_id: 'a', week_number: 3 }] : [];
+    if (path.startsWith('completed_talk_weeks?')) return answered ? [{ user_id: 'a', week_number: 3 }] : [];
     throw new Error('예상하지 않은 웹 조회');
   },
   ensurePage: async (_, keyProperty, key, properties) => {

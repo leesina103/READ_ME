@@ -134,7 +134,7 @@ try {
   equal(await scalar("select to_char(due_at at time zone 'Asia/Seoul','YYYY-MM-DD HH24:MI') from public.my_talk_schedule('1기') where week_number=2"),"2026-10-11 23:59");
   equal(await scalar("select to_char(opens_at at time zone 'Asia/Seoul','YYYY-MM-DD HH24:MI') from public.my_talk_schedule('1기') where week_number=1"),"2026-09-07 00:00");
   equal(await scalar("select to_char(opens_at at time zone 'Asia/Seoul','YYYY-MM-DD HH24:MI') from public.my_talk_schedule('1기') where week_number=2"),"2026-10-03 00:00");
-  await db.exec("reset role; update public.cohorts set starts_at='2028-01-01' where name='1기';");
+  await db.exec("reset role; update public.cohorts set starts_at='2028-01-01T00:00:00Z' where name='1기';");
   await login(2);
   equal(await scalar("select to_char(opens_at at time zone 'Asia/Seoul','YYYY-MM-DD HH24:MI') from public.my_talk_schedule('1기') where week_number=1"),"2028-01-01 09:00");
   equal(await scalar("select to_char(due_at at time zone 'Asia/Seoul','YYYY-MM-DD HH24:MI') from public.my_talk_schedule('1기') where week_number=1"),"2026-09-30 23:59");
@@ -184,5 +184,44 @@ try {
     equal(await scalar(`select count(*)::int from public.session_answers where week_number=${week}`),0);
     await db.exec("reset role;");
   }
+  // 기존 첫 질문과 새 질문의 쓰기·열람·완료 기준을 서로 다른 두 회원으로 확인한다.
+  await db.exec(`create role service_role;
+    create function public.can_staff_read_cohort(text) returns boolean language sql as 'select false';
+    create function private.member_view_group(text) returns uuid language sql as 'select null::uuid';
+    update public.cohorts set starts_at='2026-01-01' where name='1기';`);
+  await db.exec(await readFile(new URL("../supabase/migrations/20261127013211_talk_question_answers.sql", import.meta.url), "utf8"));
+  await db.exec(await readFile(new URL("../supabase/migrations/20261127020638_delete_my_talk_answer.sql", import.meta.url), "utf8"));
+  await db.exec(await readFile(new URL("../supabase/migrations/20261127021346_talk_question_peer_count.sql", import.meta.url), "utf8"));
+  const peerCount = "select public.talk_question_peer_count('1기',1::smallint,2::smallint)";
+  const removeSecond = "select public.delete_my_talk_answer('1기',1::smallint,2::smallint)";
+  const saveQuestion = n => `select public.save_talk_question_answer('1기',1::smallint,${n}::smallint,'질문별 답변')`;
+  await login(2);
+  await db.exec(saveQuestion(2));
+  await login(3);
+  equal(await scalar("select count(*)::int from public.talk_question_answers where week_number=1 and question_number=2"),0);
+  equal(await scalar("select answered from public.my_talk_schedule('1기') where week_number=1"),false);
+  await db.exec(saveQuestion(2));
+  equal(await scalar("select count(*)::int from public.talk_question_answers where week_number=1 and question_number=2"),2);
+  await db.exec(saveQuestion(2));
+  await db.exec(saveQuestion(3));
+  equal(await scalar("select answered from public.my_talk_schedule('1기') where week_number=1"),true);
+  equal(await scalar(peerCount),1);
+  await db.exec(removeSecond);
+  equal(await scalar(peerCount),1);
+  equal(await scalar("select count(*)::int from public.talk_question_answers where week_number=1 and question_number=2"),0);
+  equal(await scalar("select answered from public.my_talk_schedule('1기') where week_number=1"),false);
+  equal(await scalar("select count(*)::int from public.talk_question_answers where week_number=1 and question_number=3 and user_id=auth.uid()"),1);
+  await login(2);
+  equal(await scalar("select count(*)::int from public.talk_question_answers where week_number=1 and question_number=2 and user_id=auth.uid()"),1);
+  equal(await scalar(peerCount),0);
+  await fails(saveQuestion(4),/invalid_question/);
+  await login(2);
+  equal(await scalar("select count(*)::int from public.talk_question_answers where week_number=1 and question_number=3"),0);
+  await db.exec("select public.save_session_answer(1::smallint,'첫 질문 수정')");
+  equal(await scalar("select count(*)::int from public.session_answers where content='질문별 답변'"),0);
+  await db.exec("reset role; update public.cohorts set ends_at=now() where name='1기'");
+  await login(2);
+  await fails(saveQuestion(2),/cohort_ended/);
+  await fails(removeSecond,/cohort_ended/);
   console.log(`그룹 권한·작성일·알림 ${checks}개 검증 통과`);
 } finally { await db.close(); }

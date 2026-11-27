@@ -81,7 +81,7 @@ async function readWebsite(db, members, cases) {
     db(`talk_groups?select=id,name,talk_meetings(week_number,starts_at)&cohort=eq.${cohort}`),
     db(`talk_group_members?select=user_id,group_id&cohort=eq.${cohort}`),
     db(`profiles?select=id,full_name,introduction_word,bio&cohort=eq.${cohort}&onboarding_completed_at=not.is.null`),
-    db(`session_answers?select=user_id,week_number&cohort=eq.${cohort}`)
+    db(`completed_talk_weeks?select=user_id,week_number&cohort=eq.${cohort}`)
   ]);
   const active = new Set(memberships.map(m => m.user_id));
   const matches = new Map();

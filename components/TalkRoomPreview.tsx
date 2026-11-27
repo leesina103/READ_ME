@@ -23,14 +23,14 @@ export function TalkRoomPreview({ variant = "question", cohortLabel = currentMee
           <text x="26" y="85" className="shot-avatar" textAnchor="middle">리미</text>
           {isOutput ? (
             <>
-              <rect x="42" y="72" width="186" height="20" rx="8" fill="var(--paper)" />
-              <text x="52" y="85" className="shot-body is-strong">실천한 행동을 기록해 공유해 주세요.</text>
-              <circle cx="26" cy="108" r="10" fill="var(--sand)" />
-              <text x="26" y="111" className="shot-avatar is-dark" textAnchor="middle">주</text>
-              <rect x="42" y="98" width="152" height="20" rx="8" fill="var(--paper)" />
-              <text x="52" y="111" className="shot-body">저는 하루 10분 통화를 해봤어요.</text>
-              <rect x="120" y="128" width="184" height="20" rx="8" fill="var(--forest)" />
-              <text x="130" y="141" className="shot-body is-mine">다섯 번 참았고, 두 번은 놀랐어요.</text>
+              <rect x="42" y="69" width="265" height="48" rx="8" fill="var(--paper)" />
+              <text x="52" y="81" className="shot-body is-strong">
+                <tspan x="52">지난 모임에서 나눈 이야기 중, 내 일상에서 더 생각해보고</tspan>
+                <tspan x="52" dy="13">싶은 질문이나 직접 해보고 싶은 행동은 무엇인가요?</tspan>
+                <tspan x="52" dy="13">자유롭게 이야기해 주세요.</tspan>
+              </text>
+              <rect x="105" y="128" width="199" height="20" rx="8" fill="var(--forest)" />
+              <text x="115" y="141" className="shot-body is-mine">친구의 말을 끝까지 들어보고 싶어요.</text>
             </>
           ) : (
             <>

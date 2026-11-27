@@ -2,10 +2,8 @@ import { CohortLabel } from "@/components/CohortLabel";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, BookOpen, Lock } from "lucide-react";
-import { TalkComposer } from "@/components/TalkComposer";
-import { TalkExample } from "@/components/TalkExample";
+import { TalkQuestions } from "@/components/TalkQuestions";
 import { TalkExampleFrame } from "@/components/TalkExampleFrame";
-import { TalkOwnAnswer, TalkPrompt } from "@/components/TalkMessages";
 import { cohortNameFromNumber, findSeasonWeek } from "@/data/seasonWeeks";
 import { getMemberCohortHistory } from "@/lib/membership/access";
 import { createClient } from "@/lib/supabase/server";
@@ -13,13 +11,7 @@ import { getTalkSchedule } from "@/lib/membership/talkData";
 import { deadlineText } from "@/lib/membership/talkDeadlines";
 import { formatSeoulDayHeading, formatSeoulTime } from "@/lib/admin/format";
 
-type TalkPageProps = { params: Promise<{ cohort: string; week: string }>; searchParams: Promise<{ preview?: string }> };
-
-const blurredFillers = [
-  "내 답변을 남기면 열리는 이야기예요. 함께 나눈 생각이 담겨 있어요.",
-  "이 자리에는 같은 기수 동료의 답변이 기다리고 있어요.",
-  "먼저 나의 답변을 남기고, 서로의 생각을 읽어보세요."
-];
+type TalkPageProps = { params: Promise<{ cohort: string; week: string }>; searchParams: Promise<{ preview?: string; question?: string }> };
 
 function TalkDataError() {
   return (
@@ -48,7 +40,9 @@ export default async function TalkPage({ params, searchParams }: TalkPageProps) 
   const cohortName = cohortNameFromNumber(cohortNumber);
   if (!cohortNames.has(cohortName)) redirect("/membership");
   const isAdmin = member.user.app_metadata?.role === "admin";
-  const isExample = (await searchParams).preview === "1";
+  const query = await searchParams;
+  const isExample = query.preview === "1";
+  const selected = query.question === undefined ? null : Number(query.question);
   const roomPath = `/membership/talk/${cohortNumber}/${week}`;
   if (isExample && !isAdmin) redirect(roomPath);
   const isCurrentCohort = member.ownCohort === cohortName;
@@ -64,27 +58,33 @@ export default async function TalkPage({ params, searchParams }: TalkPageProps) 
   const readOnly = !isCurrentCohort || currentCohortEnded || isPendingWeek;
   const user = member.user;
 
-  const { data: answers, error: answersError } = isExample ? { data: [], error: null } : await supabase
-    .from("session_answers")
-    .select("user_id, display_name, content, created_at")
-    .eq("cohort", cohortName)
-    .eq("week_number", week)
-    .order("created_at", { ascending: true });
-  if (answersError) return <TalkDataError />;
-
-  const mine = answers?.find((answer) => answer.user_id === user.id) ?? null;
-  const others = (answers ?? []).filter((answer) => answer.user_id !== user.id);
-  let hiddenCount = 0;
-
-  if (!isExample && !mine && !staffView) {
-    const { data: totalCount, error: countError } = await supabase.rpc("session_answer_count", { target_cohort: cohortName, target_week: week });
-    if (countError) return <TalkDataError />;
-    hiddenCount = typeof totalCount === "number" ? totalCount : 0;
+  const [followups, answers] = await Promise.all([
+    supabase.from("talk_followup_questions").select("question_number,prompt")
+      .eq("cohort", cohortName).eq("week_number", week).order("question_number"),
+    isExample ? { data: [], error: null } : supabase.from("talk_question_answers")
+      .select("question_number,user_id,display_name,content").eq("cohort", cohortName)
+      .eq("week_number", week).order("created_at").order("id")
+  ]);
+  if (followups.error || !followups.data || followups.data.length < 2 || answers.error) return <TalkDataError />;
+  const questions = [{ question_number: 1, prompt: weekInfo.prompt }, ...followups.data];
+  if (selected !== null && !questions.some(q => q.question_number === selected)) notFound();
+  const rows = answers.data ?? [];
+  const mine = new Set(rows.filter(answer => answer.user_id === user.id).map(answer => answer.question_number));
+  const staffReader = staffView && !isCurrentCohort;
+  let lockedPeerCount = 0;
+  if (selected !== null && !isExample && !staffReader && !mine.has(selected)) {
+    const { data, error } = await supabase.rpc("talk_question_peer_count", {
+      target_cohort: cohortName, target_week: week, target_question: selected
+    });
+    if (error || typeof data !== "number") return <TalkDataError />;
+    lockedPeerCount = data;
   }
+  const visibleAnswers = rows.filter(answer => staffReader || mine.has(answer.question_number));
+  const listPath = roomPath + (isExample ? "?preview=1" : "");
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-14 md:py-20">
-      <Link href="/membership/talk" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)]"><ArrowLeft size={15} /> 온라인 대화 목록으로</Link>
+      <Link href={selected ? listPath : "/membership/talk"} className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold text-[var(--muted)]"><ArrowLeft size={15} /> {selected ? `${week}주차 질문 목록` : "온라인 대화 목록으로"}</Link>
       <TalkExampleFrame enabled={isExample}>
         <header className="border-b border-[var(--line)] bg-[var(--paper)] px-6 py-5">
           <p className="text-xs font-bold tracking-[.14em] text-[var(--forest)]">READ ME <CohortLabel>{cohortName}</CohortLabel> · {week}주차 · {weekInfo.type === "input" ? "토의" : "실천 & OUTPUT"}{isExample ? <span className="group-data-[capture=true]/talk:hidden"> · 예시 작성</span> : readOnly && " · 읽기 전용"}</p>
@@ -93,35 +93,20 @@ export default async function TalkPage({ params, searchParams }: TalkPageProps) 
             <p className="flex min-w-0 items-center gap-2 text-sm text-[var(--muted)]"><BookOpen size={15} className="shrink-0" /><span>『{weekInfo.book}』 {weekInfo.author}</span></p>
             {isAdmin && <Link href={isExample ? roomPath : `${roomPath}?preview=1`} className="inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-[var(--forest)] underline underline-offset-4 max-[430px]:self-end group-data-[capture=true]/talk:hidden">{isExample ? "예시 작성 끝내기" : "예시 답변 작성해 보기"}</Link>}
           </div>
-          {!isExample && !readOnly && <div className="mt-4 rounded-2xl bg-[var(--sage)]/35 p-4 text-sm leading-7">
+          {selected === null && !isExample && !readOnly && <div className="mt-4 rounded-2xl bg-[var(--sage)]/35 p-4 text-sm leading-7">
             {timing?.meeting_at && <p>{formatSeoulDayHeading(timing.meeting_at)} {formatSeoulTime(timing.meeting_at)} 모임</p>}
             <p className="font-semibold">{timing?.due_at ? deadlineText(timing.due_at) : "모임 일정이 정해지면 작성 날짜를 알려드려요."}</p>
             <p className="text-xs text-[var(--muted)]">날짜가 지나도 기수가 끝나기 전까지 작성하거나 수정할 수 있어요.</p>
-            <p className="text-xs text-[var(--muted)]">답변은 같은 기수 동료들과 나눠요. 이 기수 담당 가이드와 운영자도 모임 준비를 위해 읽을 수 있어요. 내 답변을 남기면 동료들의 답변이 열립니다.</p>
+            <p className="text-xs text-[var(--muted)]">답변은 같은 기수 동료들과 나눠요. 이 기수 담당 가이드와 운영자도 모임 준비를 위해 읽을 수 있어요. 질문에 답하면 그 질문에 남긴 동료들의 답변이 열려요.</p>
           </div>}
         </header>
 
-        {isExample ? <TalkExample key={`${cohortNumber}-${week}`} cohortNumber={cohortNumber} week={week} type={weekInfo.type} prompt={weekInfo.prompt} /> : <>
-        <div className="flex flex-col gap-5 bg-[var(--sage)]/35 px-5 py-7 sm:px-6">
-          <TalkPrompt type={weekInfo.type} prompt={weekInfo.prompt} />
+        <TalkQuestions key={roomPath + String(isExample)} cohortNumber={cohortNumber} week={week}
+          lockedPeerCount={lockedPeerCount} selected={selected} questions={questions} answers={visibleAnswers.map(answer => ({
+            question: answer.question_number, name: answer.display_name, content: answer.question_number === selected ? answer.content : "", mine: answer.user_id === user.id
+          }))} example={isExample} readOnly={readOnly} staffView={staffReader} />
 
-          {others.map((answer) => (
-            <div key={answer.user_id} className="flex items-start gap-3">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--sand)] text-sm font-bold text-[var(--ink)]">{answer.display_name.slice(0, 1)}</span>
-              <div className="min-w-0"><span className="text-xs text-[var(--muted)]">{answer.display_name}</span><div className="mt-1 max-w-[520px] whitespace-pre-line rounded-2xl rounded-tl-sm border border-[var(--line)] bg-[var(--paper)] px-4 py-3 text-[15px] leading-7">{answer.content}</div></div>
-            </div>
-          ))}
-
-          {!mine && hiddenCount > 0 && <>
-            {Array.from({ length: hiddenCount }, (_, index) => <div key={index} className="flex items-start gap-3" aria-hidden="true"><span className="size-9 shrink-0 rounded-full bg-[var(--sand)]/70" /><div className="max-w-[520px] select-none rounded-2xl rounded-tl-sm border border-[var(--line)] bg-[var(--paper)] px-4 py-3 text-[15px] leading-7 blur-[6px]">{blurredFillers[index % blurredFillers.length]}</div></div>)}
-            <div className="mx-auto my-2 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--paper)] px-5 py-3 text-center text-sm font-semibold text-[var(--muted)]"><Lock size={14} className="shrink-0" /> {readOnly ? `답변을 남기지 않은 주차라 동료들의 답변 ${hiddenCount}개는 열리지 않아요.` : `내 답변을 남기면 ${hiddenCount}개의 답변이 열려요.`}</div>
-          </>}
-
-          {!mine && hiddenCount === 0 && others.length === 0 && <p className="mx-auto my-2 text-sm text-[var(--muted)]">{readOnly ? "이 주차에는 남겨진 답변이 없어요." : "아직 답변이 없어요. 첫 번째 이야기를 남겨보세요."}</p>}
-          {mine && <TalkOwnAnswer content={mine.content} />}
-        </div>
-
-        {readOnly ? (
+        {readOnly && !isExample && (
           <div className="flex items-start gap-2 border-t border-[var(--line)] bg-[var(--paper)] p-4 text-sm leading-6 text-[var(--muted)] sm:p-5">
             <Lock size={14} className="mt-1 shrink-0" aria-hidden="true" />
             {isPendingWeek ? (
@@ -134,10 +119,7 @@ export default async function TalkPage({ params, searchParams }: TalkPageProps) 
               <p>지난 기수 대화방은 읽기만 가능해요.{member.cohort && !currentCohortEnded && <> 새 답변은 <Link href="/membership/talk" className="font-semibold text-[var(--forest)] underline underline-offset-4">{member.cohort} 대화방</Link>에서 남겨주세요.</>}</p>
             )}
           </div>
-        ) : (
-          <TalkComposer cohortNumber={cohortNumber} week={week} initialContent={mine?.content ?? ""} hasAnswer={Boolean(mine)} />
         )}
-        </>}
       </TalkExampleFrame>
     </main>
   );

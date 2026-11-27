@@ -35,7 +35,7 @@ export function buildSeasonWeeks(theme: Theme): readonly SeasonWeek[] {
         week: index * 2 + 2,
         type: "output" as const,
         roomTitle: `${session.title} 실천 & OUTPUT 세션`,
-        prompt: `『${session.book}』에서 만난 생각 중 삶에 적용해보고 싶은 행동 하나를 정해 실천해 보세요. 무엇을 해봤고, 무엇이 달라졌는지 기록하고 공유해 주세요.`
+        prompt: "지난 모임에서 나눈 이야기 중, 내 일상에서 더 생각해보고 싶은 질문이나 직접 해보고 싶은 행동은 무엇인가요?\n자유롭게 이야기해 주세요."
       }
     ];
   });
