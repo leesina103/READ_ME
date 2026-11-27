@@ -6,6 +6,7 @@ import { formatSeoulDate } from "@/lib/admin/format";
 import { weekdays } from "@/lib/membership/talkDeadlines";
 import { PendingMemberDeleteButton } from "@/components/PendingMemberDeleteButton";
 import { AdminGuideRoster, type AdminGuideRow } from "@/components/AdminGuideRoster";
+import { AdminMissingIntroductions, type MissingIntroduction } from "@/components/AdminMissingIntroductions";
 
 export const metadata: Metadata = {
   title: "기수 회원 명단",
@@ -132,13 +133,18 @@ export default async function AdminMembersPage() {
   let loadError = "";
   let guides: AdminGuideRow[] = [];
   let guideError = "";
+  let missing: MissingIntroduction[] = [];
+  let missingFailed = false;
 
   if (!supabase) {
     loadError = supabaseNotConfiguredMessage;
   } else {
-    const [{ data, error }, guideResult] = await Promise.all([
-      supabase.rpc("admin_list_members"), supabase.rpc("admin_guide_member_roster")
+    const [{ data, error }, guideResult, missingResult] = await Promise.all([
+      supabase.rpc("admin_list_members"), supabase.rpc("admin_guide_member_roster"),
+      supabase.rpc("admin_missing_introductions").order("name")
     ]);
+    missing = missingResult.data ?? [];
+    missingFailed = Boolean(missingResult.error);
     if (guideResult.error) guideError = "가이드 연결 상태를 불러오지 못했습니다. 새로고침해 주세요.";
     else guides = (guideResult.data ?? []) as AdminGuideRow[];
     if (error) loadError = "회원 명단을 불러오지 못했습니다. 데이터베이스 마이그레이션 적용 여부를 확인해 주세요.";
@@ -203,6 +209,7 @@ export default async function AdminMembersPage() {
                   </header>
                   <div className="grid gap-4 bg-[var(--cream)] p-3 min-[430px]:p-4 min-[820px]:gap-5 min-[820px]:p-5">
                   {cohortGuides.length > 0 && <AdminGuideRoster guides={cohortGuides} />}
+                  <AdminMissingIntroductions members={missing.filter(member => member.cohort === cohort)} failed={missingFailed} />
                   <section aria-label="가입 완료 명단" className="min-w-0 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--paper)]">
                     <h3 className="border-b border-[var(--line)] bg-[var(--sage)]/30 px-4 py-3 font-semibold text-[var(--forest)]">가입 완료 · {joined.length}명</h3>
                     {joined.length > 0 ? (
