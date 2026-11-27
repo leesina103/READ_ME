@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { createWorker } from '../supabase/functions/operations-worker/worker.mjs';
-import { TASKS } from '../supabase/functions/operations-worker/domain.mjs';
+import { TASKS, MEMBERS, LEDGER, text, title } from '../supabase/functions/operations-worker/domain.mjs';
 import { manualMessageDocument } from './fixtures/manual-message-document.mjs';
 
 // 외부 쓰기 없이 HTTP 경계에서 반복 실행과 예약 변경을 검증합니다.
 const states = new Map(), pages = new Map(), emails = [];
+const paidMembers = [], ledgerRows = [];
 let locked = false, failNotion = false;
 const booking = { id: '00000000-0000-4000-8000-000000000001', name: '테스트', status: 'booked', management_token: 'test', updated_at: '2026-11-12T20:00:00Z', interview_slots: { starts_at: '2026-11-12T23:00:00Z' } };
 const now = Date.parse('2026-11-12T22:00:00Z');
@@ -33,6 +34,8 @@ async function mock(url, options = {}) {
   assert.equal(u.hostname, 'api.notion.com');
   if (failNotion) return new Response('{}', { status: 503 });
   if (u.pathname.includes('/query')) {
+    if (u.pathname.includes(MEMBERS) && body.filter?.property === '회비 납부') return ok({ results: paidMembers, has_more: false });
+    if (u.pathname.includes(LEDGER)) return ok({ results: ledgerRows, has_more: false });
     if (!u.pathname.includes(TASKS)) return ok({ results: [], has_more: false });
     const f = body.filter;
     const rows = [...pages.values()].filter(p => {
@@ -100,6 +103,7 @@ try {
   assert.equal((await run(dailyNow)).status, 'passed');
   const daily = emails.find(email => email.body.subject.includes('운영 할 일'));
   assert.ok(daily, '오전 9시 집계 메일을 생성함');
+  assert.match(daily.body.text, /대상: 테스트[\s\S]*1기 납부 자료[\s\S]*가계부와 회원 명단이 일치합니다[\s\S]*서비스 점검:/);
   assert.match(daily.body.text, /오늘 오전 9:10/);
   assert.match(daily.body.text, /https:\/\/meet\.google\.com\/test/);
   assert.doesNotMatch(daily.body.text, /30분 후|시작 30분 전에 문자로/);
@@ -112,10 +116,16 @@ try {
   assert.equal(draft(daily, '예약 안내'), draft(reservation), '예약 안내 초안은 개별 알림과 일일 요약이 같음');
 
   pages.get('1').properties['예약 안내'] = { checkbox: true };
+  const paid = { '이름': title('가계부테스트'), '회비 납부': { select: { name: '납부' } }, '입금자명': text('입금자'), '실제 입금액': { number: 60000 }, '입금일': { date: { start: '2026-11-12' } } };
+  paidMembers.push({ id: 'paid', properties: paid }, { id: 'missing', properties: { ...paid, '이름': title('누락테스트'), '입금자명': text('') } });
+  ledgerRows.push({ properties: { '금액': { number: 50000 }, '입금자명': paid['입금자명'], '거래일': paid['입금일'] } });
   states.delete('daily:2026-11-13'); states.delete('mail:daily:2026-11-13');
   emails.length = 0;
   assert.equal((await run(dailyNow)).status, 'passed');
   const reminderDaily = emails.find(email => email.body.subject.includes('운영 할 일'));
+  assert.match(reminderDaily.body.text, /가계부테스트 · 회원 명단과 기존 가계부의 금액 대조 필요/);
+  assert.match(reminderDaily.body.text, /누락테스트 · 회원 명단에서 입금자명 입력 필요/);
+  assert.doesNotMatch(reminderDaily.body.text, /가계부와 회원 명단이 일치합니다/);
   assert.match(draft(reminderDaily, '30분 전 안내'), /오늘 오전 9:10/);
   assert.doesNotMatch(reminderDaily.body.text, /30분 후|시작 30분 전에 문자로/);
   assert.match(reminderDaily.body.text, /⑤ 다음 메시지 초안\n테스트님, 고맙습니다/);

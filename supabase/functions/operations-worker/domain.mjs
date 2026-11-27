@@ -38,7 +38,14 @@ export function payment(member) {
   const payer = readText(p['입금자명']).trim();
   const amount = p['실제 입금액']?.number;
   const date = p['입금일']?.date?.start;
-  if (!payer || !Number.isSafeInteger(amount) || amount <= 0 || !date) return { missing: true };
+  const missing = [];
+  if (!payer) missing.push('입금자명');
+  if (amount == null) missing.push('실제 입금액');
+  if (!date) missing.push('입금일');
+  const issues = [];
+  if (missing.length) issues.push(`${missing.join('·')} 입력 필요`);
+  if (amount != null && (!Number.isSafeInteger(amount) || amount <= 0)) issues.push('실제 입금액 확인 필요');
+  if (issues.length) return { issues };
   return { key: `member:${member.id}:cohort:1:payment`, payer, amount, date, name: readText(p['이름']), memberId: member.id };
 }
 

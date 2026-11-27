@@ -19,7 +19,11 @@ assert.equal(done({ properties: { '상태': { status: { name: '완료' } } } }),
 assert.equal(done({ archived: true }), true);
 const member = { id: 'test', properties: { '회비 납부': { select: { name: '납부' } }, '입금자명': { rich_text: [{ plain_text: '입금자' }] }, '실제 입금액': { number: 50000 }, '입금일': { date: { start: '2026-11-13' } } } };
 assert.equal(payment(member).amount, 50000);
-assert.equal(payment({ ...member, properties: { ...member.properties, '실제 입금액': { number: null } } }).missing, true);
+const paymentIssues = fields => payment({ ...member, properties: { ...member.properties, ...fields } }).issues;
+assert.deepEqual(paymentIssues({ '실제 입금액': { number: null } }), ['실제 입금액 입력 필요']);
+assert.deepEqual(paymentIssues({ '입금자명': null }), ['입금자명 입력 필요']);
+assert.deepEqual(paymentIssues({ '입금일': null, '입금자명': null }), ['입금자명·입금일 입력 필요']);
+assert.deepEqual(paymentIssues({ '실제 입금액': { number: 0 } }), ['실제 입금액 확인 필요']);
 assert.equal(payment({ ...member, properties: { ...member.properties, '회비 납부': { select: { name: '미납' } } } }), null);
 assert.equal(payment(member).key, payment(member).key);
 assert.match(emailBody('행동', '초안', '다음', '다음초안', 'url'), /다음 메시지 초안/);

@@ -146,9 +146,16 @@ export function createWorker(env, fetcher = fetch) {
     const notes = [];
     for (const member of await query(MEMBERS, { property: '회비 납부', select: { equals: '납부' } })) {
       const value = payment(member);
-      if (value.missing) { notes.push(`${readText(member.properties['이름'])}: 입금자명·실제 금액·입금일 확인 필요`); continue; }
+      if (value.issues) {
+        notes.push(`${readText(member.properties['이름'])} · 회원 명단에서 ${value.issues.join(', ')}`);
+        continue;
+      }
       const row = await ensurePage(LEDGER, '입금 기록 키', value.key, { '내역': title(`1기 회비 · ${value.name}`), '거래일': { date: { start: value.date } }, '구분': { select: { name: '수입' } }, '금액': { number: value.amount }, '입금자명': text(value.payer), '기수': { number: 1 }, '회원': { relation: [{ id: member.id }] }, '확인 상태': { select: { name: '확인 완료' } }, '근거 링크': { url: member.url } });
-      if (row.properties['금액']?.number !== value.amount || readText(row.properties['입금자명']) !== value.payer || row.properties['거래일']?.date?.start !== value.date) notes.push(`${value.name}: 원본 입금 정보와 기존 장부가 다릅니다. 대조 후 수정하세요.`);
+      const differences = [];
+      if (row.properties['금액']?.number !== value.amount) differences.push('금액');
+      if (readText(row.properties['입금자명']).trim() !== value.payer) differences.push('입금자명');
+      if (row.properties['거래일']?.date?.start !== value.date) differences.push('입금일');
+      if (differences.length) notes.push(`${value.name} · 회원 명단과 기존 가계부의 ${differences.join('·')} 대조 필요`);
     }
     return notes;
   }
@@ -202,8 +209,8 @@ export function createWorker(env, fetcher = fetch) {
           return emailBody('현재 단계의 실제 처리 여부를 확인하세요. 미처리라면 아래 초안을 확인한 뒤 처리하고 노션에 완료 체크하세요.', messages.draft, planned?.next || readText(p.properties['다음 행동']) || '완료 여부 확인', messages.nextDraft, p.url, '대상: '+readText(p.properties['참여자 이름'])+' · '+stage+'\n기한이 지났고 노션에 완료 표시가 없는 업무입니다.\n완료 표시가 없다는 이유만으로 실제 미발송을 단정하지는 않습니다.');
         });
         const browser = await state('monitor:latest');
-        chunks.unshift(emailBody(health.status === 'passed' ? '서비스 점검 항목은 정상입니다. 지금 별도로 처리할 일은 없습니다.' : '아래 점검 결과에서 실패·대기 항목을 확인하고 해당 화면을 점검하세요.', '해당 없음(운영 점검)', '09:10 이후 별도로 오는 로그인 점검 결과를 확인하세요.', '해당 없음(운영 점검)', `${SITE}/admin/interviews`, `서비스 점검: ${statusLabel(health.status)}\n${health.checks.map(c => `- ${c.name}: ${statusLabel(c.status)}`).join('\n')}\n브라우저 최근 기록: ${browser ? `${statusLabel(browser.status)} (${when(browser.checkedAt)})` : '실행 기록 없음'}\n기한이 지난 미완료 업무: ${due.length}건`));
-        chunks.push(emailBody(paymentNotes.length ? paymentNotes.join('\n') : '대조한 자료에 누락·불일치가 없습니다. 새 입금이 있다면 은행 내역을 직접 확인한 뒤 회원 명단에 입력하세요.', '해당 없음(운영 점검)', '회원 명단에 납부 표시·입금자명·실제 입금액·입금일을 입력하면 다음 오전 9시 장부에 반영합니다.', '해당 없음(운영 점검)', 'https://www.notion.so/c368c6b5ed514ad79f684f086ed2ee9b', '1기 납부 자료와 가계부 대조를 마쳤습니다.\n정보가 갖춰진 납부 건은 중복 없이 장부에 반영합니다.\n은행 입금 내역을 자동 조회한 결과는 아닙니다.'));
+        chunks.push(emailBody(paymentNotes.length ? paymentNotes.join('\n') : '별도로 처리할 일이 없습니다.', '해당 없음(운영 점검)', paymentNotes.length ? '위에 표시된 항목만 확인해 주세요. 수정한 내용은 다음 오전 9시 대조에 반영됩니다.' : '가계부와 회원 명단이 일치합니다. 별도로 처리할 일이 없습니다.', '해당 없음(운영 점검)', 'https://www.notion.so/c368c6b5ed514ad79f684f086ed2ee9b', '1기 납부 자료와 가계부 대조를 마쳤습니다.\n정보가 갖춰진 납부 건은 중복 없이 장부에 반영합니다.\n은행 입금 내역을 자동 조회한 결과는 아닙니다.'));
+        chunks.push(emailBody(health.status === 'passed' ? '서비스 점검 항목은 정상입니다. 지금 별도로 처리할 일은 없습니다.' : '아래 점검 결과에서 실패·대기 항목을 확인하고 해당 화면을 점검하세요.', '해당 없음(운영 점검)', '09:10 이후 별도로 오는 로그인 점검 결과를 확인하세요.', '해당 없음(운영 점검)', `${SITE}/admin/interviews`, `서비스 점검: ${statusLabel(health.status)}\n${health.checks.map(c => `- ${c.name}: ${statusLabel(c.status)}`).join('\n')}\n브라우저 최근 기록: ${browser ? `${statusLabel(browser.status)} (${when(browser.checkedAt)})` : '실행 기록 없음'}\n기한이 지난 미완료 업무: ${due.length}건`));
         if (errors.length) chunks.push(`자동화 확인 필요: ${errors.join(', ')}`);
         await send(`daily:${day}`, `[READ ME] ${day} 운영 할 일`, chunks.join('\n\n────────\n\n'));
         await save(`daily:${day}`, { status: 'accepted', tasks: due.length });
